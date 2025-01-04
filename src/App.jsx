@@ -1,9 +1,11 @@
 import './App.css'
+import LoginPage from './pages/LoginPage.jsx'
 
 function App() {
+
   return (
     <>
-
+      <LoginPage/>
     </>
   )
 }
