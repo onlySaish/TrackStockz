@@ -19,7 +19,7 @@ function Login() {
 
   return (
     <>
-        <div className="h-screen w-full bg-center bg-cover bg-no-repeat flex flex-row justify-center items-center" style={{backgroundImage : `url(https://images.pexels.com/photos/1933239/pexels-photo-1933239.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)`}}>
+        {/* <div className="h-screen w-full bg-center bg-cover bg-no-repeat flex flex-row justify-center items-center" style={{backgroundImage : `url(https://images.pexels.com/photos/1933239/pexels-photo-1933239.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)`}}> */}
             <div className='h-3/4 w-3/4 bg-black/75 flex flex-col justify-center items-center rounded-3xl lg:w-2/5'>
             <form action="#" className='h-full w-full flex flex-col justify-evenly items-center'>
                 <div className='text-white text-3xl font-bold md:text-5xl'>LOGIN</div>
@@ -41,7 +41,6 @@ function Login() {
                     id='pass'
                     type="password"
                     placeholder='Password'/>
-                    {/* <div className='h-fit w-fit' style={{backgroundImage: `url(${eyeImage1})`}}></div> */}
                     <div 
                     onClick={(e) => tooglePassVisibility(e.target)}
                     id='eye-icon' 
@@ -59,7 +58,7 @@ function Login() {
             </div>
             </div>
 
-        </div> {/* Remove this while routing for page */} 
+        {/* </div> Remove this while routing for page  */}
     </>
   )
 }
