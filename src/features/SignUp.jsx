@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
+import { Link } from 'react-router';
 
 function SignUp() {
     const [email, setEmail] = useState("");
@@ -7,31 +8,43 @@ function SignUp() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isPassSame, setIsPassSame] = useState(false);
 
-    const pass = document.querySelector("#pass");
+    const passref = useRef(null);
     const tooglePassVisibility = (eyeIcon) => {
-    if (pass.type === "password"){
+    if (passref.current.type === "password"){
       eyeIcon.classList.remove("fa-eye-slash")
       eyeIcon.classList.add("fa-eye")
-      pass.type = "text"
+      passref.current.type = "text"
     } else {
-      pass.type = "password"
+      passref.current.type = "password"
       eyeIcon.classList.remove("fa-eye")
       eyeIcon.classList.add("fa-eye-slash")
     }
   }
 
-  const confirmpass = document.querySelector("#confirm-pass");
+  const confirmPassRef = useRef(null)
   const toogleConfirmPassVisibility = (eyeIcon) => {
-    if (confirmpass.type === "password"){
+    if (confirmPassRef.current.type === "password"){
       eyeIcon.classList.remove("fa-eye-slash")
       eyeIcon.classList.add("fa-eye")
-      confirmpass.type = "text"
+      confirmPassRef.current.type = "text"
     } else {
-      confirmpass.type = "password"
+      confirmPassRef.current.type = "password"
       eyeIcon.classList.remove("fa-eye")
       eyeIcon.classList.add("fa-eye-slash")
     }
   }
+
+  const isPassSameChecker = () => {
+    if (password == confirmPassword){
+      setIsPassSame(true);
+    } else {
+      setIsPassSame(false);
+    }
+  }
+
+  useEffect(() => {
+    isPassSameChecker();
+  },[confirmPassword])
 
   return (
     <div className='h-5/6 w-3/4 bg-black/75 flex flex-col justify-center items-center rounded-3xl lg:w-2/5'>
@@ -64,7 +77,8 @@ function SignUp() {
                     onChange={(e) => setPassword(e.target.value)}
                     id='pass'
                     type="password"
-                    placeholder='Password'/>
+                    placeholder='Password'
+                    ref={passref}/>
                     <div 
                     onClick={(e) => tooglePassVisibility(e.target)}
                     className="hover:cursor-pointer fa-solid fa-eye-slash inline-block absolute right-3 top-3 md:top-4 text-2xl md:text-3xl lg:text-2xl lg:top-3 text-black/80"></div>
@@ -75,11 +89,12 @@ function SignUp() {
                   <div className='text-white text-md px-3 md:text-xl'>Confirm Password</div> 
                   <div className='w-full h-9 relative'>
                     <input 
-                    className='w-full mt-2 h-9 text-lg pl-3 py-4 rounded-3xl text-black/80 md:h-12 md:text-2xl lg:text-xl lg:h-10'
+                    className= {` ${((confirmPassword === "") || (password == "")) ? "border-none": `${(isPassSame)? "border-2 border-green-400" : "border-2 border-red-600"}`} w-full mt-2 h-9 text-lg pl-3 py-4 rounded-3xl text-black/80 md:h-12 md:text-2xl lg:text-xl lg:h-10`}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     id='confirm-pass'
                     type="password"
-                    placeholder='Password'/>
+                    placeholder='Password'
+                    ref={confirmPassRef}/>
                     <div 
                     onClick={(e) => toogleConfirmPassVisibility(e.target)}
                     className="hover:cursor-pointer fa-solid fa-eye-slash inline-block absolute right-3 top-3 md:top-4 text-2xl md:text-3xl lg:text-2xl lg:top-3 text-black/80"></div>
@@ -92,7 +107,7 @@ function SignUp() {
             </form>
             <div className='flex flex-row justify-center gap-2 items-center text-white h-auto w-full text-md md:text-2xl lg:text-xl pb-2'>
                 <div>Already have an account?</div>
-                <a className='text-blue-500 hover:cursor-pointer'>Login here</a>
+                <Link to={"/login"} className='text-blue-500 hover:cursor-pointer'>Login here</Link>
             </div>
             </div>
 

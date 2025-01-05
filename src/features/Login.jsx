@@ -1,17 +1,18 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
+import { Link } from 'react-router';
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const pass = document.querySelector("#pass");
+  const passref = useRef(null);
   const tooglePassVisibility = (eyeIcon) => {
-    if (pass.type === "password"){
+    if (passref.current.type === "password"){
       eyeIcon.classList.remove("fa-eye-slash")
       eyeIcon.classList.add("fa-eye")
-      pass.type = "text"
+      passref.current.type = "text"
     } else {
-      pass.type = "password"
+      passref.current.type = "password"
       eyeIcon.classList.remove("fa-eye")
       eyeIcon.classList.add("fa-eye-slash")
     }
@@ -40,7 +41,8 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     id='pass'
                     type="password"
-                    placeholder='Password'/>
+                    placeholder='Password'
+                    ref={passref}/>
                     <div 
                     onClick={(e) => tooglePassVisibility(e.target)}
                     id='eye-icon' 
@@ -54,7 +56,7 @@ function Login() {
             </form>
             <div className='flex flex-row justify-center gap-4 items-center text-white h-auto w-full text-lg pb-4'>
                 <div>Don't have an account?</div>
-                <a className='text-blue-500 hover:cursor-pointer'>Sign Up</a>
+                <Link to={"/signup"} className='text-blue-500 hover:cursor-pointer'>Sign Up</Link>
             </div>
             </div>
 
