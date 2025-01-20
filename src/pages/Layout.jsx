@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../features/navbar'
+import Navbar from '../features/auth/components/Navbar'
 import { Outlet } from 'react-router'
 
 function Layout() {
@@ -8,7 +8,6 @@ function Layout() {
       <Navbar/>
       <Outlet/>
     </>
-
   )
 }
 

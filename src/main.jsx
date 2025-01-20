@@ -7,21 +7,14 @@ import LoginPage from './pages/LoginPage.jsx'
 import SignUpPage from './pages/SignUpPage.jsx'
 import Layout from './pages/Layout.jsx'
 import Home from './pages/Home.jsx'
-
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path='/'>
-      <Route path='/' element={<Layout/>}>
-        <Route path='/' element={<Home/>}/>
-      </Route>
-      <Route path='/login' element={<LoginPage/>}/>
-      <Route path='/signup' element={<SignUpPage/>}/>
-    </Route>
-  )
-)
+import { store } from './app/store.js'
+import { Provider } from 'react-redux'
+import Protected from './features/auth/components/Protected.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router}/>
+    <Provider store={store}>
+      <App/>
+    </Provider>
   </StrictMode>,
 )

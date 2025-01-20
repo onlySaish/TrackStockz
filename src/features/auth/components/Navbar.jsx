@@ -1,7 +1,15 @@
 import React, { useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { signOutAsync, selectLoggedInUser } from '../authSlice';
 
 function Navbar() {
-  const searchRef = useRef(null)
+  const searchRef = useRef(null);
+  const dispatch = useDispatch();
+  const user = useSelector(selectLoggedInUser);
+
+  const handleLogOut = () => {
+    dispatch(signOutAsync())
+  }
 
   const searchBtn = () => {
     searchRef.current.select()
@@ -9,6 +17,7 @@ function Navbar() {
 
   return (
     <>
+      {!user && <Navigate to="/login" replace={true}></Navigate>}
       <div className='w-full bg-gradient-to-r from-violet-600 to-violet-950 flex flex-row justify-evenly items-center py-4'>
         <div className='flex flex-row gap-4'>
           <div className='h-8 w-8 rounded-full' style={{backgroundImage : "url('vite.svg')"}} ></div>
@@ -27,7 +36,9 @@ function Navbar() {
           <div className='h-8 w-8 text-white fa-solid fa-circle-user text-3xl text-center'></div>
         </div>
         <div>
-          <button className='text-white bg-red-700 p-2 rounded-3xl font-bold'>Logout</button>
+          <button 
+          onClick={handleLogOut}
+          className='text-white bg-red-700 p-2 rounded-3xl font-bold'>Logout</button>
         </div>
       </div>
     </>
