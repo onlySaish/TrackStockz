@@ -3,17 +3,16 @@ import {RouterProvider, createBrowserRouter, createRoutesFromElements,Route} fro
 import LoginPage from './pages/LoginPage.jsx'
 import SignUpPage from './pages/SignUpPage.jsx'
 import Layout from './pages/Layout.jsx'
-import Home from './pages/Home.jsx'
+// import Home from './pages/Content.jsx'
 import Protected from './features/auth/components/Protected.jsx'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   checkAuthAsync,
   selectLoggedInUser,
-  selectUserChecked,
+  selectUserChecked
 } from './features/auth/authSlice.js';
 import Popup from './features/Popup.jsx'
-
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,7 +22,7 @@ const router = createBrowserRouter(
           <Protected>
             <Popup/>
             <Layout/>
-            <Home/> 
+            {/* <Home/>  */}
           </Protected>
         }/>
       {/* </Route> */}

@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import { Link } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { selectLoggedInUser, createUserAsync } from '../authSlice.js';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
   function SignUp() {
   const dispatch = useDispatch();
