@@ -1,25 +1,28 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { signOutAsync, selectLoggedInUser } from '../authSlice';
-import { setActiveContent, toggleSidebar } from '../../dashboard/dashboardSlice';
+import { signOutAsync } from '../../auth/authSlice';
+import { selectSidebarVisibility, setActiveContent, toggleSidebar } from '../dashboardSlice';
+import { fetchProfile, profileSelector } from './profile/profileSlice';
+import { Navigate } from 'react-router';
 
 function Navbar() {
   const searchRef = useRef(null);
   const dispatch = useDispatch();
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(profileSelector);
+  const hasFetched = useRef(false);
+  const isSidebarVisible = useSelector(selectSidebarVisibility);
 
   useEffect(() => {
-    const hasReloaded = sessionStorage.getItem("hasReloaded");
-
-    if (user && !hasReloaded) {
-      sessionStorage.setItem("hasReloaded", "true"); 
-      window.location.reload(); 
+    if (!hasFetched.current) {
+      dispatch(fetchProfile());
+      hasFetched.current = true;
     }
-  }, [user]);
+  }, [dispatch]);
+
 
   const handleLogOut = () => {
     dispatch(signOutAsync());
-    sessionStorage.removeItem("hasReloaded");
+    hasFetched.current = false;
   }
 
   const searchBtn = () => {
@@ -35,7 +38,7 @@ function Navbar() {
       {!user && <Navigate to="/login" replace={true}></Navigate>}
       <div className='w-full bg-gradient-to-r from-violet-600 to-violet-950 flex flex-row justify-evenly items-center py-4'>
         <div>
-          <button onClick={handleSidebarToggle} className='fa-solid fa-bars text-white text-2xl'></button>
+          <button onClick={handleSidebarToggle} className={`${(isSidebarVisible) ? "fa-regular fa-compass text-4xl" : "fa-solid fa-bars text-2xl"} text-white`}></button>
         </div>
         <div className='flex flex-row gap-4'>
           <div className='h-8 w-8 rounded-full' style={{backgroundImage : "url('vite.svg')"}} ></div>
@@ -50,13 +53,13 @@ function Navbar() {
           <input type="text" placeholder='Search here...' ref={searchRef} className='w-full bg-transparent pl-3 text-white border-none h-full rounded-2xl'/>
         </div>
         <div className='flex flex-row gap-3 justify-center items-center'>
-          <div className='text-white font-bold text-2xl capitalize'>Welcome, {user.data.username}</div>
+          <div className='text-white font-bold text-2xl capitalize'>Welcome, {user.username}</div>
           <div className='h-9 w-9 text-white bg-cover bg-center rounded-full text-3xl text-center cursor-pointer'
-          style={{backgroundImage: `url(${user.data.avatar})`}}
+          style={{backgroundImage: `url(${user.avatar})`}}
           onClick={() => dispatch(setActiveContent("Profile"))}></div>
         </div>
         <div>
-          <button 
+          <button   
           onClick={handleLogOut}
           className='text-white bg-red-700 p-2 rounded-3xl font-bold'>Logout</button>
         </div>

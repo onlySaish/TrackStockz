@@ -3,7 +3,11 @@ import {
   createUser,
   loginUser,
   checkAuth,
-  signOut
+  signOut,
+  forgotPassword,
+  verifyToken,
+  resetPassword,
+  // refreshAccessToken
 } from './authApi';
 
 const initialState = {
@@ -13,6 +17,7 @@ const initialState = {
     userChecked: false,
     mailSent: false,
     passwordReset:false,
+    tokenVerified:false,
     popup: {
       visible: false,
       message: '',
@@ -52,7 +57,7 @@ export const checkAuthAsync = createAsyncThunk(
     const response = await checkAuth();
     return response.data;
   } catch (error) {
-    console.log(error);
+    return rejectWithValue(error.response?.data?.message || error.message);
   }
 });
 
@@ -61,6 +66,55 @@ export const signOutAsync = createAsyncThunk(
   async () => {
     const response = await signOut();
     return response.data;
+  }
+);
+
+// export const refreshAccessTokenAsync = createAsyncThunk(
+//   'user/refreshAccessToken',
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const response = await refreshAccessToken();
+//       return response.data; // Assume it returns a new access token
+//     } catch (error) {
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
+
+export const forgotPasswordAsync = createAsyncThunk(
+  'user/forgotPassword',
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await forgotPassword(email);
+      console.log(response);
+      return response; // Expecting success message from backend
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const verifyTokenAsync = createAsyncThunk(
+  'user/verifyToken',
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await verifyToken(token);
+      return response;  // Expecting { success: true }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const resetPasswordAsync = createAsyncThunk(
+  'user/resetPassword',
+  async ({token, newPassword}, { rejectWithValue }) => {
+    try {
+      const response = await resetPassword({token, newPassword});
+      return response.data; // Expecting success message from backend
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
 );
 
@@ -164,16 +218,100 @@ export const authSlice = createSlice({
             duration: 3000,
             type: 'error',
           };
-        });  
+        })
+        // .addCase(refreshAccessTokenAsync.pending, (state) => {
+        //   state.status = 'loading';
+        // })
+        // .addCase(refreshAccessTokenAsync.fulfilled, (state, action) => {
+        //   state.status = 'idle';
+        //   state.loggedInUserToken = action.payload; // Update the token
+        //   state.popup = {
+        //     visible: true,
+        //     message: 'Access token refreshed successfully!',
+        //     duration: 3000,
+        //     type: 'success',
+        //   };
+        // })
+        // .addCase(refreshAccessTokenAsync.rejected, (state, action) => {
+        //   state.status = 'idle';
+        //   state.popup = {
+        //     visible: true,
+        //     message: `Failed to refresh access token: ${action.payload}`,
+        //     duration: 3000,
+        //     type: 'error',
+        //   };
+        // })    
+        .addCase(forgotPasswordAsync.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(forgotPasswordAsync.fulfilled, (state, action) => {
+          state.status = 'idle';
+          state.mailSent = true;
+          state.popup = {
+            visible: true,
+            message: 'Password reset email sent!',
+            duration: 3000,
+            type: 'success',
+          };
+        })
+        .addCase(forgotPasswordAsync.rejected, (state, action) => {
+          state.status = 'idle';
+          state.popup = {
+            visible: true,
+            message: `Failed to send reset email: ${action.payload}`,
+            duration: 3000,
+            type: 'error',
+          };
+        })
+        .addCase(resetPasswordAsync.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(verifyTokenAsync.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(verifyTokenAsync.fulfilled, (state) => {
+          state.status = 'success';
+          state.tokenVerified = true;
+        })
+        .addCase(verifyTokenAsync.rejected, (state,action) => {
+          state.status = 'failed';
+          state.popup = {
+            visible: true,
+            message: `Verification Failed: ${action.payload}`,
+            duration: 3000,
+            type: 'error',
+          };
+        })
+        .addCase(resetPasswordAsync.fulfilled, (state, action) => {
+          state.status = 'idle';
+          state.passwordReset = true;
+          state.popup = {
+            visible: true,
+            message: 'Password has been reset successfully!',
+            duration: 3000,
+            type: 'success',
+          };
+        })
+        .addCase(resetPasswordAsync.rejected, (state, action) => {
+          state.status = 'idle';
+          state.popup = {
+            visible: true,
+            message: `Password reset failed: ${action.payload}`,
+            duration: 3000,
+            type: 'error',
+          };
+        });
     },
 });
 
 export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
 export const selectUserChecked = (state) => state.auth.userChecked;
-export const selectMailSent = (state) => state.auth.mailSent;
-export const selectPasswordReset = (state) => state.auth.passwordReset;
 export const selectPopup = (state) => state.auth.popup;
+// export const selectMailSent = (state) => state.auth.mailSent;
+// export const selectPasswordReset = (state) => state.auth.passwordReset;
+// export const selectTokenVerified = (state) => state.auth.tokenVerified;
+
 export const { showPopup, hidePopup } = authSlice.actions;
 
 export default authSlice.reducer;

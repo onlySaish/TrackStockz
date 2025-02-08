@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react'
 import { Link } from 'react-router';
 import { Navigate } from 'react-router-dom';
-import { selectLoggedInUser, createUserAsync } from '../authSlice.js';
+import { showPopup, createUserAsync } from '../authSlice.js';
 import { useDispatch } from 'react-redux';
 
   function SignUp() {
@@ -56,6 +56,16 @@ import { useDispatch } from 'react-redux';
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    if (!isPassSame) {
+      dispatch(
+        showPopup({
+          message: "Passwords do not match!",
+          duration: 3000,
+          type: "error",
+        })
+      );
+      return;
+    }
 
     const formData = new FormData();
     formData.append("fullName", fullName);
@@ -65,7 +75,7 @@ import { useDispatch } from 'react-redux';
     formData.append("avatar", avatar);
 
     const res = await dispatch(createUserAsync(formData));
-    if (res.meta.requestStatus === 'fulfilled') {
+    if (res.payload.success === true) {
       setSignupSuccess(true);
     }
   };
@@ -73,6 +83,7 @@ import { useDispatch } from 'react-redux';
   if (signupSuccess) {
     return <Navigate to="/login" replace={true} />;
   }
+
 
   return (
     <>

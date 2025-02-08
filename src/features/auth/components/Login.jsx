@@ -4,14 +4,13 @@ import { Navigate } from 'react-router-dom';
 import { loginUserAsync } from '../authSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectError, selectLoggedInUser } from '../authSlice.js';
-// import Swal from 'sweetalert2';
 
 function Login() {
   const [identity, setIdentity] = useState("");
   const [password, setPassword] = useState("");
   
   const dispatch = useDispatch();
-  const error = useSelector(selectError);
+  // const error = useSelector(selectError);
   const user = useSelector(selectLoggedInUser);
 
   const passref = useRef(null);
@@ -41,16 +40,6 @@ function Login() {
   
       dispatch(loginUserAsync(formData));
     };
-
-    // useEffect(() => {
-    //   if (error) {
-    //     Swal.fire({
-    //       icon: 'error',
-    //       title: 'Login Failed',
-    //       text: error,
-    //     });
-    //   }
-    // }, [error]);
 
   return (
     <>  
@@ -87,12 +76,18 @@ function Login() {
                 </div>
 
                 <button className='h-auto text-white w-2/4 text-2xl font-bold bg-orange-500 px-4 py-2 rounded-3xl md:text-4xl md:mt-3 lg:text-2xl lg:w-1/3'>
-                  LOGIN
+                  Login
                 </button>
           </form>
-            <div className='flex flex-row justify-center gap-4 items-center text-white h-auto w-full text-lg pb-4'>
+            <div className='flex flex-col justify-center items-center text-white h-auto w-full text-lg pb-4'>
+              <div className='flex gap-3'>
                 <div>Don't have an account?</div>
                 <Link to={"/signup"} className='text-blue-500 hover:cursor-pointer'>Sign Up</Link>
+              </div>
+              <div className='flex'>
+                {/* <div>Forgot Password?</div> */}
+                <Link to={"/forgotpassword"} className='text-blue-500 hover:cursor-pointer'>Forgot Password?</Link>
+              </div>
             </div>
             </div>
 
