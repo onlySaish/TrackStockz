@@ -7,6 +7,8 @@ import {
   forgotPassword,
   verifyToken,
   resetPassword,
+  verifyOtp,
+  sendOtp,
   // refreshAccessToken
 } from './authApi';
 
@@ -26,11 +28,33 @@ const initialState = {
     },
 };
 
+export const sendOtpAsync = createAsyncThunk(
+  "users/sendOtp", 
+  async (data, { rejectWithValue }) => {
+  try {
+    const response = await sendOtp(data);
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const verifyOtpAsync = createAsyncThunk(
+  "auth/verifyOtp", 
+  async (data,{ rejectWithValue }) => {
+  try {
+    const response = await verifyOtp(data);
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
 export const createUserAsync = createAsyncThunk(
   'user/createUser',
-  async (formData, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await createUser(formData);
+      const response = await createUser(data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -89,6 +113,7 @@ export const forgotPasswordAsync = createAsyncThunk(
       console.log(response);
       return response; // Expecting success message from backend
     } catch (error) {
+      console.log(error)
       return rejectWithValue(error.message);
     }
   }
@@ -141,6 +166,52 @@ export const authSlice = createSlice({
     },
     extraReducers: (builder) => {
       builder
+      .addCase(sendOtpAsync.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(sendOtpAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.popup = {
+          visible: true,
+          message: 'OTP Sent Successfully!',
+          duration: 3000,
+          type: 'success',
+        };
+      })
+      .addCase(sendOtpAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+        state.popup = {
+          visible: true,
+          message: `Error Sending OTP: ${action.payload}`,
+          duration: 3000,
+          type: 'error',
+        };
+      })
+      .addCase(verifyOtpAsync.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(verifyOtpAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.popup = {
+          visible: true,
+          message: 'Email Verified Successfully!',
+          duration: 3000,
+          type: 'success',
+        };
+      })
+      .addCase(verifyOtpAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+        state.popup = {
+          visible: true,
+          message: `Email Verification Failed: ${action.payload}`,
+          duration: 3000,
+          type: 'error',
+        };
+      })
         .addCase(createUserAsync.pending, (state) => {
           state.status = 'loading';
         })

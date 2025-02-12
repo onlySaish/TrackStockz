@@ -103,8 +103,24 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export function createUser(formData) {
-  return axiosInstance.post('/users/register', formData, {
+export function sendOtp(data) {
+  return axiosInstance.post("/users/send-otp", data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export function verifyOtp(data) {
+  return axiosInstance.post("/users/verify-otp", data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export function createUser(data) {
+  return axiosInstance.post('/users/register', data, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
