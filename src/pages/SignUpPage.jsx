@@ -11,7 +11,7 @@ function SignUpPage() {
   const [userData, setUserData] = useState({});
 
   const nextStep = (data) => {
-    setUserData({ ...userData, ...data });
+    setUserData((prev) => ({ ...prev, ...data }));
     setStep((prev) => prev + 1);
   };
   return (
@@ -19,7 +19,7 @@ function SignUpPage() {
         <div className="min-h-screen w-full bg-center bg-cover flex flex-row justify-center items-center py-8" style={{backgroundImage : `url(https://images.pexels.com/photos/1933239/pexels-photo-1933239.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)`}}>
             <Popup/>
             {step === 1 && <SignupStep1 nextStep={nextStep} />}
-            {step === 2 && <SignupStep2 nextStep={nextStep} email={userData.email} />}
+            {step === 2 && <SignupStep2 nextStep={nextStep} email={userData.email} userData={userData} />}
             {step === 3 && <SignupStep3 nextStep={nextStep} userData={userData} />}
         </div>
     </>

@@ -1,18 +1,39 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { verifyOtpAsync } from '../authSlice';
+import { sendOtpAsync, verifyOtpAsync } from '../authSlice';
 
-function SignupStep2({ nextStep, email }) {
+function SignupStep2({ nextStep, userData }) {
     const [otp, setOtp] = useState("");
+    const [resendDisabled, setResendDisabled] = useState(false);
+    const [timer, setTimer] = useState(30);
     const dispatch = useDispatch();
 
     const handleVerify = async (e) => {
         e.preventDefault();
-        const response = await dispatch(verifyOtpAsync({ email, otp }));
+        const response = await dispatch(verifyOtpAsync({ email: userData.email, otp }));
         if (response.meta.requestStatus === "fulfilled") {
           nextStep();
         }
       };
+
+      const handleResendOtp = async () => {
+        setResendDisabled(true);
+        setTimer(30); // Reset timer
+        await dispatch(sendOtpAsync({ email: userData.email, password: userData.password })); // Send email & password
+    
+        // Countdown Timer
+        const interval = setInterval(() => {
+          setTimer((prev) => {
+            if (prev === 1) {
+              clearInterval(interval);
+              setResendDisabled(false);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      };
+
   return (
     <div className='h-2/3 w-3/4 bg-black/75 flex flex-col justify-center items-center rounded-3xl lg:w-1/4'>
     <form onSubmit={handleVerify}
@@ -29,6 +50,16 @@ function SignupStep2({ nextStep, email }) {
         </div>
         <button className='h-auto text-white w-2/4 text-lg font-bold bg-orange-500 mt-2 px-2 py-1 md:py-2 rounded-3xl md:text-3xl md:mt-4 lg:text-2xl lg:py-1 lg:w-1/2'>
             Verify OTP
+        </button>
+        <button
+          type="button"
+          onClick={handleResendOtp}
+          disabled={resendDisabled}
+          className={`mt-3 text-white text-sm font-bold py-1 px-4 rounded-3xl md:text-xl lg:text-lg ${
+            resendDisabled ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500"
+          }`}
+        >
+          {resendDisabled ? `Resend in ${timer}s` : "Resend OTP"}
         </button>
     </form>
     </div>
