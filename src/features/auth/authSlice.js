@@ -411,6 +411,7 @@ export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
 export const selectUserChecked = (state) => state.auth.userChecked;
 export const selectPopup = (state) => state.auth.popup;
+export const selectStatus = (state) => state.auth.status
 // export const selectForgotPassActive = (state) => state.auth.forgotPassActive;
 
 export const { showPopup, hidePopup } = authSlice.actions;
