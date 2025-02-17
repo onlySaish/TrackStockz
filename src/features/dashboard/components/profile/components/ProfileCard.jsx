@@ -27,10 +27,11 @@ const ProfileCard = () => {
         />
       </div>
 
-      <div className="flex flex-col ml-8 mb-12 flex-grow">
+      <div className="flex flex-col ml-8 mb-6 flex-grow">
         <h2 className="text-3xl capitalize font-bold text-gray-900">{user.username || 'Username'}</h2>
         <p className="text-2xl text-gray-600 capitalize font-medium">{user.fullName || 'Full Name'}</p>
         <p className="text-2xl text-gray-500">{user.email || 'Email'}</p>
+        {/* <p className="text-2xl text-gray-500">{user.phoneNumber || ''}</p> */}
       </div>
 
       <div className="flex flex-col gap-4">

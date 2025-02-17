@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router';
 import { Navigate } from 'react-router-dom';
-import { loginUserAsync } from '../authSlice.js';
+import { loginUserAsync, showPopup } from '../authSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectError, selectLoggedInUser } from '../authSlice.js';
+import { selectLoggedInUser } from '../authSlice.js';
 
 function Login() {
   const [identity, setIdentity] = useState("");
@@ -27,19 +27,19 @@ function Login() {
   }
 
   const handleSubmit = (e) => {
-      e.preventDefault();
-      const isEmail = identity.includes('@');
-  
-      const formData = new FormData();
-      if (isEmail) {
-        formData.append("email", identity);
-      } else {
-        formData.append("username", identity);
-      }
-      formData.append("password", password);
-  
-      dispatch(loginUserAsync(formData));
-    };
+    e.preventDefault();
+    const isEmail = identity.includes('@');
+
+    const formData = new FormData();
+    if (isEmail) {
+      formData.append("email", identity);
+    } else {
+      formData.append("username", identity);
+    }
+    formData.append("password", password);
+
+    dispatch(loginUserAsync(formData));
+  };  
 
   return (
     <>  
@@ -50,7 +50,7 @@ function Login() {
             className='h-full w-full flex flex-col justify-evenly items-center'>
                 <div className='text-white text-3xl font-bold md:text-5xl'>LOGIN</div>
                 <div className='w-11/12 px-4 py-2 font-medium'>
-                <div className='text-white text-lg px-3 md:text-2xl'>Enter Email or Username</div>
+                <div className='text-white text-lg px-1 md:text-2xl'>Enter Email or Username</div>
                   <input 
                   className='w-full mt-2 h-9 text-lg pl-3 py-4 rounded-3xl text-black/80 md:h-12 md:text-2xl'
                   onChange={(e) => setIdentity(e.target.value)}

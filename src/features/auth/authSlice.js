@@ -17,9 +17,7 @@ const initialState = {
     status: 'idle',
     error: null,
     userChecked: false,
-    mailSent: false,
-    passwordReset:false,
-    tokenVerified:false,
+    // forgotPassActive: "Email",
     popup: {
       visible: false,
       message: '',
@@ -28,6 +26,7 @@ const initialState = {
     },
 };
 
+//Create User
 export const sendOtpAsync = createAsyncThunk(
   "users/sendOtp", 
   async (data, { rejectWithValue }) => {
@@ -62,6 +61,7 @@ export const createUserAsync = createAsyncThunk(
   }
 );
 
+//login user
 export const loginUserAsync = createAsyncThunk(
   'user/loginUser',
   async (loginInfo, { rejectWithValue }) => {
@@ -74,6 +74,7 @@ export const loginUserAsync = createAsyncThunk(
   }
 );
 
+//Auth check
 export const checkAuthAsync = createAsyncThunk(
   'user/checkAuth', 
   async () => {
@@ -85,6 +86,7 @@ export const checkAuthAsync = createAsyncThunk(
   }
 });
 
+//Signout
 export const signOutAsync = createAsyncThunk(
   'user/signOut',
   async () => {
@@ -105,6 +107,7 @@ export const signOutAsync = createAsyncThunk(
 //   }
 // );
 
+//Forgot Password by email
 export const forgotPasswordAsync = createAsyncThunk(
   'user/forgotPassword',
   async (email, { rejectWithValue }) => {
@@ -143,6 +146,32 @@ export const resetPasswordAsync = createAsyncThunk(
   }
 );
 
+//Forgot Password by Phone
+// export const phoneForgotPassAsync = createAsyncThunk(
+//   'user/forgotPassword',
+//   async ({phoneNumber}, { rejectWithValue }) => {
+//     try {
+//       const response = await phoneForgotPass({phoneNumber});
+//       return response; // Expecting success message from backend
+//     } catch (error) {
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
+
+// export const phoneOtpVerifyForgotPassAsync = createAsyncThunk(
+//   'user/forgotPassword',
+//   async ({phoneNumber,otp}, { rejectWithValue }) => {
+//     try {
+//       const response = await forgotPassVerifyPhoneOtp({phoneNumber,otp});
+//       return response; // Expecting success message from backend
+//     } catch (error) {
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
+
+
 export const authSlice = createSlice({
     name: 'user',
     initialState,
@@ -163,6 +192,9 @@ export const authSlice = createSlice({
           type: 'success',
         };
       },  
+      // setForgotPassActive: (state, action) => {
+      //   state.forgotPassActive = action.payload; // Update active content
+      // },
     },
     extraReducers: (builder) => {
       builder
@@ -379,9 +411,7 @@ export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
 export const selectUserChecked = (state) => state.auth.userChecked;
 export const selectPopup = (state) => state.auth.popup;
-// export const selectMailSent = (state) => state.auth.mailSent;
-// export const selectPasswordReset = (state) => state.auth.passwordReset;
-// export const selectTokenVerified = (state) => state.auth.tokenVerified;
+// export const selectForgotPassActive = (state) => state.auth.forgotPassActive;
 
 export const { showPopup, hidePopup } = authSlice.actions;
 

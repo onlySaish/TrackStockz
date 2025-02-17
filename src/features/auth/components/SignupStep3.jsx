@@ -39,9 +39,9 @@ function SignupStep3({ userData }) {
         if (res.meta.requestStatus === "fulfilled") {
           setSignupSuccess(true);
         }
-        if (res.action.payload === "Unauthorized Access") {
-          return <Navigate to="/login" replace={true} />;
-        }
+        // if (res.action.payload === "Unauthorized Access") {
+        //   return <Navigate to="/login" replace={true} />;
+        // }
       };
 
       if (signupSuccess) {

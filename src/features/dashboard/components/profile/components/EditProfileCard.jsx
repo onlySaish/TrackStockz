@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleEditProfile, updateProfile, updateAvatar, profileSelector, setProfileActiveContent } from '../profileSlice.js';
+import { updateProfile, updateAvatar, profileSelector, setProfileActiveContent } from '../profileSlice.js';
 
 const EditProfileCard = () => {
   const dispatch = useDispatch();
@@ -44,6 +44,9 @@ const EditProfileCard = () => {
     dispatch(setProfileActiveContent("Profile"));
   };
 
+  // const handlePhoneNumber = () => {
+  //   dispatch(setProfileActiveContent("ChangeNumber"));
+  // }
   return (
     <div className="relative p-6 rounded-2xl border-2 bg-white shadow-2xl max-w-4xl mx-auto transition-transform duration-300 hover:scale-105 z-10">
       
@@ -118,7 +121,20 @@ const EditProfileCard = () => {
               />
             </div>
 
-            {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
+            {/* {user.phoneNumber && (
+              <div className="flex flex-col mb-4">
+                <label htmlFor="phone" className="text-lg font-semibold text-gray-700 mb-1 ml-2">Phone Number</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={user.phoneNumber}
+                  className="border-2 p-3 rounded-lg bg-gray-100 cursor-not-allowed w-full max-w-lg"
+                  disabled
+                />
+              </div>
+            )} */}
+
+            {/* {error && <p className="text-red-500 mt-2 text-center">{error}</p>} */}
             
             {/* Action Buttons */}
             <div className="mt-5 flex gap-8">
@@ -135,6 +151,12 @@ const EditProfileCard = () => {
               >
                 Cancel
               </button>
+              {/* <button
+                onClick = {handlePhoneNumber}
+                className="px-5 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+              >
+                {user.phoneNumber ? 'Update Phone Number' : 'Add Phone Number'}
+              </button> */}
             </div>
           </div>
         </div>

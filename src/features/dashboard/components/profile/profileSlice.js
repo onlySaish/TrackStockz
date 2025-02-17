@@ -10,6 +10,7 @@ const initialState = {
     username: '',
     fullName: '',
     email: '',
+    // phoneNumber: '',
   },
   // user: null,
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
@@ -70,6 +71,30 @@ export const updatePassword = createAsyncThunk(
     }
   }
 );
+
+// export const sendOtpAsync = createAsyncThunk(
+//   'profile/sendOtp',
+//   async ({ phoneNumber }, {rejectWithValue}) => {
+//     try {
+//       const response = await sendOtpAPI({phoneNumber});
+//       return response;
+//     } catch (error) {
+//       return rejectWithValue(error);
+//     }
+//   }
+// );
+
+// export const verifyOtpAsync = createAsyncThunk(
+//   'profile/verifyOtp',
+//   async ({ phoneNumber, otp }, {rejectWithValue}) => {
+//     try {
+//       const response = await verifyOtpAPI({phoneNumber, otp});
+//       return response;
+//     } catch (error) {
+//       return rejectWithValue(error);
+//     }
+//   }
+// );
 
 const profileSlice = createSlice({
   name: 'profile',
@@ -180,6 +205,52 @@ const profileSlice = createSlice({
           type: 'error',
         };
       })
+      // .addCase(sendOtpAsync.pending, (state) => {
+      //   state.status = 'loading';
+      //   state.error = null;
+      // })
+      // .addCase(sendOtpAsync.fulfilled, (state) => {
+      //   state.status = 'succeeded';
+      //   state.popup = {
+      //     visible: true,
+      //     message: 'OTP Send Successfully!',
+      //     duration: 3000,
+      //     type: 'success',
+      //   };
+      // })
+      // .addCase(sendOtpAsync.rejected, (state,action) => {
+      //   state.status = 'failed';
+      //   state.error = action.payload;
+      //   state.popup = {
+      //     visible: true,
+      //     message: `Failed Sending OTP: ${action.payload}`,
+      //     duration: 3000,
+      //     type: 'error',
+      //   };
+      // })
+      // .addCase(verifyOtpAsync.pending, (state) => {
+      //   state.status = 'loading';
+      //   state.error = null;
+      // })
+      // .addCase(verifyOtpAsync.fulfilled, (state) => {
+      //   state.status = 'succeeded';
+      //   state.popup = {
+      //     visible: true,
+      //     message: 'Phone Number Updated Successfully!',
+      //     duration: 3000,
+      //     type: 'success',
+      //   };
+      // })
+      // .addCase(verifyOtpAsync.rejected, (state,action) => {
+      //   state.status = 'failed';
+      //   state.error = action.payload;
+      //   state.popup = {
+      //     visible: true,
+      //     message: `Failed Updating Phone Number: ${action.payload}`,
+      //     duration: 3000,
+      //     type: 'error',
+      //   };
+      // })
   },
 });
 

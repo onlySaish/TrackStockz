@@ -64,4 +64,25 @@ export async function updatePasswordApi({oldPassword, newPassword}){
       throw error.response?.data?.message || "Failed to Update Password";
     }
 };
-  
+
+// export async function sendOtpAPI({phoneNumber}){
+//   try {
+//     const response = await axiosInstance.patch('/users/send-phone-otp', {phoneNumber});
+//     console.log(response);
+//     return response.data.data.user;
+//   } catch (error) {
+//     console.log(error);
+//     throw error.response?.data?.message || "Failed to Send Otp";
+//   }
+// };
+
+// export async function verifyOtpAPI({phoneNumber, otp}){
+//   try {
+//     const response = await axiosInstance.patch('/users/verify-phone-otp', {phoneNumber, otp});
+//     console.log(response);
+//     return response.data.data.user;
+//   } catch (error) {
+//     console.log(error);
+//     throw error.response?.data?.message || "Failed to Verify OTP";
+//   }
+// };

@@ -103,6 +103,7 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+//User Register
 export function sendOtp(data) {
   return axiosInstance.post("/users/send-otp", data, {
     headers: {
@@ -127,6 +128,7 @@ export function createUser(data) {
   });
 }
 
+//User Login
 export function loginUser(loginInfo) {
   return axiosInstance.post('/users/login', loginInfo, {
     headers: {
@@ -147,6 +149,7 @@ export function signOut() {
 //   return axiosInstance.get('/protected-route');
 // }
 
+//Password Reset by Email
 export function forgotPassword(email){
   return axiosInstance.post('/users/forgot-password', {email});
 };
@@ -158,6 +161,15 @@ export function verifyToken(token){
 export function resetPassword({token, newPassword}){
   return axiosInstance.post('/users/reset-password',{token, newPassword});
 };
+
+//Password Reset by Phone
+// export function phoneForgotPass({phoneNumber}){
+//   return axiosInstance.post('/users/forgot-phone-pass', {phoneNumber});
+// };
+
+// export function forgotPassVerifyPhoneOtp({phoneNumber,otp}){
+//   return axiosInstance.post('/users/forgotPass-verify-phone-otp', {phoneNumber,otp});
+// };
 
 
 export default axiosInstance;

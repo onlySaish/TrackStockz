@@ -3,9 +3,14 @@ import { forgotPasswordAsync } from '../authSlice';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 
-function ForgotPassword() {
+function ForgotPasswordByEmail() {
     const [email, setEmail] = useState("");
     const dispatch = useDispatch();
+
+    // const toggleActive = () => {
+    //   dispatch(setForgotPassActive("Phone"));
+    // }
+
     const handleSubmit = (e) => {
           e.preventDefault();
           dispatch(forgotPasswordAsync(email));
@@ -26,11 +31,15 @@ function ForgotPassword() {
                   placeholder='Enter Here'/>
                 </div>
 
+                {/* <div onClick={toggleActive} className='text-right mr-12 h-auto w-full text-md md:text-2xl lg:text-xl pb-2 text-blue-500 hover:cursor-pointer'>
+                  Use Phone Number Instead?
+                </div> */}
+
                 <button className='h-auto text-white w-2/4 text-2xl font-bold bg-orange-500 px-4 py-2 rounded-3xl md:text-4xl lg:text-2xl lg:w-2/3'>
                   Reset Password
                 </button>
         </form>
-        <div className='flex flex-row justify-center gap-2 text-white h-auto w-full text-md md:text-2xl lg:text-xl pb-2'>
+        <div className='flex flex-row justify-center text-white h-auto w-full text-md md:text-2xl lg:text-xl pb-2'>
           <Link to={"/login"} className='text-blue-500 hover:cursor-pointer'>Return to Login?</Link>
         </div>
 
@@ -39,4 +48,4 @@ function ForgotPassword() {
   )
 }
 
-export default ForgotPassword
+export default ForgotPasswordByEmail
