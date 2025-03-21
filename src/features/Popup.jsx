@@ -2,18 +2,23 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { hidePopup, selectPopup } from '../features/auth/authSlice.js';
 import { hidePopup2, selectPopup2 } from './dashboard/components/profile/profileSlice.js';
+import { hidePopup3, selectPopup3 } from './dashboard/components/customer/customerSlice.js';
+import { hidePopup4, selectPopup4 } from './dashboard/components/inventory/inventorySlice.js';
 
 const Popup = () => {
   const dispatch = useDispatch();
   const authPopup = useSelector(selectPopup);
   const profilePopup = useSelector(selectPopup2);
+  const customerPopup = useSelector(selectPopup3);
+  const inventoryPopup = useSelector(selectPopup4);
 
-  const popup = authPopup.visible ? authPopup : profilePopup.visible ? profilePopup : null;
+
+  const popup = authPopup.visible ? authPopup : profilePopup.visible ? profilePopup : customerPopup.visible? customerPopup: inventoryPopup.visible? inventoryPopup : null;
 
   useEffect(() => {
     if (popup && popup.visible) {
       const timer = setTimeout(() => {
-        popup === authPopup ? dispatch(hidePopup()) : dispatch(hidePopup2());
+        popup === authPopup ? dispatch(hidePopup()) : popup === profilePopup ? dispatch(hidePopup2()) : popup === customerPopup ?  dispatch(hidePopup3()) : dispatch(hidePopup4());
       }, popup.duration);
 
       return () => clearTimeout(timer);
@@ -29,7 +34,7 @@ const Popup = () => {
 
   return (
     <div
-      className={`fixed top-10 z-20 right-10 w-80 p-4 border rounded-lg shadow-lg flex items-center ${
+      className={`fixed top-10 z-50 right-10 w-80 p-4 border rounded-lg shadow-lg flex items-center ${
         popupStyles[popup.type]
       }`}
     >

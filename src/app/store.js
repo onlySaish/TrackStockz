@@ -3,11 +3,15 @@ import {configureStore} from '@reduxjs/toolkit'
 import authReducer from "../features/auth/authSlice.js"
 import dashboardReducer from "../features/dashboard/dashboardSlice.js"
 import profileReducer from "../features//dashboard/components/profile/profileSlice.js"
+import customerReducer from "../features/dashboard/components/customer/customerSlice.js"
+import inventoryReducer from "../features/dashboard/components/inventory/inventorySlice.js"
 
 export const store = configureStore({
     reducer : {
         auth: authReducer,
         dashboard : dashboardReducer,
         profile: profileReducer,
+        customer: customerReducer,
+        inventory: inventoryReducer
     }
 });

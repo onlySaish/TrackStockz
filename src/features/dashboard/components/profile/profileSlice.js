@@ -254,9 +254,9 @@ const profileSlice = createSlice({
   },
 });
 
-export const { toggleEditProfile } = profileSlice.actions;
-export const profileSelector = (state) => state.profile.user;
+// export const { toggleEditProfile } = profileSlice.actions;
 // export const selectIsEditable = (state) => state.profile;
+export const profileSelector = (state) => state.profile.user;
 export const selectPopup2 = (state) => state.profile.popup;
 export const selectProfileActiveContent = (state) => state.profile.profileActiveContent;
 export const { hidePopup2, setProfileActiveContent } = profileSlice.actions;

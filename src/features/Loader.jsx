@@ -2,9 +2,14 @@ import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { selectStatus } from "./auth/authSlice";
 import { useSelector } from "react-redux";
+import { selectStatus2 } from "./dashboard/components/customer/customerSlice";
 
 const Loader = () => {
-    const status = useSelector(selectStatus);
+    const status1 = useSelector(selectStatus);
+    const status2 = useSelector(selectStatus2);
+
+    const status = (status1) ? status1 : status2;
+
     if (status != "loading") {
         return null;
     }

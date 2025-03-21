@@ -4,7 +4,7 @@ import { updateProfile, updateAvatar, profileSelector, setProfileActiveContent }
 
 const EditProfileCard = () => {
   const dispatch = useDispatch();
-  const { status, error } = useSelector(profileSelector);
+  const { status } = useSelector(profileSelector);
   const user = useSelector(profileSelector);
 
   const [formData, setFormData] = useState({

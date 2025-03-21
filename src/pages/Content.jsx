@@ -7,7 +7,7 @@ function Content() {
   const activeContent = useSelector(selectActiveContent);
   return (
     <>
-      <div className="flex-1 bg-white p-6">
+      <div className="flex-1 bg-white p-6 ">
       {activeContent === 'Home' && <Home/>}
       {activeContent === 'Sell' && <Sell/>}
       {activeContent === 'Inventory' && <Inventory/>}
