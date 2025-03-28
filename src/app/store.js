@@ -7,6 +7,7 @@ import customerReducer from "../features/dashboard/components/customer/customerS
 import inventoryReducer from "../features/dashboard/components/inventory/inventorySlice.js"
 import sellReducer from "../features/dashboard/components/sell/sellSlice.js"
 import orderReducer from "../features/dashboard/components/order/orderSlice.js"
+import homeReducer from "../features/dashboard/components/home/homeSlice.js"
 
 export const store = configureStore({
     reducer : {
@@ -16,6 +17,7 @@ export const store = configureStore({
         customer: customerReducer,
         inventory: inventoryReducer,
         sell: sellReducer,
-        order: orderReducer
+        order: orderReducer,
+        home: homeReducer
     }
 });
