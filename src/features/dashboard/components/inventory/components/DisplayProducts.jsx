@@ -189,7 +189,7 @@ const DisplayProducts = () => {
                 <td className="px-4 py-2">{product.price[2]?.price || "-"}</td>
                 <td className="px-4 py-2 capitalize">{product.category}</td>
                 <td className="px-4 py-2">{product.quantity}</td>
-                <td className="px-4 py-2">{product.discountPercent}</td>
+                <td className="px-4 py-2">{product.discountPercent}%</td>
                 <td className="px-4 py-2">{(product.price[0].price)-((product.discountPercent/100)*(product.price[0].price))}</td>
                 <td className="px-4 py-2 text-xl"><div className={`px-2 py-1 rounded-md fa-solid text-white ${(product.status == "Active") ? "fa-check bg-green-600" : "fa-xmark bg-red-600"}`}></div> </td>
 

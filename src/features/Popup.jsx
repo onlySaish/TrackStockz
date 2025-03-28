@@ -4,6 +4,8 @@ import { hidePopup, selectPopup } from '../features/auth/authSlice.js';
 import { hidePopup2, selectPopup2 } from './dashboard/components/profile/profileSlice.js';
 import { hidePopup3, selectPopup3 } from './dashboard/components/customer/customerSlice.js';
 import { hidePopup4, selectPopup4 } from './dashboard/components/inventory/inventorySlice.js';
+import { hidePopup5, selectPopup5 } from './dashboard/components/sell/sellSlice.js';
+import { hidePopup6, selectPopup6 } from './dashboard/components/order/orderSlice.js';
 
 const Popup = () => {
   const dispatch = useDispatch();
@@ -11,14 +13,16 @@ const Popup = () => {
   const profilePopup = useSelector(selectPopup2);
   const customerPopup = useSelector(selectPopup3);
   const inventoryPopup = useSelector(selectPopup4);
+  const sellPopup = useSelector(selectPopup5);
+  const orderPopup = useSelector(selectPopup6);
 
 
-  const popup = authPopup.visible ? authPopup : profilePopup.visible ? profilePopup : customerPopup.visible? customerPopup: inventoryPopup.visible? inventoryPopup : null;
+  const popup = authPopup.visible ? authPopup : profilePopup.visible ? profilePopup : customerPopup.visible? customerPopup: inventoryPopup.visible? inventoryPopup : sellPopup.visible? sellPopup : orderPopup.visible? orderPopup : null;
 
   useEffect(() => {
     if (popup && popup.visible) {
       const timer = setTimeout(() => {
-        popup === authPopup ? dispatch(hidePopup()) : popup === profilePopup ? dispatch(hidePopup2()) : popup === customerPopup ?  dispatch(hidePopup3()) : dispatch(hidePopup4());
+        popup === authPopup ? dispatch(hidePopup()) : popup === profilePopup ? dispatch(hidePopup2()) : popup === customerPopup ?  dispatch(hidePopup3()) : popup === inventoryPopup ? dispatch(hidePopup4()) : popup === sellPopup ? dispatch(hidePopup5()) : dispatch(hidePopup6());
       }, popup.duration);
 
       return () => clearTimeout(timer);
