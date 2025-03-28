@@ -11,7 +11,7 @@ import {
 } from "../../inventory/inventorySlice.js";
 import { getAllCategories } from "../../inventory/inventoryApi.js";
 import { motion } from 'framer-motion';
-import { selectOrder, setSelectedItem } from "../sellSlice.js";
+import { selectOrder, setSelectedItem, showPopup5 } from "../sellSlice.js";
 
 
 function SelectProductCard() {
@@ -83,6 +83,11 @@ function SelectProductCard() {
       return;
     }
     dispatch(setSelectedItem({product: product._id, quantity: product.selectedQuantity}))
+    dispatch(showPopup5({
+      message: "Product Selected",
+      duration: 3000,
+      type: "success",
+    }))
   };
 
   const handleInnerComponent = () => {

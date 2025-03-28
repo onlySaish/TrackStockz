@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectActiveOrder, setOrderActiveContent } from "../orderSlice";
+import { selectActiveOrder, selectStatus5, setOrderActiveContent, showPopup6 } from "../orderSlice";
 import { jsPDF } from "jspdf";
 import {  applyPlugin  } from "jspdf-autotable";
 
@@ -8,8 +8,8 @@ const ViewOrderCard = () => {
   const dispatch = useDispatch();
   const orders = useSelector(selectActiveOrder);
   const [order, setOrder] = useState(orders)
-
-
+  const pageStatus = useSelector(selectStatus5);
+  
   const updateProductDetails = (productDetails, products) => {
     return productDetails.map(product => {
       const matchingProduct = products.find(p => p.product === product._id);
@@ -111,6 +111,11 @@ const ViewOrderCard = () => {
 
   // **Save and Download PDF**
   doc.save(`Order_${order._id}.pdf`);
+  dispatch(showPopup6({
+    message: "Transcript Downloaded",
+    duration: 3000,
+    type: "success",
+  }));
   };
   
   
@@ -121,7 +126,8 @@ const ViewOrderCard = () => {
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-2xl border border-gray-200">
       <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Order Details</h2>
-
+      {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> :(
+        <>
       {/* Order Info */}
       <div className="bg-gray-100 p-4 rounded-lg shadow-sm mb-6">
         <p className="text-gray-700"><strong>Order ID:</strong> {order._id}</p>
@@ -187,6 +193,8 @@ const ViewOrderCard = () => {
           Back
         </button>
       </div>
+      </>
+      )}
     </div>
   );
 };

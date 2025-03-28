@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { selectAllProducts } from "../../inventory/inventorySlice";
-import { removeSelectedItem, selectOrder, updateOrderItems } from "../sellSlice";
+import { removeSelectedItem, selectOrder, showPopup5, updateOrderItems } from "../sellSlice";
 
 const OrderSummaryCard = () => {
   const dispatch = useDispatch();
@@ -56,6 +56,11 @@ const OrderSummaryCard = () => {
 
   const handleProductDelete = async (productId) => {
     dispatch(removeSelectedItem(productId))
+    dispatch(showPopup5({
+      message: "Product Removed From Cart",
+      duration: 3000,
+      type: "success",
+    }))
   };
 
   const quantityRefs = useRef({});
@@ -63,6 +68,11 @@ const OrderSummaryCard = () => {
     const quantity = quantityRefs.current[productId]?.value;
     if (quantity !== undefined) {
       dispatch(updateOrderItems({productId, quantity}));
+      dispatch(showPopup5({
+        message: "Product Updated",
+        duration: 3000,
+        type: "success",
+      }))
     }
   }
 

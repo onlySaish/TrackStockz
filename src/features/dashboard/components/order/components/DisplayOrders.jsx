@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllOrders,
   selectAllOrders,
+  selectStatus5,
   setActiveOrder,
   setOrderActiveContent,
   showPopup6,
@@ -13,6 +14,7 @@ const DisplayOrders = () => {
   const dispatch = useDispatch();
   const { fetchedOrders, totalPages, currentPage } = useSelector(selectAllOrders);
   const allOrders = fetchedOrders || [];
+  const pageStatus = useSelector(selectStatus5);
 
   const calculateTotalQuantity = (orders) => {
     return orders.map(order => ({
@@ -38,7 +40,11 @@ const DisplayOrders = () => {
 
   useEffect(() => {
     dispatch(fetchAllOrders({ page, sort, order, search, status, paymentMethod }));
-  }, [dispatch, page, sort, order, search, status, paymentMethod]);
+  }, [dispatch, page, sort, order, status, paymentMethod]);
+
+  const handleSearchOrder = () => {
+    dispatch(fetchAllOrders({ page, sort, order, search, status, paymentMethod }));
+  } 
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -76,8 +82,6 @@ const DisplayOrders = () => {
 
   const handleView = async (order) => {
     await dispatch(setActiveOrder(order));
-    console.log(order);
-    
     dispatch(setOrderActiveContent("ViewOrder"));
   };
 
@@ -107,7 +111,7 @@ const DisplayOrders = () => {
   return (
     <div className="py-4">
       <h2 className="text-3xl font-bold mb-4">Order List</h2>
-
+        
       <div className="flex gap-3 items-center mb-4">
         <input
           type="text"
@@ -117,6 +121,13 @@ const DisplayOrders = () => {
           onChange={handleSearch}
         />
 
+        <button
+          onClick={handleSearchOrder}
+          className="relative group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition flex items-center gap-1"
+          >
+            <div>Search</div>
+        </button>
+
         <select value={sort} onChange={handleSortChange} className="border px-3 py-2 rounded-md">
           <option value="createdAt">Time</option>
           <option value="totalPrice">Amount</option>
@@ -125,7 +136,7 @@ const DisplayOrders = () => {
         <select value={order} onChange={handleOrderChange} className="border px-3 py-2 rounded-md">
         <option value="asc">{ (timeActive) ? "Oldest" : "Ascending"}</option>
         <option value="desc">{ (timeActive) ? "Newest" : "Descending"}</option>
-      </select>
+        </select>
 
         <select value={status} onChange={handleStatus} className="border px-3 py-2 rounded-md">
           <option value="">All Status</option>
@@ -141,6 +152,9 @@ const DisplayOrders = () => {
           <option value="UPI">UPI</option>
         </select>
       </div>
+
+      {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> :(
+        <>
 
       <table className="min-w-full bg-white border border-gray-300">
         <thead>
@@ -199,7 +213,7 @@ const DisplayOrders = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center py-4">No orders found.</td>
+              <td colSpan="10" className="text-center py-4">No orders found.</td>
             </tr>
           )}
         </tbody>
@@ -216,6 +230,8 @@ const DisplayOrders = () => {
           </button>
         ))}
       </div>   
+      </>
+    )}
     </div>
   );
 };

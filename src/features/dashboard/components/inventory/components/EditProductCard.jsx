@@ -151,6 +151,7 @@ const EditProductCard = () => {
 
   return (
     <div className="relative p-6 rounded-2xl border-2 bg-white shadow-2xl max-w-4xl mx-auto transition-transform duration-300 hover:scale-105 z-10">
+      
       <div className="relative bg-white rounded-2xl p-6">
         <div className="flex flex-col">
         {/* Images */}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllCustomers, selectAllCustomers, setActiveCustomer, setCustomerActiveContent, showPopup3, toggleBlackListCustomer } from "../customerSlice.js";
+import { fetchAllCustomers, selectAllCustomers, selectStatus2, setActiveCustomer, setCustomerActiveContent, showPopup3, toggleBlackListCustomer } from "../customerSlice.js";
 
 const DisplayCustomers = () => {
   const dispatch = useDispatch();
@@ -8,6 +8,7 @@ const DisplayCustomers = () => {
   const allCustomers = customers || [];
   const [timeActive, setTimeActive] = useState(true);
   const [isBlacklistActive, setBlacklistActive] = useState(false);
+  const pageStatus = useSelector(selectStatus2);
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("createdAt");
@@ -15,13 +16,17 @@ const DisplayCustomers = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    dispatch(fetchAllCustomers({page:page, sort:sort, order:order, search:search, isBlacklistActive:isBlacklistActive}));
-  }, [dispatch, page, sort, order, search, isBlacklistActive]);
+    dispatch(fetchAllCustomers({page, sort, order, search, isBlacklistActive}));
+  }, [dispatch, page, sort, order, isBlacklistActive]);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
     setPage(1); // Reset to first page when searching
   };
+
+  const handleSearchCustomer = () => {
+    dispatch(fetchAllCustomers({page, sort, order, search, isBlacklistActive}));
+  }
 
   const handleSortChange = (e) => {
     if (e.target.value === "createdAt"){
@@ -47,10 +52,10 @@ const DisplayCustomers = () => {
     dispatch(setCustomerActiveContent("EditCustomer"));
   };
 
-  const handleViewOrders = (id) => {
-    dispatch(setActiveCustomer(id));
-    // dispatch(setCustomerActiveContent("ViewCustomerOrders"));
-  };
+  // const handleViewOrders = (id) => {
+  //   dispatch(setActiveCustomer(id));
+  //   // dispatch(setCustomerActiveContent("ViewCustomerOrders"));
+  // };
 
   const handleBlock = async(id) => {
     // console.log("Blacklisting customer ID:", id);
@@ -86,11 +91,13 @@ const DisplayCustomers = () => {
         onClick={handleBlacklist}
         className="px-5 py-3 bg-gradient-to-tr from-yellow-600 to-red-500 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-400"
         >
-        Blacklist
+        {(isBlacklistActive)? "Customer List":"Blacklist"}
       </button>
       </div>
       </div>
 
+      {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> :(
+        <>
       <div className="mb-4 flex gap-3">
       {/* Search Bar */}
       <input
@@ -101,6 +108,14 @@ const DisplayCustomers = () => {
           onChange={handleSearch}
         />
 
+        <button
+          onClick={handleSearchCustomer}
+          className="relative group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition flex items-center gap-1"
+          >
+            <div>
+              Search
+            </div>
+        </button>
       {/* Sorting */}
       <select className="border px-3 py-2 rounded-md" value={sort} onChange={handleSortChange}>
           <option value="createdAt">Time</option>
@@ -156,7 +171,7 @@ const DisplayCustomers = () => {
                       </button>
 
                       {/* View Orders Button */}
-                      <button
+                      {/* <button
                         onClick={() => handleViewOrders(customer._id)}
                         className="relative group bg-green-500 text-white px-2 py-1 rounded-md hover:bg-green-600 transition flex items-center gap-1"
                       >
@@ -164,7 +179,7 @@ const DisplayCustomers = () => {
                         <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-gray-100 text-black text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
                           View Orders
                         </span>
-                      </button>
+                      </button> */}
 
                       {/* Blacklist Button */}
                       <button
@@ -182,7 +197,7 @@ const DisplayCustomers = () => {
               ))
             ) : ( 
               <tr>
-                <td colSpan="7" className="text-center py-4">
+                <td colSpan="7" className="text-center py-4" onLoad={() => setSearch("")}>
                   No customers found.
                 </td>
               </tr>
@@ -203,7 +218,8 @@ const DisplayCustomers = () => {
           </button>
         ))}
       </div>
-
+      </>
+      )}
     </div>
   );
 };

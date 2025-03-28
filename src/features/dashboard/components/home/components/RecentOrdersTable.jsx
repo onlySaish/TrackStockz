@@ -17,7 +17,7 @@ const RecentOrdersTable = ({ orders }) => {
                     {orders.map(order => (
                         <tr key={order.id} className="text-center hover:bg-gray-100 transition">
                             <td className="border p-3">{order.id}</td>
-                            <td className="border p-3">{order.customer}</td>
+                            <td className="capitalize border p-3">{order.customer}</td>
                             <td className="border p-3">{order.totalPrice}</td>
                             <td className={`border p-3 font-medium ${order.status === "Pending" ? "text-red-500" : order.status === "Cancelled" ? "text-gray-800" : "text-green-500"}`}>
                                 {order.status}

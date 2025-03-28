@@ -332,7 +332,7 @@ const EditOrderCard = () => {
             ) : (
               <tr>
                 <td colSpan="11" className="text-center py-4">
-                  No products found.
+                  No products left.
                 </td>
               </tr>
             )}

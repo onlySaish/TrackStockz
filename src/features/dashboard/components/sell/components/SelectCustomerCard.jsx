@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { fetchAllCustomers, selectAllCustomers } from "../../customer/customerSlice.js";
 import AddCustomer from "../../customer/components/AddCustomerCard.jsx";
-import { setSelectedCustomer } from "../sellSlice.js";
+import { setSelectedCustomer, showPopup5 } from "../sellSlice.js";
 
 const SelectCustomerCard = () => {
   const dispatch = useDispatch();
@@ -61,6 +61,11 @@ const SelectCustomerCard = () => {
     dispatch(setSelectedCustomer(customerId));
     const cust = allCustomers.filter((e) => e._id === customerId);
     setActiveCustomer(cust[0]);
+    dispatch(showPopup5({
+      message: "Customer Selected",
+      duration: 3000,
+      type: "success",
+    }))
   }
 
   return (

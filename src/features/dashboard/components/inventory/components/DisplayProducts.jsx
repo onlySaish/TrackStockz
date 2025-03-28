@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { 
   fetchAllProducts,
   selectAllProducts, 
+  selectStatus3, 
   setActiveProduct, 
   setInventoryActiveContent, 
   showPopup4, 
@@ -15,6 +16,8 @@ const DisplayProducts = () => {
   const dispatch = useDispatch();
   const { products, totalPages, currentPage } = useSelector(selectAllProducts);
   const allProducts = products || [];
+  const pageStatus = useSelector(selectStatus3);
+
   const [isDeleted, setIsDeleted] = useState(false);
   const [timeActive, setTimeActive] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -29,7 +32,7 @@ const DisplayProducts = () => {
 
   useEffect(() => {
     dispatch(fetchAllProducts({ page, sort, order, search, isDeleted, category, status }));
-  }, [dispatch, page, sort, order, search, isDeleted, category, status]);
+  }, [dispatch, page, sort, order, isDeleted, category, status]);
 
   useEffect(() => {
     const getter = async() => {
@@ -39,6 +42,10 @@ const DisplayProducts = () => {
     }
     getter();
   }, [dispatch]);
+
+  const handleSearchProduct = () => {
+    dispatch(fetchAllProducts({ page, sort, order, search, isDeleted, category, status }));
+  }
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -122,8 +129,8 @@ const DisplayProducts = () => {
         className="px-5 py-3 bg-gradient-to-tr from-yellow-600 to-red-500 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-400"
         >
         {(isDeleted)? "Product List":"Deleted List"}
-      </button>
-      </div>
+        </button>
+        </div>
       </div>
 
       <div className="flex gap-3 items-center mb-4">
@@ -134,6 +141,13 @@ const DisplayProducts = () => {
         value={search}
         onChange={handleSearch}
         />
+      
+      <button
+        onClick={handleSearchProduct}
+        className="relative group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition flex items-center gap-1"
+        >
+          <div>Search</div>
+      </button>
 
       <select value={sort} onChange={handleSortChange} className="border px-3 py-2 rounded-md">
         <option value="createdAt">Time</option>
@@ -161,6 +175,9 @@ const DisplayProducts = () => {
         <option value="Inactive">Not Active</option>
       </select>
       </div>
+
+      {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> :(
+        <>
 
       <table className="min-w-full bg-white border border-gray-300">
         <thead>
@@ -248,6 +265,8 @@ const DisplayProducts = () => {
           </button>
         ))}
       </div>
+      </>
+      )}
     </div>
   );
 };

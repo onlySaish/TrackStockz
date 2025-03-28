@@ -5,7 +5,8 @@ import { profileSelector, setProfileActiveContent } from '../profileSlice.js';
 const ProfileCard = () => {
   const dispatch = useDispatch();
   const user = useSelector(profileSelector);
-
+  const { status } = useSelector(profileSelector);
+  
   const handleEditClick = () => {
     dispatch(setProfileActiveContent("EditProfile"));
   };
@@ -19,6 +20,8 @@ const ProfileCard = () => {
     <div className="flex items-center justify-between px-10 py-8 bg-white shadow-2xl rounded-3xl w-[850px] h-[230px] mx-auto 
       border-4 bg-clip-padding transition-all duration-300 transform hover:scale-105 
       hover:shadow-3xl">
+        {status === "loading" ? <p className="text-gray-600">Loading...</p> :(
+        <>
       <div className="flex-shrink-0">
         <img
           src={user.avatar || '/default-avatar.png'}
@@ -50,6 +53,8 @@ const ProfileCard = () => {
           Change Password
         </button>
       </div>
+      </>
+    )}
     </div>
   // </div>
   );
