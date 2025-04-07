@@ -124,57 +124,57 @@ const ViewOrderCard = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-2xl border border-gray-200">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Order Details</h2>
+    <div className="max-w-4xl mx-auto p-8 bg-gray-800 shadow-lg rounded-2xl border border-gray-900">
+      <h2 className="text-3xl font-bold mb-6 text-white text-center">Order Details</h2>
       {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> :(
         <>
       {/* Order Info */}
-      <div className="bg-gray-100 p-4 rounded-lg shadow-sm mb-6">
-        <p className="text-gray-700"><strong>Order ID:</strong> {order._id}</p>
-        <p className="text-gray-700"><strong>Status:</strong> <span className="text-blue-600">{order.status}</span></p>
-        <p className="text-gray-700"><strong>Created At:</strong> {new Date(order.createdAt).toLocaleString()}</p>
-        <p className="text-gray-700"><strong>Updated At:</strong> {new Date(order.updatedAt).toLocaleString()}</p>
+      <div className="bg-gray-800 p-4 rounded-md shadow-sm mb-6 hover:bg-gray-900 hover:border-l-4 border-blue-500">
+        <p className="text-white"><strong>Order ID:</strong> {order._id}</p>
+        <p className="text-white"><strong>Status:</strong> <span className="text-indigo-400">{order.status}</span></p>
+        <p className="text-white"><strong>Created At:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+        <p className="text-white"><strong>Updated At:</strong> {new Date(order.updatedAt).toLocaleString()}</p>
       </div>
 
       {/* Customer Details */}
-      <div className="mb-6">
-        <h3 className="text-2xl font-semibold mb-3 text-gray-700 border-b pb-2">Customer Information</h3>
-        <p><strong>Name:</strong> {order.customerDetails.firstName} {order.customerDetails.lastName}</p>
-        <p><strong>Email:</strong> <span className="text-blue-500">{order.customerDetails.email}</span></p>
-        <p><strong>Phone:</strong> {order.customerDetails.phoneNumber}</p>
-        <p><strong>Company:</strong> {order.customerDetails.companyName}</p>
+      <div className="bg-gray-800 p-4 rounded-md shadow-sm mb-6 hover:bg-gray-900 hover:border-l-4 border-blue-500">
+        <h3 className="text-2xl font-semibold mb-3 text-white border-b pb-2">Customer Information</h3>
+        <p className="text-white"><strong>Name:</strong> {order.customerDetails.firstName} {order.customerDetails.lastName}</p>
+        <p className="text-white"><strong>Email:</strong> <span className="text-indigo-500">{order.customerDetails.email}</span></p>
+        <p className="text-white"><strong>Phone:</strong> {order.customerDetails.phoneNumber}</p>
+        <p className="text-white"><strong>Company:</strong> {order.customerDetails.companyName}</p>
       </div>
 
       {/* Address Details */}
-      <div className="mb-6 bg-gray-50 p-4 rounded-lg shadow">
-        <h3 className="text-xl font-semibold mb-2 text-gray-700">Shipping Address</h3>
-        <p>{order.customerDetails.address.street}, {order.customerDetails.address.city}, {order.customerDetails.address.state}, {order.customerDetails.address.zipCode}, {order.customerDetails.address.country}</p>
+      <div className="bg-gray-800 p-4 rounded-md shadow-sm mb-6 hover:bg-gray-900 hover:border-l-4 border-blue-500">
+        <h3 className="text-xl font-semibold mb-2 text-white">Shipping Address</h3>
+        <p className="text-white">{order.customerDetails.address.street}, {order.customerDetails.address.city}, {order.customerDetails.address.state}, {order.customerDetails.address.zipCode}, {order.customerDetails.address.country}</p>
       </div>
 
       {/* Order Summary */}
-      <div className="mb-6 bg-white p-4 rounded-lg border-l-4 border-blue-500 shadow-md">
-        <h3 className="text-xl font-semibold mb-2 text-gray-700">Order Summary</h3>
-        <p><strong>Total Price:</strong> <span className="text-green-600 font-bold">${order.totalPrice.toFixed(2)}</span></p>
-        <p><strong>Initial Discounted Price:</strong> ${order.initialDiscountedPrice.toFixed(2)}</p>
-        <p><strong>Final Discounted Price:</strong> ${order.finalDiscountedPrice.toFixed(2)}</p>
-        <p><strong>Additional Discount:</strong> {order.additionalDiscountPercent}%</p>
-        <p><strong>Payment Method:</strong> <span className="font-medium text-indigo-600">{order.paymentMethod}</span></p>
+      <div className="bg-gray-800 p-4 rounded-md shadow-sm mb-6 hover:bg-gray-900 hover:border-l-4 border-blue-500">
+        <h3 className="text-xl font-semibold mb-2 text-white">Order Summary</h3>
+        <p className="text-white"><strong>Total Price:</strong> <span className="text-green-600 font-bold">${order.totalPrice.toFixed(2)}</span></p>
+        <p className="text-white"><strong>Initial Discounted Price:</strong> ${order.initialDiscountedPrice.toFixed(2)}</p>
+        <p className="text-white"><strong>Final Discounted Price:</strong> ${order.finalDiscountedPrice.toFixed(2)}</p>
+        <p className="text-white"><strong>Additional Discount:</strong> {order.additionalDiscountPercent}%</p>
+        <p className="text-white"><strong>Payment Method:</strong> <span className="font-medium text-indigo-600">{order.paymentMethod}</span></p>
       </div>
 
       {/* Products Ordered */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-3 text-gray-700 border-b pb-2">Ordered Products</h3>
+      <div className="bg-gray-800 p-4 rounded-md shadow-sm mb-6 hover:bg-gray-900 hover:border-l-4 border-blue-500">
+        <h3 className="text-xl font-semibold mb-3 text-white border-b pb-2">Ordered Products</h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {updatedProductDetails.map((product) => (
-            <li key={product._id} className="p-4 border rounded-lg shadow-md flex items-center gap-4 bg-gray-50">
-              <img src={product.coverImg} alt={product.name} className="w-20 h-20 object-cover rounded-md shadow" />
+            <li key={product._id} className="p-4 rounded-md shadow-md flex items-center gap-4 bg-gray-800">
+              <img src={product.coverImg} alt={product.name} className="w-20 h-20 object-contain rounded-md shadow" />
               <div>
-                <p className="text-lg font-medium">{product.name}</p>
-                <p>Price per unit: <span className="">${product.price.toFixed(2)}</span></p>
-                <p>Discount: <span className="text-red-500">{product.discountPercent}%</span></p>
-                <p>Final Price: <span className="">${product.price - ((product.discountPercent/100) * product.price)}</span></p>
-                <p>Quantity: <span className="font-semibold">{product.quantity}</span></p>
-                <p>Total: <span className="font-semibold text-green-600">{(product.quantity) * (product.price - ((product.discountPercent/100) * product.price))}</span></p>
+                <p className="text-lg font-medium text-white">{product.name}</p>
+                <p className="text-white">Price per unit: <span className="">${product.price.toFixed(2)}</span></p>
+                <p className="text-white">Discount: <span className="text-red-500">{product.discountPercent}%</span></p>
+                <p className="text-white">Final Price: <span className="">${product.price - ((product.discountPercent/100) * product.price)}</span></p>
+                <p className="text-white">Quantity: <span className="font-semibold">{product.quantity}</span></p>
+                <p className="text-white">Total: <span className="font-semibold text-green-600">{(product.quantity) * (product.price - ((product.discountPercent/100) * product.price))}</span></p>
               </div>
             </li>
           ))}
@@ -184,12 +184,12 @@ const ViewOrderCard = () => {
       <div className="flex justify-end">
         <button
           onClick={generateOrderPDF}
-          className="text-lg relative group mr-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-5 py-3 font-semibold rounded-md transition flex items-center gap-1"
+          className="text-lg relative group mr-8 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 font-semibold rounded-md transition flex items-center gap-1"
           >
           <div>Download Transcript</div>
         </button>
 
-        <button onClick={handleCancel} className="px-5 py-3 mr-8 bg-gray-300 text-gray-800 rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-400">
+        <button onClick={handleCancel} className="px-5 py-3 mr-8 bg-gray-700 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-500">
           Back
         </button>
       </div>

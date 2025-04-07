@@ -1,6 +1,7 @@
 // import React, { useState } from 'react';
 // import { useSelector, useDispatch } from 'react-redux';
-// import { profileSelector, sendOtpAsync, setProfileActiveContent, verifyOtpAsync} from '../profileSlice.js';
+// import { profileSelector, sendOtpAsync, setProfileActiveContent, showPopup2, verifyOtpAsync} from '../profileSlice.js';
+// import axios from 'axios';
 
 // function ChangeNumber() {
 //   const dispatch = useDispatch();
@@ -43,7 +44,7 @@
 //   const handleSave = async () => {
 //     if (!otp) {
 //       dispatch(
-//         showPopup({
+//         showPopup2({
 //           message: "Please enter the OTP.",
 //           duration: 3000,
 //           type: "error",
@@ -52,14 +53,7 @@
 //       return;
 //     }
 
-//     const res = await dispatch(verifyOtpAsync({ phoneNumber:phone, otp:otp }));
-
-//     if (res.meta.requestStatus === "fulfilled") {
-//       alert("Phone number updated successfully!");
-//       dispatch(setProfileActiveContent("EditProfile"));
-//     } else {
-//       alert("Invalid OTP. Please try again.");
-//     }
+//     dispatch(verifyOtpAsync({ phoneNumber:phone, otp:otp }));
 //   };
 
 //   const handleCancel = () => {

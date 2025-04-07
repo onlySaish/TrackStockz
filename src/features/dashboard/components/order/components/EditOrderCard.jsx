@@ -184,16 +184,16 @@ const EditOrderCard = () => {
       dispatch(setOrderActiveContent("DisplayOrders"));
     };
   return (
-    <>
+    <div className='p-6 flex flex-col gap-4'>
       <div>   {/* Show Orders */}
-        <div className="w-full flex flex-col bg-white items-center shadow-2xl rounded-3xl border-4 bg-clip-padding py-4">
+        <div className="w-full flex flex-col bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-800 bg-clip-padding py-4">
           <div className='flex flex-row justify-between w-full mb-2'>
-            <div className='text-2xl font-bold ml-12'>Current Order</div>
-            <div className="capitalize mr-12 px-5 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-semibold shadow-md cursor-default">Selected Products: {OrderedProducts.length}</div>
+            <div className='text-2xl font-bold ml-12 text-white'>Current Order</div>
+            <div className="capitalize mr-12 px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold shadow-md cursor-default">Selected Products: {OrderedProducts.length}</div>
           </div>
-          <table className="bg-white border border-gray-300 w-11/12">
-            <thead>
-            <tr className="bg-gray-200">
+          <table className="w-11/12 bg-gray-800 text-white rounded-sm">
+            <thead className="bg-gray-700">
+            <tr>
               <th className="px-4 py-2">Image</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Price</th>
@@ -204,13 +204,13 @@ const EditOrderCard = () => {
             <tbody>
             {OrderedProducts.length > 0 ? (
               OrderedProducts.map((product) => (
-                <tr key={product._id} className="border hover:bg-gray-100 text-center">
-                  <td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{backgroundImage: `url(${product.coverImg})`}}></div></td>
+                <tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                  <td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full mx-auto" style={{backgroundImage: `url(${product.coverImg})`}}></div></td>
                   <td className="px-4 py-2 capitalize">{product.name}</td>
                   <td className="px-4 py-2">{(product.price[0].price)-((product.discountPercent/100)*(product.price[0].price))}</td>
                   <td className="px-4 py-2">
                   <input
-                    className="border border-gray-600 w-2/5 rounded-lg p-2"
+                    className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2"
                     type="number"
                     min={1}
                     max={product.availableQuantity}
@@ -251,29 +251,29 @@ const EditOrderCard = () => {
       </div>
     
       <div>   {/* Show other Products */}
-        <div className="w-full flex flex-col bg-white items-center shadow-2xl rounded-3xl border-4 bg-clip-padding py-4">
-        <div className='text-2xl font-semibold self-start ml-12 mb-2'>Add Products</div>
-        <div className="flex flex-row gap-3 items-center mb-4 self-start ml-12">
+        <div className="w-full flex flex-col bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-800 bg-clip-padding py-4">
+        <div className='text-2xl font-semibold self-start ml-12 mb-2 text-white'>Add Products</div>
+        <div className="w-full flex flex-row gap-3 items-center mb-4 self-start px-12 text-white">
         <input
           type="text"
           placeholder="Search products..."
-          className="border px-3 py-2 rounded-md"
+          className="w-full px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
           value={search}
           onChange={handleSearch}
           />
 
-        <select value={sort} onChange={handleSortChange} className="border px-3 py-2 rounded-md">
+        <select value={sort} onChange={handleSortChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
           <option value="createdAt">Time</option>
           <option value="name">Name</option>
           <option value="price">Price</option>
         </select>
 
-        <select value={sortOrder} onChange={handleOrderChange} className="border px-3 py-2 rounded-md">
+        <select value={sortOrder} onChange={handleOrderChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
           <option value="asc">{ (timeActive) ? "Oldest" : "Ascending"}</option>
           <option value="desc">{ (timeActive) ? "Newest" : "Descending"}</option>
         </select>
 
-        <select value={category} onChange={handleCategory} className="border px-3 py-2 rounded-md">
+        <select value={category} onChange={handleCategory} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
           <option value="">All Categories</option>
           {categories.map((cat, index) => (
             <option key={index} value={cat}>
@@ -284,9 +284,9 @@ const EditOrderCard = () => {
 
         </div>
 
-        <table className="bg-white border border-gray-300 w-11/12">
-          <thead>
-            <tr className="bg-gray-200">
+        <table className="w-11/12 bg-gray-800 text-white rounded-sm">
+          <thead className="bg-gray-700">
+            <tr>
               <th className="px-4 py-2">Image</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Active Price</th>
@@ -301,7 +301,7 @@ const EditOrderCard = () => {
           <tbody>
             {updatedAllProducts.length > 0 ? (
               updatedAllProducts.map((product) => (
-                <tr key={product._id} className="border hover:bg-gray-100 text-center">
+                <tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
                   <td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{backgroundImage: `url(${product.coverImg})`}}></div></td>
                   <td className="px-4 py-2 capitalize">{product.name}</td>
                   <td className="px-4 py-2">{product.price[0]?.price}</td>
@@ -312,7 +312,7 @@ const EditOrderCard = () => {
                   <td className="px-4 py-2">
                     <input 
                     onChange={(e) => product.selectedQuantity = e.target.value} 
-                    className="border border-gray-600 w-4/5 rounded-lg p-2" 
+                    className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2" 
                     type="number"
                     min={0} max={product.quantity}
                     placeholder="0"/>
@@ -354,29 +354,29 @@ const EditOrderCard = () => {
       </div>
           
       <div> {/* Payment Details */}
-      <div className="w-full flex flex-col bg-white items-center shadow-2xl rounded-3xl border-4 bg-clip-padding py-4">
+      <div className="w-full flex flex-col bg-gray-800 items-center shadow-2xl rounded-md border border-gray-900 bg-clip-padding py-4">
           <table className="min-w-full bg-white border-gray-300">
-            <tbody>
-              <tr className="hover:bg-gray-100">
+            <tbody className='bg-gray-800 text-white'>
+              <tr className="hover:bg-gray-900">
                 <td className="px-4 py-2">Total Price</td>
                 <td className="px-4 py-2 text-right">{(totalPrice === 0) ? "NA" : `${totalPrice}`}</td>
               </tr>
-              <tr className="hover:bg-gray-100">
+              <tr className="hover:bg-gray-900">
                 <td className="px-4 py-2">Discounted Price</td>
                 <td className="px-4 py-2 text-right">{(initialDiscountedPrice === 0) ? "NA" : `${initialDiscountedPrice}`}</td>
               </tr>
-              <tr className="hover:bg-gray-100">
+              <tr className="hover:bg-gray-900">
                 <td className="px-4 py-2">Enter Additional Discount %</td>
                 <td className="px-4 py-2 text-right">
                 <input 
                   onChange={(e) => setAdditionalDiscountPercent(e.target.value)} 
-                  className="border border-gray-600 w-2/5 rounded-lg p-2" 
+                  className="border border-gray-600 bg-gray-800 w-1/5 rounded-md p-2" 
                   type="number"
                   min={0} max={100}
                   placeholder={additionalDiscountPercent}/>
                 </td>
               </tr>
-              <tr className="hover:bg-gray-100">
+              <tr className="hover:bg-gray-900">
                 <td className="px-4 py-2">Final Discounted Price</td>
                 <td className="px-4 py-2 text-right">{(finalDiscountedPrice === 0) ? "NA" : `${finalDiscountedPrice}`}</td>
               </tr>
@@ -385,11 +385,11 @@ const EditOrderCard = () => {
                 <td className="flex flex-row justify-end">
                 <button
                   onClick={handleConfirmOrder}
-                  className="text-lg relative group mr-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-5 py-3 font-semibold rounded-md transition flex items-center gap-1"
+                  className="text-lg relative group mr-8 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 font-semibold rounded-md transition flex items-center gap-1"
                   >
                   <div>{(status === "loading") ? "Updating" : "Update Order"}</div>
                 </button>
-                <button onClick={handleCancel} className="px-5 py-3 mr-8 bg-gray-300 text-gray-800 rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-400">
+                <button onClick={handleCancel} className="px-5 py-3 mr-8 bg-gray-700 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-500">
                   Cancel
                 </button>
                 </td>
@@ -398,7 +398,7 @@ const EditOrderCard = () => {
           </table>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

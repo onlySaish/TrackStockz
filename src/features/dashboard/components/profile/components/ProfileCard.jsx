@@ -6,57 +6,80 @@ const ProfileCard = () => {
   const dispatch = useDispatch();
   const user = useSelector(profileSelector);
   const { status } = useSelector(profileSelector);
-  
+
   const handleEditClick = () => {
     dispatch(setProfileActiveContent("EditProfile"));
   };
+
   const handleChangePassClick = () => {
     dispatch(setProfileActiveContent("ChangePassword"));
   };
 
   return (
-    // <div className='relative '>
-    // <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl p-[3px]"></div>
-    <div className="flex items-center justify-between px-10 py-8 bg-white shadow-2xl rounded-3xl w-[850px] h-[230px] mx-auto 
-      border-4 bg-clip-padding transition-all duration-300 transform hover:scale-105 
-      hover:shadow-3xl">
-        {status === "loading" ? <p className="text-gray-600">Loading...</p> :(
+    <div className="relative flex flex-col md:flex-row items-center bg-gradient-to-br from-gray-800 to-gray-900 
+      backdrop-blur-lg shadow-xl rounded-lg w-[750px] mx-auto border border-gray-700 p-6 transition-all 
+      duration-300 hover:scale-[1.02] hover:shadow-2xl">
+
+      {status === "loading" ? (
+        <p className="text-gray-400 text-lg">Loading...</p>
+      ) : (
         <>
-      <div className="flex-shrink-0">
-        <img
-          src={user.avatar || '/default-avatar.png'}
-          alt="Profile Avatar"
-          className="w-40 h-40 rounded-full border-4 border-white shadow-lg transition-transform duration-300 hover:scale-110"
-        />
-      </div>
+          {/* Left Section - Avatar & Buttons */}
+          <div className="flex flex-col items-center w-full md:w-1/3 p-4 border-r border-gray-700">
+            <div className="relative">
+              <img
+                src={user.avatar || '/default-avatar.png'}
+                alt="Profile Avatar"
+                className="w-36 h-36 rounded-2xl border-4 border-gray-700 shadow-md 
+                transition-transform duration-300 hover:scale-110"
+              />
+              {/* <div className="absolute bottom-1 right-1 bg-gray-700 p-2 rounded-full shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-3A2.25 2.25 0 008.25 5.25V9M6 9h12m-6 9v-6m0 6l-2.25-2.25M12 18l2.25-2.25" />
+                </svg>
+              </div> */}
+            </div>
 
-      <div className="flex flex-col ml-8 mb-6 flex-grow">
-        <h2 className="text-3xl capitalize font-bold text-gray-900">{user.username || 'Username'}</h2>
-        <p className="text-2xl text-gray-600 capitalize font-medium">{user.fullName || 'Full Name'}</p>
-        <p className="text-2xl text-gray-500">{user.email || 'Email'}</p>
-        {/* <p className="text-2xl text-gray-500">{user.phoneNumber || ''}</p> */}
-      </div>
+            <div className="mt-6 flex flex-col gap-3 w-full">
+              <button
+                onClick={handleEditClick}
+                className="px-6 py-3 w-full text-lg rounded-lg bg-[#1E3A8A] text-white font-medium shadow-md 
+                transition-all duration-300 hover:scale-105 hover:shadow-blue-500/40"
+              >
+                Edit Profile
+              </button>
+              <button
+                onClick={handleChangePassClick}
+                className="px-6 py-3 w-full text-lg rounded-lg bg-[#374151] text-white font-medium shadow-md 
+                transition-all duration-300 hover:scale-105 hover:shadow-gray-400/40"
+              >
+                Change Password
+              </button>
+            </div>
+          </div>
 
-      <div className="flex flex-col gap-4">
-        <button
-          onClick={handleEditClick}
-          className="px-7 py-4 text-lg rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold shadow-lg 
-          transition-transform duration-300 hover:scale-110 hover:shadow-xl"
-        >
-          Edit Profile
-        </button>
-        <button
-          onClick={handleChangePassClick}
-          className="px-7 py-4 text-lg rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold shadow-lg 
-          transition-transform duration-300 hover:scale-110 hover:shadow-xl"
-        >
-          Change Password
-        </button>
-      </div>
-      </>
-    )}
+          {/* Right Section - User Info */}
+          <div className="flex flex-col justify-center w-full md:w-2/3 p-6">
+            <h2 className="text-5xl capitalize font-semibold text-gray-100 tracking-wide">
+              {user.username || 'Username'}
+            </h2>
+            <p className="text-2xl text-gray-400 capitalize font-medium mt-2">
+              {user.fullName || 'Full Name'}
+            </p>
+            <p className="text-2xl text-gray-500 mt-1">{user.email || 'Email'}</p>
+
+            <div className="mt-6">
+              <div className="flex items-center bg-gray-800 p-3 rounded-lg border border-gray-700 shadow-md w-fit">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-6 h-6 mr-2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25V6a2.25 2.25 0 00-2.25-2.25H9A2.25 2.25 0 006.75 6v2.25m10.5 0h-10.5m10.5 0l1.5 12.75a2.25 2.25 0 01-2.25 2.25h-7.5a2.25 2.25 0 01-2.25-2.25l1.5-12.75" />
+                </svg>
+                <p className="text-gray-300 text-lg">Professional Member</p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
-  // </div>
   );
 };
 

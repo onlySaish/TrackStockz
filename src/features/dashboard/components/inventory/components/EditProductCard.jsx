@@ -150,15 +150,14 @@ const EditProductCard = () => {
   };
 
   return (
-    <div className="relative p-6 rounded-2xl border-2 bg-white shadow-2xl max-w-4xl mx-auto transition-transform duration-300 hover:scale-105 z-10">
+    <div className="relative p-6 rounded-2xl m-4 border border-gray-900 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl max-w-4xl mx-auto">
       
-      <div className="relative bg-white rounded-2xl p-6">
         <div className="flex flex-col">
         {/* Images */}
         <div className='flex flex-row justify-around items-center mb-4'>
           <div className="flex flex-col items-center">
             <div 
-            className="size-40 bg-contain bg-no-repeat bg-center rounded-full border-4 border-white shadow-lg transition-transform duration-300 hover:scale-110" 
+            className="size-40 bg-contain bg-no-repeat bg-center rounded-full border-4 bg-white border-white shadow-lg transition-transform duration-300 hover:scale-110" 
             style={{backgroundImage: `url(${coverImgPreview})`}}>
             </div>
             
@@ -173,7 +172,7 @@ const EditProductCard = () => {
               />
               <label
                 htmlFor="avatarUpload"
-                className="cursor-pointer px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+                className="cursor-pointer px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl"
               >
                 Choose Image
               </label>
@@ -189,7 +188,7 @@ const EditProductCard = () => {
               />
               <label
                 htmlFor="coverImgUpload"
-                className="cursor-pointer px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+                className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
               >
                 {(status === "loading")? "Uploading" : "Upload Image"}
               </label>
@@ -209,7 +208,7 @@ const EditProductCard = () => {
           >
           {images.map((img, index) => (
           <SwiperSlide key={index} className="relative">
-            <img src={img} alt={`Slide ${index}`} className="w-full h-full object-contain rounded-lg" />
+            <img src={img} alt={`Slide ${index}`} className="w-full bg-white h-full object-contain rounded-lg" />
             {img !== defaultImage && (
               <button
                 className="absolute top-2 right-2 bg-gray-800 text-white text-sm px-2 py-1 rounded"
@@ -234,7 +233,7 @@ const EditProductCard = () => {
           />
           <label
             htmlFor="imageInput"
-            className="cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            className="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-500"
           >
           Choose Images
           </label>
@@ -249,7 +248,7 @@ const EditProductCard = () => {
             />
             <label
               htmlFor="photosInput"
-              className="cursor-pointer px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+              className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
             >
               {(status === "loading")? "Uploading" : "Upload Images"}
             </label>
@@ -261,125 +260,133 @@ const EditProductCard = () => {
         {/* Name and Category */}
         <div className="flex gap-4 mb-4">
           <div className="w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Product Name</label>
+            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Product Name</label> */}
             <input
               type="text"
               name="name"
+              placeholder='Product Name'
               value={formData.name}
               onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
+              className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
             />
           </div>
           <div className="w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Category</label>
+            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Category</label> */}
             <input
               type="text"
               name="category"
+              placeholder='Category'
               value={formData.category}
               onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
+              className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
             />
           </div>
         </div>
+        
         {/* Description */}
         <div className="flex flex-col mb-4">
-          <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Description</label>
+          {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Description</label> */}
           <textarea
             name="description"
             value={formData.description}
+            placeholder='Product Description...'
             onChange={handleChange}
-            className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
+            className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
           />
         </div>
+        
         {/* Price and Quantity */}
         <div className="flex gap-4 mb-4">
           <div className="w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Price</label>
+            <label className="text-lg font-semibold text-gray-500 mb-1 ml-2">Price</label>
             <input
               type="number"
               name="price"
+              placeholder='Price'
               value={formData.price}
               onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
+              className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
             />
           </div>
           <div className="w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Quantity</label>
+            <label className="text-lg font-semibold text-gray-500 mb-1 ml-2">Quantity</label>
             <input
               type="number"
               name="quantity"
               value={formData.quantity}
               onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
+              className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
             />
           </div>
         </div>
-        {/* Supplier and Status */}
+        {/* Low Stock Threshold and Discount */}
         <div className="flex gap-4 mb-4">
           <div className="w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Supplier</label>
+            <label className="text-lg font-semibold text-gray-500 mb-1 ml-2">Low Stock Threshold</label>
             <input
-              type="text"
-              name="supplier"
-              value={formData.supplier}
+              type="number"
+              name="lowStockThreshold"
+              value={formData.lowStockThreshold}
               onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
+              className="bg-gray-800 text-white border border-gray-600 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
             />
           </div>
           <div className="w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Status</label>
+            <label className="text-lg font-semibold text-gray-500 mb-1 ml-2">Discount (%)</label>
+            <input
+              type="number"
+              name="discountPercent"
+              value={formData.discountPercent}
+              onChange={handleChange}
+              className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
+            />
+          </div>
+        </div>
+
+        {/* Supplier and Status */}
+        <div className="flex gap-4 mb-4">
+          <div className="w-1/2">
+            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Supplier</label> */}
+            <input
+              type="text"
+              name="supplier"
+              placeholder='Supplier'
+              value={formData.supplier}
+              onChange={handleChange}
+              className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
+            />
+          </div>
+          <div className="w-1/2">
+            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Status</label> */}
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
+              className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
             >
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
             </select>
           </div>
         </div>
-        {/* Low Stock Threshold and Discount */}
-        <div className="flex gap-4 mb-4">
-          <div className="w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Low Stock Threshold</label>
-            <input
-              type="number"
-              name="lowStockThreshold"
-              value={formData.lowStockThreshold}
-              onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            />
-          </div>
-          <div className="w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Discount (%)</label>
-            <input
-              type="number"
-              name="discountPercent"
-              value={formData.discountPercent}
-              onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            />
-          </div>
-        </div>
+
         {/* Action Buttons */}
         <div className="flex gap-6">
           <button
             onClick={handleSave}
-            className="px-5 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+            className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
             disabled={status === 'loading'}
           >
             {status === 'loading' ? 'Saving...' : 'Save'}
           </button>
           <button
             onClick={handleCancel}
-            className="px-5 py-3 bg-gray-300 text-gray-800 rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-400"
+            className="px-5 py-3 bg-gray-700 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-500"
           >
             Cancel
           </button>
         </div>
         </div>
-      </div>
     </div>
   );
 };

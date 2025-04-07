@@ -1,54 +1,66 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveContent, selectSidebarVisibility, setActiveContent } from '../dashboardSlice';
+import { Home, AttachMoney, Inventory2, ShoppingCart, People, AccountCircle, Menu } from '@mui/icons-material';
+import { useState } from 'react';
 
 function Sidebar() {
   const isSidebarVisible = useSelector(selectSidebarVisibility);
   const dispatch = useDispatch();
   const activeItem = useSelector(selectActiveContent);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleContent = (content) => {
     dispatch(setActiveContent(content));
   };
 
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   const menuItems = [
-    { name: 'Home', icon: '🏠' },
-    { name: 'Sell', icon: '💸' },
-    { name: 'Inventory', icon: '📦' },
-    { name: 'Orders', icon: '🛒' },
-    { name: 'Customers', icon: '👥' },
-    { name: 'Profile', icon: '👤' },
+    { name: 'Home', icon: <Home /> },
+    { name: 'Sell', icon: <AttachMoney /> },
+    { name: 'Inventory', icon: <Inventory2 /> },
+    { name: 'Orders', icon: <ShoppingCart /> },
+    { name: 'Customers', icon: <People /> },
+    { name: 'Profile', icon: <AccountCircle /> },
   ];
 
   return (
-    <div
-      className={`${
-        isSidebarVisible ? 'block' : 'hidden'
-      } h-screen relative w-full px-5 bg-gradient-to-br from-violet-600 to-violet-900 rounded-tr-3xl border-none flex flex-col items-center text-white text-center gap-6 pt-8 shadow-lg`}
-    >
+    <div className="flex">
+      <button onClick={toggleSidebar} className="p-3 text-white bg-gray-900 md:hidden">
+        <Menu />
+      </button>
       <div
-        className="h-10 absolute left-0 w-1 bg-white transition-all duration-300 shadow-[0_0_100px_rgba(255,255,255,0.8)]"
-        style={{
-          top: `${menuItems.findIndex((item) => item.name == activeItem) * 65 + 90}px`,  // Adjust bar position
-        }}
-      ></div>
-      <h2 className="text-2xl font-semibold">Dashboard</h2>
-      <div className="flex flex-col w-full items-left gap-4">
-        {menuItems.map((item) => (
-          <div
-            key={item.name}
-            onClick={() => handleContent(item.name)}
-            className={`w-full py-2 px-4 flex items-center justify-start gap-2 rounded-full text-lg transition-transform transform hover:scale-105 ${
-              activeItem === item.name
-                ? 'bg-violet-800 shadow-md'
-                : 'bg-transparent hover:bg-violet-700'
-            } cursor-pointer`}
-            title={item.name} // Tooltip for better UX
-          >
-            <span className="text-2xl">{item.icon}</span>
-            <span>{item.name}</span>
-          </div>
-        ))}
+        className={`${
+          isSidebarVisible ? 'block' : 'hidden'
+        } ${isCollapsed ? 'w-16' : 'w-60'} h-screen bg-gray-900 text-white flex flex-col items-start p-5 shadow-xl transition-all duration-300 fixed md:relative`}
+      >
+        <div
+          className="h-10 absolute left-0 w-1 bg-white transition-all duration-300 shadow-[0_0_100px_rgba(255,255,255,0.8)]"
+          style={{
+            top: `${menuItems.findIndex((item) => item.name == activeItem) * 72 + 90}px`,  // Adjust bar position
+          }}
+        ></div>
+
+        <h2 className={`text-3xl font-bold mb-6 text-gray-100 ${isCollapsed ? 'hidden' : 'block'}`}>Dashboard</h2>
+        <div className="flex flex-col w-full gap-4">
+          {menuItems.map((item) => (
+            <div
+              key={item.name}
+              onClick={() => handleContent(item.name)}
+              className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all cursor-pointer text-lg w-full $ {
+                activeItem === item.name
+                  ? 'bg-indigo-700 text-white shadow-lg'
+                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+              }`}
+            >
+              <span className="text-2xl">{item.icon}</span>
+              <span className={`${isCollapsed ? 'hidden' : 'block'}`}>{item.name}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

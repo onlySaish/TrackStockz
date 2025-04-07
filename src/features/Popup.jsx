@@ -32,8 +32,8 @@ const Popup = () => {
   if (!popup || !popup.visible) return null;
 
   const popupStyles = {
-    success: 'bg-green-50 border-green-300 text-green-800',
-    error: 'bg-red-50 border-red-300 text-red-800',
+    success: 'bg-gray-900 border-blue-300 text-white',
+    error: 'bg-gray-900 border-blue-300 text-white',
   };
 
   return (
@@ -43,7 +43,7 @@ const Popup = () => {
       }`}
     >
       <div className="flex items-center gap-3">
-        <div className={`text-xl ${popup.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+        <div className={`text-xl ${popup.type === 'success' ? 'text-green-500' : 'text-red-600'}`}>
           {popup.type === 'success' ? (
             <i className="fas fa-check-circle"></i>
           ) : (

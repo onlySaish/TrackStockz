@@ -20,10 +20,10 @@ const Loader = () => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center"
+        className="bg-transparent p-6 rounded-2xl shadow-xl flex flex-col items-center"
       >
         <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-3 text-lg font-semibold text-gray-700">Loading...</p>
+        {/* <p className="mt-3 text-lg font-semibold text-white">Loading...</p> */}
       </motion.div>
     </div>
   );

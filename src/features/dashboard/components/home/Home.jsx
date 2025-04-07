@@ -14,8 +14,8 @@ const Home = () => {
     }, [dispatch]);
 
     return (
-        <div className="p-8 bg-gray-100 min-h-screen">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
+        <div className="p-8 bg-gray-900 min-h-screen">
+            <h1 className="text-3xl font-bold text-white mb-6">Dashboard</h1>
 
             {status === "loading" ? <p className="text-gray-600">Loading...</p> : (
                 <>
@@ -27,12 +27,12 @@ const Home = () => {
                         <DashboardCard title="Pending Orders" value={stats.pendingOrders} />
                         <DashboardCard title="Completed Orders" value={stats.completedOrders} />
                         <DashboardCard title="Cancelled Orders" value={stats.cancelledOrders} />
-                        <DashboardCard title="Total Revenue" value={`${stats.totalRevenue}`} />
+                        <DashboardCard title="Total Revenue" value={`${Number(stats.totalRevenue).toFixed(2)}`} />
                         <DashboardCard title="Low Stock Alerts" value={stats.lowStockCount} />
                     </div>
 
                     {/* Sales Chart */}
-                    <div className="bg-white p-6 shadow-lg rounded-xl">
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-6 shadow-lg rounded-md">
                         <SalesChart salesData={stats.salesTrends} />
                     </div>
 

@@ -109,56 +109,56 @@ const DisplayOrders = () => {
   };
 
   return (
-    <div className="py-4">
+    <div className="p-6 m-4 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-md shadow-lg">
       <h2 className="text-3xl font-bold mb-4">Order List</h2>
         
-      <div className="flex gap-3 items-center mb-4">
+      <div className="mb-6 flex gap-4">
         <input
           type="text"
           placeholder="Search orders..."
-          className="border px-3 py-2 rounded-md"
+          className="w-full px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
           value={search}
           onChange={handleSearch}
         />
 
-        <button
-          onClick={handleSearchOrder}
-          className="relative group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition flex items-center gap-1"
-          >
-            <div>Search</div>
-        </button>
-
-        <select value={sort} onChange={handleSortChange} className="border px-3 py-2 rounded-md">
+        <select value={sort} onChange={handleSortChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
           <option value="createdAt">Time</option>
           <option value="totalPrice">Amount</option>
         </select>
 
-        <select value={order} onChange={handleOrderChange} className="border px-3 py-2 rounded-md">
+        <select value={order} onChange={handleOrderChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
         <option value="asc">{ (timeActive) ? "Oldest" : "Ascending"}</option>
         <option value="desc">{ (timeActive) ? "Newest" : "Descending"}</option>
         </select>
 
-        <select value={status} onChange={handleStatus} className="border px-3 py-2 rounded-md">
+        <select value={status} onChange={handleStatus} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
           <option value="">All Status</option>
           <option value="Pending">Pending</option>
           <option value="Completed">Completed</option>
           <option value="Cancelled">Cancelled</option>
         </select>
 
-        <select value={paymentMethod} onChange={handlePaymentMethod} className="border px-3 py-2 rounded-md">
+        <select value={paymentMethod} onChange={handlePaymentMethod} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
           <option value="">All Payments</option>
           <option value="Cash">Cash</option>
           <option value="Card">Card</option>
           <option value="UPI">UPI</option>
         </select>
+
+        <button
+          onClick={handleSearchOrder}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-400 transition"
+          >
+            <div>Search</div>
+        </button>
       </div>
 
       {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> :(
         <>
 
-      <table className="min-w-full bg-white border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
+      <table className="w-full bg-gray-800 text-white rounded-sm">
+        <thead className="bg-gray-700">
+          <tr>
             {/* <th className="px-4 py-2">Order ID</th> */}
             <th className="px-4 py-2">Customer Name</th>
             <th className="px-4 py-2">Customer Company</th>
@@ -175,8 +175,7 @@ const DisplayOrders = () => {
         <tbody>
           {finalUpdatedOrders.length > 0 ? (
             finalUpdatedOrders.map((order) => (
-              <tr key={order._id} className="border hover:bg-gray-100 text-center">
-                {/* <td className="px-4 py-2">{order._id}</td> */}
+              <tr key={order._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
                 <td className="px-4 py-2">{order.customerDetails.firstName} {order.customerDetails.lastName}</td>
                 <td className="px-4 py-2">{order.customerDetails.companyName}</td>
                 <td className="px-4 py-2">{order.products.length}</td>
@@ -188,7 +187,7 @@ const DisplayOrders = () => {
                   <select
                     value={order.status}
                     onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                    className="border px-2 py-1 rounded-md"
+                    className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600"
                   >
                     <option value="Pending">Pending</option>
                     <option value="Completed">Completed</option>
@@ -224,7 +223,7 @@ const DisplayOrders = () => {
           <button
             key={index}
             onClick={() => handlePageChange(index + 1)}
-            className={`px-4 py-2 border rounded-md mx-1 ${currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            className={`px-4 py-2 border rounded-md mx-1 ${currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-700"}`}
           >
             {index + 1}
           </button>

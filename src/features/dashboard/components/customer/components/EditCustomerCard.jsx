@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   setCustomerActiveContent,
   selectActiveCustomer,
   selectStatus2,
-  updateCustomer
-} from '../customerSlice.js';
+  updateCustomer,
+} from "../customerSlice.js";
 
 const EditCustomerCard = () => {
   const dispatch = useDispatch();
@@ -13,35 +13,41 @@ const EditCustomerCard = () => {
   const customer = useSelector(selectActiveCustomer);
 
   const [formData, setFormData] = useState({
-    firstName: customer.firstName || '',
-    email: customer.email || '',
-    lastName: customer.lastName || '',
-    phoneNumber: customer.phoneNumber || '',
+    firstName: customer.firstName || "",
+    lastName: customer.lastName || "",
+    email: customer.email || "",
+    phoneNumber: customer.phoneNumber || "",
     address: {
-      street: customer.address?.street || '',
-      city: customer.address?.city || '',
-      state: customer.address?.state || '',
-      zipCode: customer.address?.zipCode || '',
-      country: customer.address?.country || ''
+      street: customer.address?.street || "",
+      city: customer.address?.city || "",
+      state: customer.address?.state || "",
+      zipCode: customer.address?.zipCode || "",
+      country: customer.address?.country || "",
     },
-    companyName: customer.companyName || '',
+    companyName: customer.companyName || "",
     blackListed: customer.blackListed || false,
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      address: {
-        ...prev.address,  // Preserve existing address fields
-        [name]: value,    // Update only the changed field
-      },
-      [name]: value, 
-    }));
+    if (["street", "city", "state", "zipCode", "country"].includes(name)) {
+      setFormData((prev) => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [name]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSave = () => {
-    dispatch(updateCustomer({customerId: customer._id, updatedData: formData}));
+    dispatch(updateCustomer({ customerId: customer._id, updatedData: formData }));
   };
 
   const handleCancel = () => {
@@ -49,102 +55,117 @@ const EditCustomerCard = () => {
   };
 
   return (
-    <div className="relative p-6 rounded-2xl border-2 bg-white shadow-2xl max-w-4xl mx-auto transition-transform duration-300 hover:scale-105 z-10">
-      <div className="relative bg-white rounded-2xl p-6">
-        <div className="flex flex-col">
-          {/* Name Fields */}
-          <div className="flex gap-4 mb-4">
-            <div className="w-1/2">
-              <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-              />
-            </div>
-            <div className="w-1/2">
-              <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-              />
-            </div>
-          </div>
+    <div className="mx-auto p-6 m-4 w-11/12 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold mb-6">Edit Customer</h2>
+      
+      <div className="flex gap-4 mb-4">
+        <input
+          type="text"
+          name="firstName"
+          placeholder="First Name"
+          value={formData.firstName}
+          onChange={handleChange}
+          className="w-1/2 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+        <input
+          type="text"
+          name="lastName"
+          placeholder="Last Name"
+          value={formData.lastName}
+          onChange={handleChange}
+          className="w-1/2 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+      </div>
 
-          {/* Contact Details */}
-        <div className='flex gap-4'>
-          <div className="flex flex-col mb-4 w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              className="border-2 p-3 rounded-lg bg-gray-100 cursor-not-allowed w-full"
-              disabled
-            />
-          </div>
-          <div className="flex flex-col mb-4 w-1/2">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Phone Number</label>
-            <input
-              type="text"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            />
-          </div>
-        </div>
+      <div className="flex gap-4 mb-4">
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          className="w-1/2 px-4 py-2 rounded-md bg-gray-700 text-gray-400 border border-gray-600 cursor-not-allowed"
+          disabled
+        />
+        <input
+          type="text"
+          name="phoneNumber"
+          placeholder="Phone Number"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          className="w-1/2 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+      </div>
 
-          {/* Address Fields */}
-          <div className="flex gap-2 mb-4">
-            {['street', 'city', 'state', 'zipCode', 'country'].map((field) => (
-              <div key={field} className="">
-                <label className="text-lg font-semibold text-gray-700 ml-2 capitalize">{field}</label>
-                <input
-                  type="text"
-                  name={field}
-                  value={formData.address[field]}
-                  onChange={handleChange}
-                  className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-                />
-              </div>
-            ))}
-          </div>
-          
-          {/* Company Name */}
-          <div className="flex flex-col mb-4">
-            <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Company Name</label>
-            <input
-              type="text"
-              name="companyName"
-              value={formData.companyName}
-              onChange={handleChange}
-              className="border-2 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 w-full"
-            />
-          </div>
+      <div className="flex gap-4 mb-4">
+        <input
+          type="text"
+          name="companyName"
+          placeholder="Company Name (Optional)"
+          value={formData.companyName}
+          onChange={handleChange}
+          className="w-full px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+      </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-6">
-            <button
-              onClick={handleSave}
-              className="px-5 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
-              disabled={status === 'loading'}
-            >
-              {status === 'loading' ? 'Saving...' : 'Save'}
-            </button>
-            <button
-              onClick={handleCancel}
-              className="px-5 py-3 bg-gray-300 text-gray-800 rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-400"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+      <div className="flex gap-4 mb-4">
+        <input
+          type="text"
+          name="street"
+          placeholder="Street"
+          value={formData.address.street}
+          onChange={handleChange}
+          className="w-1/2 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+        <input
+          type="text"
+          name="city"
+          placeholder="City"
+          value={formData.address.city}
+          onChange={handleChange}
+          className="w-1/2 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+      </div>
+
+      <div className="flex gap-4 mb-4">
+        <input
+          type="text"
+          name="state"
+          placeholder="State"
+          value={formData.address.state}
+          onChange={handleChange}
+          className="w-1/3 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+        <input
+          type="text"
+          name="zipCode"
+          placeholder="Zip Code"
+          value={formData.address.zipCode}
+          onChange={handleChange}
+          className="w-1/3 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+        <input
+          type="text"
+          name="country"
+          placeholder="Country"
+          value={formData.address.country}
+          onChange={handleChange}
+          className="w-1/3 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+        />
+      </div>
+
+      <div className="flex justify-end gap-4">
+        <button
+          onClick={handleCancel}
+          className="px-5 py-3 bg-gray-600 hover:bg-gray-500 rounded-lg font-semibold shadow-md transition-transform duration-300"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSave}
+          className="px-5 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold shadow-md transition-transform duration-300"
+        >
+          Save
+        </button>
       </div>
     </div>
   );

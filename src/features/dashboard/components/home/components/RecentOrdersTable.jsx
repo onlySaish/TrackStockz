@@ -2,24 +2,24 @@ import React from "react";
 
 const RecentOrdersTable = ({ orders }) => {
     return (
-        <div className="mt-8 bg-white p-6 shadow-lg rounded-xl">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Orders</h2>
-            <table className="w-full border-collapse border border-gray-200 rounded-lg overflow-hidden shadow-md">
-                <thead>
-                    <tr className="bg-gray-200 text-gray-700">
-                        <th className="border p-3">Order ID</th>
-                        <th className="border p-3">Customer</th>
-                        <th className="border p-3">Total</th>
-                        <th className="border p-3">Status</th>
+        <div className="mt-8 bg-gradient-to-br from-gray-800 to-gray-900 p-6 shadow-lg rounded-xl">
+            <h2 className="text-xl font-semibold text-white mb-4">Recent Orders</h2>
+            <table className="w-full bg-gray-800 text-white rounded-sm">
+                <thead className="bg-gray-700">
+                    <tr>
+                        <th className="px-4 py-2 text-start">Order ID</th>
+                        <th className="px-4 py-2">Customer</th>
+                        <th className="px-4 py-2">Total</th>
+                        <th className="px-4 py-2">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {orders.map(order => (
-                        <tr key={order.id} className="text-center hover:bg-gray-100 transition">
-                            <td className="border p-3">{order.id}</td>
-                            <td className="capitalize border p-3">{order.customer}</td>
-                            <td className="border p-3">{order.totalPrice}</td>
-                            <td className={`border p-3 font-medium ${order.status === "Pending" ? "text-red-500" : order.status === "Cancelled" ? "text-gray-800" : "text-green-500"}`}>
+                        <tr key={order.id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                            <td className="p-3 text-start">{order.id}</td>
+                            <td className="capitalize p-3">{order.customer}</td>
+                            <td className="p-3">{order.totalPrice}</td>
+                            <td className={`p-3 font-medium ${order.status === "Pending" ? "text-red-500" : order.status === "Cancelled" ? "text-white" : "text-green-500"}`}>
                                 {order.status}
                             </td>
                         </tr>

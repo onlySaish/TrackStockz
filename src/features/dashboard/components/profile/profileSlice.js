@@ -106,6 +106,14 @@ const profileSlice = createSlice({
     setProfileActiveContent: (state, action) => {
       state.profileActiveContent = action.payload; // Update active content
     },
+    showPopup2: (state, action) => {
+      state.popup = {
+        visible: true,
+        message: action.payload.message,
+        duration: action.payload.duration || 3000,
+        type: action.payload.type || 'success',
+      };
+    },
     hidePopup2: (state) => {
       state.popup = {
         visible: false,
@@ -205,6 +213,7 @@ const profileSlice = createSlice({
           type: 'error',
         };
       })
+
       // .addCase(sendOtpAsync.pending, (state) => {
       //   state.status = 'loading';
       //   state.error = null;
@@ -234,6 +243,7 @@ const profileSlice = createSlice({
       // })
       // .addCase(verifyOtpAsync.fulfilled, (state) => {
       //   state.status = 'succeeded';
+      //   state.profileActiveContent = "EditProfile";
       //   state.popup = {
       //     visible: true,
       //     message: 'Phone Number Updated Successfully!',
@@ -256,9 +266,10 @@ const profileSlice = createSlice({
 
 // export const { toggleEditProfile } = profileSlice.actions;
 // export const selectIsEditable = (state) => state.profile;
+export const selectStatus = (state) => state.profile.status;
 export const profileSelector = (state) => state.profile.user;
 export const selectPopup2 = (state) => state.profile.popup;
 export const selectProfileActiveContent = (state) => state.profile.profileActiveContent;
-export const { hidePopup2, setProfileActiveContent } = profileSlice.actions;
+export const { showPopup2, hidePopup2, setProfileActiveContent } = profileSlice.actions;
 
 export default profileSlice.reducer;

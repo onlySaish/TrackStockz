@@ -81,6 +81,10 @@ const sellSLice = createSlice({
       })
       .addCase(addOrder.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        state.order = {
+          customerId: "",
+          items: []
+        };
         state.popup = {
           visible: true,
           message: 'Order Added Successfully!',

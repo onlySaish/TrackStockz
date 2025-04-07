@@ -79,12 +79,11 @@ const OrderSummaryCard = () => {
   return (
     <div>
       
-      <div className="flex items-center justify-between px-10 py-8 bg-white rounded-3xl h-20 mx-auto 
-      border-4 bg-clip-padding transition-all duration-300 transform hover:scale-105 
-      hover:shadow-3xl mb-4 cursor-pointer"
+      <div className="flex items-center justify-between px-10 py-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-md h-20 mx-auto 
+      border border-gray-800 bg-clip-padding hover:shadow-3xl mb-4 cursor-pointer"
       onClick={handleInnerComponent}
       >
-        <div className="text-3xl font-bold text-gray-800">Order Summary</div>
+        <div className="text-3xl font-bold text-white">Order Summary</div>
       </div>
 
       <motion.div
@@ -94,10 +93,10 @@ const OrderSummaryCard = () => {
         transition={{ duration: 0.5 }}
         className="overflow-hidden"
       >
-        <div className="w-full flex flex-col bg-white items-center shadow-2xl rounded-3xl border-4 bg-clip-padding py-4">
-          <table className="bg-white border border-gray-300 w-11/12">
-            <thead>
-            <tr className="bg-gray-200">
+        <div className="w-full flex flex-col bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-900 bg-clip-padding py-4 mb-4">
+          <table className="w-11/12 bg-gray-800 text-white rounded-sm">
+            <thead className="bg-gray-700">
+            <tr>
               <th className="px-4 py-2">Image</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Price</th>
@@ -108,13 +107,13 @@ const OrderSummaryCard = () => {
             <tbody>
             {finalProducts.length > 0 ? (
               finalProducts.map((product) => (
-                <tr key={product._id} className="border hover:bg-gray-100 text-center">
-                  <td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{backgroundImage: `url(${product.coverImg})`}}></div></td>
+                <tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                  <td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full mx-auto" style={{backgroundImage: `url(${product.coverImg})`}}></div></td>
                   <td className="px-4 py-2 capitalize">{product.name}</td>
                   <td className="px-4 py-2">{(product.price[0].price)-((product.discountPercent/100)*(product.price[0].price))}</td>
                   <td className="px-4 py-2">
                   <input
-                    className="border border-gray-600 w-2/5 rounded-lg p-2"
+                    className="border border-gray-600 bg-gray-800 w-2/5 rounded-lg p-2"
                     type="number"
                     min={1}
                     max={product.availableQuantity}

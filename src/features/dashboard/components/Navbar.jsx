@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOutAsync } from '../../auth/authSlice';
 import { selectSidebarVisibility, setActiveContent, toggleSidebar } from '../dashboardSlice';
 import { fetchProfile, profileSelector } from './profile/profileSlice';
 import { Navigate } from 'react-router';
+import { Menu, Search, Logout } from '@mui/icons-material';
 
 function Navbar() {
   const searchRef = useRef(null);
@@ -19,15 +20,14 @@ function Navbar() {
     }
   }, [dispatch]);
 
-
   const handleLogOut = () => {
     dispatch(signOutAsync());
     hasFetched.current = false;
-  }
+  };
 
   const searchBtn = () => {
-    searchRef.current.select()
-  }
+    searchRef.current.select();
+  };
 
   const handleSidebarToggle = () => {
     dispatch(toggleSidebar());
@@ -35,37 +35,43 @@ function Navbar() {
 
   return (
     <>
-      {!user && <Navigate to="/login" replace={true}></Navigate>}
-      <div className='w-full bg-gradient-to-r from-violet-600 to-violet-950 flex flex-row justify-evenly items-center py-4'>
-        <div>
-          <button onClick={handleSidebarToggle} className={`${(isSidebarVisible) ? "fa-regular fa-compass text-4xl" : "fa-solid fa-bars text-2xl"} text-white`}></button>
+      {!user && <Navigate to="/login" replace={true} />}
+      <div className="w-full bg-gray-900 flex flex-row justify-between items-center py-4 px-10 shadow-md">
+        <button onClick={handleSidebarToggle} className="text-white text-4xl mb-2">
+          <Menu />
+        </button>
+        <div className="flex items-center gap-4">
+          <div className="size-10 rounded-full bg-contain bg-no-repeat bg-left-bottom" style={{ backgroundImage: "url('reactLogo.webp')" }}></div>
+          <div className="text-2xl font-bold text-white">Maverick</div>
         </div>
-        <div className='flex flex-row gap-4'>
-          <div className='h-8 w-8 rounded-full' style={{backgroundImage : "url('vite.svg')"}} ></div>
-          <div className='text-2xl font-bold text-white'>Maverick</div>
+        <div className="flex items-center bg-gray-800 text-white rounded-full px-4 py-2 shadow-inner w-1/3">
+          <Search className="text-gray-400" />
+          <input 
+            type="text" 
+            placeholder="Search here..." 
+            ref={searchRef} 
+            className="w-full bg-transparent pl-3 text-white border-none h-full outline-none" />
         </div>
-        <div className='w-1/4 flex flex-row justify-center items-center h-8 gap-1'>
-          <div className='h-full w-8 flex justify-center items-center'>
-            <button
-            onClick={searchBtn} 
-            className='fa-solid fa-magnifying-glass text-white text-xl p-2 rounded-3xl'></button>
-          </div>
-          <input type="text" placeholder='Search here...' ref={searchRef} className='w-full bg-transparent pl-3 text-white border-none h-full rounded-2xl'/>
+        <div className="flex items-center gap-4">
+          <div className="text-white font-bold text-xl capitalize">Welcome, {user.username}</div>
+          <div 
+          className="h-12 w-12 bg-cover bg-center rounded-full cursor-pointer border-2 border-gray-800 shadow-md hover:shadow-lg transition-all duration-300"
+          style={{ backgroundImage: `url(${user.avatar})` }}
+          onClick={() => dispatch(setActiveContent("Profile"))}>
         </div>
-        <div className='flex flex-row gap-3 justify-center items-center'>
-          <div className='text-white font-bold text-2xl capitalize'>Welcome, {user.username}</div>
-          <div className='h-9 w-9 text-white bg-cover bg-center rounded-full text-3xl text-center cursor-pointer'
-          style={{backgroundImage: `url(${user.avatar})`}}
-          onClick={() => dispatch(setActiveContent("Profile"))}></div>
         </div>
-        <div>
-          <button   
-          onClick={handleLogOut}
-          className='text-white bg-red-700 p-2 rounded-3xl font-bold'>Logout</button>
+        <div className='group'>
+          <button 
+            onClick={handleLogOut} 
+            className="flex items-center bg-red-600 text-white px-4 py-2 rounded-full font-bold shadow-lg hover:bg-red-700 transition-all duration-300"
+          >
+            <Logout className="mr-0 transition-all duration-300" />
+            <span className="ml-2 opacity-0 w-0 overflow-hidden transition-all duration-300 group-hover:opacity-100 group-hover:w-auto">Logout</span>
+          </button>
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
