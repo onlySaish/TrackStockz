@@ -12,28 +12,28 @@ import {
   selectLoggedInUser,
   selectUserChecked
 } from './features/auth/authSlice.js';
-import Popup from './features/Popup.jsx'
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
 import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
+import ErrorPage from './pages/ErrorPage.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
-      {/* <Route path='/' element={<Layout/>}> */}
-        <Route path='/' element={
+    <Route path='/' errorElement={<ErrorPage />}>
+      <Route
+        index
+        element={
           <Protected>
-            {/* <Popup/> */}
-            <Layout/>
+            <Layout />
           </Protected>
-        }/>
-      {/* </Route> */}
-      <Route path='/login' element={<LoginPage/>}/>
-      <Route path='/signup' element={<SignUpPage/>}/>
-      <Route path='/forgotpassword' element={<ForgotPasswordPage/>}/>
-      <Route path='/resetpassword/:token' element={<ResetPasswordPage/>}/> {/* Add token in params */}
+        }
+      />
+      <Route path='login' element={<LoginPage />} />
+      <Route path='signup' element={<SignUpPage />} />
+      <Route path='forgotpassword' element={<ForgotPasswordPage />} />
+      <Route path='resetpassword/:token' element={<ResetPasswordPage />} />
     </Route>
   )
-)
+);
 
 function App() {
   const dispatch = useDispatch();
