@@ -2,7 +2,7 @@ import axios from 'axios';
 // Update profile API
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.BACKEND_URL + '/api/v1',  // Backend API base URL
+  baseURL: import.meta.env.VITE_BACKEND_URL + '/api/v1', // Backend API base URL
   withCredentials: true, // Include cookies in requests
   headers: {
     "Content-Type": "application/json",

@@ -18,7 +18,7 @@ import ErrorPage from './pages/ErrorPage.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' errorElement={<ErrorPage />}>
+    <Route path='/' >
       <Route
         index
         element={
@@ -27,10 +27,10 @@ const router = createBrowserRouter(
           </Protected>
         }
       />
-      <Route path='login' element={<LoginPage />} />
-      <Route path='signup' element={<SignUpPage />} />
-      <Route path='forgotpassword' element={<ForgotPasswordPage />} />
-      <Route path='resetpassword/:token' element={<ResetPasswordPage />} />
+      <Route path='/login' element={<LoginPage />} />
+      <Route path='/signup' element={<SignUpPage />} />
+      <Route path='/forgotpassword' element={<ForgotPasswordPage />} />
+      <Route path='/resetpassword/:token' element={<ResetPasswordPage />} />
     </Route>
   )
 );
