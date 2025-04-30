@@ -66,7 +66,7 @@ function SignupStep2({ nextStep, userData }) {
   };
 
   return (
-    <div className="h-2/3 w-3/4 bg-gray-800/75 flex flex-col justify-center items-center rounded-md lg:w-1/4 px-6 py-4">
+    <div className="h-2/3 w-11/12 md:w-1/2 lg:w-2/5 xl:w-1/4 bg-gray-800/75 flex flex-col justify-center items-center rounded-md px-6 py-4">
       <form
         onSubmit={handleVerify}
         className="h-full w-full flex flex-col justify-evenly items-center"

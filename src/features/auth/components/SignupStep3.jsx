@@ -33,11 +33,11 @@ function SignupStep3({ userData }) {
   }
 
   return (
-    <div className="h-2/3 w-3/4 bg-gray-800/50 flex flex-col justify-center items-center rounded-md lg:w-1/3 px-6 py-4">
+    <div className="h-2/3 w-11/12 md:w-8/12 lg:w-3/6 xl:w-2/6 bg-gray-800/50 flex flex-col justify-center items-center rounded-md px-6 py-4">
       <form
         onSubmit={handleSubmit}
         className="h-full w-full flex flex-col justify-evenly items-center"
-      >
+      > 
         <div className="text-white text-xl font-bold md:text-4xl lg:text-3xl lg:mt-2">
           CREATE ACCOUNT
         </div>
