@@ -70,7 +70,7 @@ const handleSubmit = async(e) => {
 
   return (
     <>
-    <div className="h-fit w-3/4 bg-gray-800/75 flex flex-col justify-center items-center rounded-md lg:w-2/6 p-8 shadow-lg backdrop-blur-md">
+    <div className="h-fit w-11/12 md:w-8/12 bg-gray-800/75 flex flex-col justify-center items-center rounded-md lg:w-3/6 xl:w-2/6 p-8 shadow-lg backdrop-blur-md">
       <h2 className="text-white text-center text-3xl font-extrabold mb-6">Create Account</h2>
 
       <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-4">
