@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router';
-import { sendOtpAsync } from '../authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, Navigate } from 'react-router';
+import { googleAuthAsync, selectLoggedInUser, sendOtpAsync } from '../authSlice';
+import { GoogleLogin } from '@react-oauth/google';
 
 function SignupStep1({ nextStep }) {
     // const [email, setEmail] = useState("");
@@ -10,7 +11,8 @@ function SignupStep1({ nextStep }) {
     const [form, setForm] = useState({ email: "", password: "", confirmPassword: "" });
     const [isPassSame, setIsPassSame] = useState(false);
     const dispatch = useDispatch();
-
+    const user = useSelector(selectLoggedInUser);
+    
     const passRef = useRef(null);
         const togglePassVisibility = (eyeIcon) => {
         if (passRef.current.type === "password"){
@@ -68,12 +70,18 @@ const handleSubmit = async(e) => {
     }
   };
 
+  const handleGoogleResponse = async (authResult) => {
+    const { credential } = authResult;
+    dispatch(googleAuthAsync(credential));
+  }
+
   return (
     <>
+    {user && <Navigate to="/" replace={true} />}
     <div className="h-fit w-11/12 md:w-8/12 lg:w-3/6 xl:w-2/6 bg-gray-800/75 flex flex-col justify-center items-center rounded-md p-8 shadow-lg backdrop-blur-md">
       <h2 className="text-white text-center text-3xl font-extrabold mb-6">Create Account</h2>
 
-      <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-4">
+      <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-4 mb-4">
         {/* Email Input */}
         <div className="relative">
           <input
@@ -142,6 +150,13 @@ const handleSubmit = async(e) => {
           Submit
         </button>
       </form>
+
+      <div className='min-w-full'>
+        <GoogleLogin
+          onSuccess={handleGoogleResponse}
+          onError={handleGoogleResponse}
+        /> 
+       </div>
 
       {/* Links */}
       <div className="text-center mt-6 text-gray-400">

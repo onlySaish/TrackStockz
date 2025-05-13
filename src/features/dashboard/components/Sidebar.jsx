@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectActiveContent, selectSidebarVisibility, setActiveContent } from '../dashboardSlice';
+import { selectActiveContent, selectSidebarVisibility, setActiveContent, toggleSidebar } from '../dashboardSlice';
 import { Home, AttachMoney, Inventory2, ShoppingCart, People, AccountCircle, Menu } from '@mui/icons-material';
 import { useState } from 'react';
 
@@ -14,8 +14,9 @@ function Sidebar() {
     dispatch(setActiveContent(content));
   };
 
-  const toggleSidebar = () => {
+  const handletoggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+    dispatch(toggleSidebar());
   };
 
   const menuItems = [
@@ -29,14 +30,14 @@ function Sidebar() {
 
   return (
     <div className="flex">
-      <button onClick={toggleSidebar} className="p-3 text-white bg-gray-900 md:hidden">
-        <Menu />
-      </button>
       <div
         className={`${
           isSidebarVisible ? 'block' : 'hidden'
         } ${isCollapsed ? 'w-16' : 'w-60'} h-screen bg-gray-900 text-white flex flex-col items-start p-5 shadow-xl transition-all duration-300 fixed md:relative`}
       >
+        <button onClick={handletoggleSidebar} className="p-3 text-white bg-gray-900 md:hidden">
+          <Menu />
+        </button>
         <div
           className="h-10 absolute left-0 w-1 bg-white transition-all duration-300 shadow-[0_0_100px_rgba(255,255,255,0.8)]"
           style={{

@@ -9,6 +9,7 @@ import {
   resetPassword,
   verifyOtp,
   sendOtp,
+  googleAuthApi,
   // refreshAccessToken
 } from './authApi';
 
@@ -73,6 +74,18 @@ export const loginUserAsync = createAsyncThunk(
     }
   }
 );
+
+export const googleAuthAsync = createAsyncThunk(
+  'user/googleAuth',
+  async (credential, { rejectWithValue }) => {
+    try {
+      const response = await googleAuthApi(credential);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+)
 
 //Auth check
 export const checkAuthAsync = createAsyncThunk(
@@ -191,7 +204,10 @@ export const authSlice = createSlice({
           duration: 3000,
           type: 'success',
         };
-      },  
+      }, 
+      // setLoggedInUserToken: (state, action) => {
+      //   state.loggedInUserToken = action.payload;
+      // }
       // setForgotPassActive: (state, action) => {
       //   state.forgotPassActive = action.payload; // Update active content
       // },
@@ -284,6 +300,29 @@ export const authSlice = createSlice({
           state.popup = {
             visible: true,
             message: `Login Failed: ${action.payload}`,
+            duration: 3000,
+            type: 'error',
+          };
+        })
+        .addCase(googleAuthAsync.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(googleAuthAsync.fulfilled, (state, action) => {
+          state.status = 'idle';
+          state.loggedInUserToken = action.payload;
+          state.popup = {
+            visible: true,
+            message: 'Google Login Successful!',
+            duration: 3000,
+            type: 'success',
+          };
+        })
+        .addCase(googleAuthAsync.rejected, (state, action) => {
+          state.status = 'idle';
+          state.error = action.payload;
+          state.popup = {
+            visible: true,
+            message: `Google Login Failed: ${action.payload}`,
             duration: 3000,
             type: 'error',
           };
@@ -411,7 +450,7 @@ export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
 export const selectUserChecked = (state) => state.auth.userChecked;
 export const selectPopup = (state) => state.auth.popup;
-export const selectStatus = (state) => state.auth.status
+export const selectStatus = (state) => state.auth.status;
 // export const selectForgotPassActive = (state) => state.auth.forgotPassActive;
 
 export const { showPopup, hidePopup } = authSlice.actions;

@@ -33,6 +33,10 @@ function Navbar() {
     dispatch(toggleSidebar());
   };
 
+  useEffect(() => {
+    console.log(user.avatar);
+  },[user])
+
   return (
     <>
       {!user && <Navigate to="/login" replace={true} />}
@@ -54,11 +58,16 @@ function Navbar() {
         </div>
         <div className="flex items-center gap-4">
           <div className="text-white font-bold text-xl capitalize">Welcome, {user.username}</div>
-          <div 
-          className="h-12 w-12 bg-cover bg-center rounded-full cursor-pointer border-2 border-gray-800 shadow-md hover:shadow-lg transition-all duration-300"
-          style={{ backgroundImage: `url(${user.avatar})` }}
-          onClick={() => dispatch(setActiveContent("Profile"))}>
-        </div>
+          <div
+            className="h-12 w-12 rounded-full cursor-pointer border-2 border-gray-800 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
+            onClick={() => dispatch(setActiveContent("Profile"))}
+          >
+            <img
+              src={user.avatar || 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png'}
+              alt="User Avatar"
+              className="h-full w-full object-cover"
+            />
+          </div>
         </div>
         <div className='group'>
           <button 

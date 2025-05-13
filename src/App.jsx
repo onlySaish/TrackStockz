@@ -15,10 +15,11 @@ import {
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
 import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' >
+    <Route path='/' errorElement={<ErrorPage/>}>
       <Route
         index
         element={
@@ -46,11 +47,13 @@ function App() {
 
   return (
     <>
-      <div className="App">
-        {userChecked && (
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <div className="App">
+          {userChecked && (
             <RouterProvider router={router} />
-        )}
-      </div>
+          )}
+        </div>
+      </GoogleOAuthProvider>
     </>
   )
 }

@@ -14,12 +14,12 @@ function Layout() {
     <>
       <Popup />
       <Loader />
-      <div className="flex h-screen">
+      <div className="flex md:min-h-screen lg:max-h-screen">
         {/* Sidebar - Always taking full screen height */}
         <div
           className={`${
             !isSidebarVisible ? 'hidden' : 'block'
-          } w-52 h-full bg-white shadow-md`}
+          } w-52 min-h-screen bg-white shadow-md`}
         >
           <Sidebar />
         </div>

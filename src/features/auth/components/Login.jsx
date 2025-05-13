@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { loginUserAsync, selectLoggedInUser } from "../authSlice.js";
+import { googleAuthAsync, loginUserAsync, selectLoggedInUser } from "../authSlice.js";
+import { GoogleLogin } from '@react-oauth/google';
 
 function Login() {
   const [identity, setIdentity] = useState("");
@@ -36,6 +37,11 @@ function Login() {
     dispatch(loginUserAsync(formData));
   };
 
+  const handleGoogleResponse = async (authResult) => {
+    const { credential } = authResult;
+    dispatch(googleAuthAsync(credential));
+  }
+
   return (
     <>
       {user && <Navigate to="/" replace={true} />}
@@ -47,7 +53,7 @@ function Login() {
             Login
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 mb-4">
             {/* Identity Input */}
             <div className="relative">
               <input
@@ -97,6 +103,11 @@ function Login() {
               Login
             </button>
           </form>
+
+          <GoogleLogin
+            onSuccess={handleGoogleResponse}
+            onError={handleGoogleResponse}
+          />
 
           {/* Links */}
           <div className="text-center mt-6 text-gray-400">
