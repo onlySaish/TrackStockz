@@ -104,7 +104,7 @@ function Login() {
             </button>
           </form>
 
-          <div className="mx-auto w-full max-w-md">
+          <div className="px-auto w-full max-w-md">
             <GoogleLogin
               onSuccess={handleGoogleResponse}
               onError={handleGoogleResponse}

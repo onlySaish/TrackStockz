@@ -151,7 +151,7 @@ const handleSubmit = async(e) => {
         </button>
       </form>
 
-      <div className='min-w-full mx-auto'>
+      <div className='min-w-full px-auto'>
         <GoogleLogin
           onSuccess={handleGoogleResponse}
           onError={handleGoogleResponse}
