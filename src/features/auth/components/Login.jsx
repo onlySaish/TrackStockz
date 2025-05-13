@@ -104,10 +104,12 @@ function Login() {
             </button>
           </form>
 
-          <GoogleLogin
-            onSuccess={handleGoogleResponse}
-            onError={handleGoogleResponse}
-          />
+          <div className="mx-auto w-full max-w-md">
+            <GoogleLogin
+              onSuccess={handleGoogleResponse}
+              onError={handleGoogleResponse}
+              />
+          </div>
 
           {/* Links */}
           <div className="text-center mt-6 text-gray-400">
