@@ -11,7 +11,7 @@ const SalesChart = ({ salesData }) => {
                     <YAxis tick={{ fill: '#4B5563' }} />
                     <Tooltip />
                     <Bar dataKey="revenue" barSize={30} fill="#1d5dab" />
-                    {/* <Line type="monotone" dataKey="revenue" stroke="#2563EB" strokeWidth={2} /> */}
+                    <Line type="monotone" dataKey="revenue" stroke="#2563EB" strokeWidth={2} />
                 </ComposedChart>
             </ResponsiveContainer>
         </div>
