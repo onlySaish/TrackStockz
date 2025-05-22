@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { googleAuthAsync, loginUserAsync, selectLoggedInUser } from "../authSlice.js";
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import { FcGoogle } from 'react-icons/fc';
 
 function Login() {
   const [identity, setIdentity] = useState("");
@@ -37,10 +38,21 @@ function Login() {
     dispatch(loginUserAsync(formData));
   };
 
-  const handleGoogleResponse = async (authResult) => {
-    const { credential } = authResult;
-    dispatch(googleAuthAsync(credential));
-  }
+  // const handleGoogleResponse = async (authResult) => {
+  //   console.log(authResult);
+  //   const { credential } = authResult;
+  //   dispatch(googleAuthAsync(credential));
+  // }
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: tokenResponse => {
+      dispatch(googleAuthAsync(tokenResponse.code));
+    },
+    onError: () => {
+      alert('Google login failed');
+    },
+    flow: 'auth-code', 
+  });
 
   return (
     <>
@@ -104,12 +116,19 @@ function Login() {
             </button>
           </form>
 
-          <div className="px-auto w-full max-w-md">
+          {/* <div className="px-auto w-full max-w-md">
             <GoogleLogin
               onSuccess={handleGoogleResponse}
               onError={handleGoogleResponse}
               />
-          </div>
+          </div> */}
+          <button
+            onClick={() => handleGoogleLogin()}
+            className="flex items-center gap-3 bg-white text-black mx-auto px-6 py-3 rounded-xl shadow hover:shadow-md border border-gray-300 transition-all duration-300"
+          >
+            <FcGoogle size={24} />
+            <span className="text-sm font-medium">Continue with Google</span>
+          </button>
 
           {/* Links */}
           <div className="text-center mt-6 text-gray-400">

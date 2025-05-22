@@ -65,6 +65,7 @@ function Navbar() {
             <img
               src={user.avatar || 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png'}
               alt="User Avatar"
+              onError={(e) => e.target.src = 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png'}
               className="h-full w-full object-cover"
             />
           </div>

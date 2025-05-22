@@ -54,6 +54,7 @@ const EditProfileCard = () => {
         <div className="flex flex-col items-center w-full md:w-1/3 border-r border-gray-700 p-8">
           <img
             src={avatarPreview}
+            onError={(e) => e.target.src = 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png'}
             alt="Profile Avatar"
             className="size-40 mb-4 -mt-4 rounded-2xl border-4 border-gray-600 shadow-md transition-transform duration-300 hover:scale-105"
           />

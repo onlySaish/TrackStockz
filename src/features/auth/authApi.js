@@ -171,8 +171,8 @@ export function resetPassword({token, newPassword}){
 //   return axiosInstance.post('/users/forgotPass-verify-phone-otp', {phoneNumber,otp});
 // };
 
-export function googleAuthApi(credential) {
- return axiosInstance.post('/users/google-auth', { credential }, {
+export function googleAuthApi(code) {
+ return axiosInstance.get(`/users/google-auth?code=${code}`, {   
     headers: {
       'Content-Type': 'application/json',
     },

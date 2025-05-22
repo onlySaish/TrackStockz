@@ -77,9 +77,9 @@ export const loginUserAsync = createAsyncThunk(
 
 export const googleAuthAsync = createAsyncThunk(
   'user/googleAuth',
-  async (credential, { rejectWithValue }) => {
+  async (code, { rejectWithValue }) => {
     try {
-      const response = await googleAuthApi(credential);
+      const response = await googleAuthApi(code);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);

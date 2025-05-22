@@ -28,8 +28,9 @@ const ProfileCard = () => {
           <div className="flex flex-col items-center w-full md:w-1/3 p-4 border-r border-gray-700">
             <div className="relative">
               <img
-                src={user.avatar || '/default-avatar.png'}
+                src={user.avatar || 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png'}
                 alt="Profile Avatar"
+                onError={(e) => e.target.src = 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png'}
                 className="w-36 h-36 rounded-2xl border-4 border-gray-700 shadow-md 
                 transition-transform duration-300 hover:scale-110"
               />
