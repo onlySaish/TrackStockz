@@ -5,8 +5,7 @@ import {
   createRoutesFromElements,
   Route
 } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
+import AuthPage from './pages/AuthPage';
 import Layout from './pages/Layout';
 import Protected from './features/auth/components/Protected';
 import { useEffect } from 'react';
@@ -16,8 +15,6 @@ import {
   // selectLoggedInUser,
   selectUserChecked
 } from './features/auth/authSlice';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
 import ErrorPage from './pages/ErrorPage';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
@@ -32,10 +29,10 @@ const router = createBrowserRouter(
           </Protected>
         }
       />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignUpPage />} />
-      <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
-      <Route path="/resetpassword/:token" element={<ResetPasswordPage />} />
+      <Route path="/login" element={<AuthPage />} />
+      <Route path="/signup" element={<AuthPage />} />
+      <Route path="/forgotpassword" element={<AuthPage />} />
+      <Route path="/resetpassword/:token" element={<AuthPage />} />
     </Route>
   )
 );  
