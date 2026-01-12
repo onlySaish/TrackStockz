@@ -4,7 +4,12 @@ import { profileSelector } from '../../dashboard/components/Profile/profileSlice
 import { Add, GroupAdd, KeyboardArrowDown, Store, ContentCopy } from '@mui/icons-material';
 import { createOrganization, joinOrganization, selectActiveOrganizationId, selectOrganizations, setActiveOrganization } from '../organizationSlice';
 
-const OrganizationSelector: React.FC = () => {
+interface OrganizationSelectorProps {
+  openUpwards?: boolean;
+  className?: string;
+}
+
+const OrganizationSelector: React.FC<OrganizationSelectorProps> = ({ openUpwards = false, className = '' }) => {
   const dispatch = useAppDispatch();
   const organizations = useAppSelector(selectOrganizations);
   const activeOrgId = useAppSelector(selectActiveOrganizationId);
@@ -83,20 +88,24 @@ const OrganizationSelector: React.FC = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <button
         onClick={resetView}
-        className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700"
+        className={`flex items-center justify-between gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700 ${className}`}
       >
-        <Store className="text-blue-400" />
-        <span className="font-semibold max-w-[150px] truncate">
-          {activeOrg ? activeOrg.name : "Select Organization"}
-        </span>
-        <KeyboardArrowDown className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <div className="flex items-center gap-2 overflow-hidden">
+          <Store className="text-blue-400 flex-shrink-0" />
+          <span className="font-semibold truncate">
+            {activeOrg ? activeOrg.name : "Select Organization"}
+          </span>
+        </div>
+        <KeyboardArrowDown className={`transition-transform duration-200 flex-shrink-0 ${isOpen !== openUpwards ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full text-white right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-xl border border-gray-700 z-50 overflow-hidden">
+        <div className={`absolute text-white w-64 bg-gray-800 rounded-lg shadow-xl border border-gray-700 z-50 overflow-hidden 
+          ${openUpwards ? 'bottom-full left-1/2 rounded-none -translate-x-1/2' : 'top-full mt-2 right-0'}
+        `}>
           {view === 'list' && (
             <>
               <div className="max-h-60 overflow-y-auto">

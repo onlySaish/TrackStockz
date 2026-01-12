@@ -1,7 +1,7 @@
 import React from 'react';
 import { selectActiveContent, selectSidebarVisibility, setActiveContent, toggleSidebar } from '../dashboardSlice';
-import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
+import OrganizationSelector from '../../organization/components/OrganizationSelector';
 
 interface MenuItem {
   name: string;
@@ -33,7 +33,7 @@ function Sidebar() {
 
   return (
     <div className="flex w-full h-full">
-      <div className="w-full h-full bg-gray-900 text-white flex flex-col items-center py-5 shadow-xl">
+      <div className="w-full h-full bg-gray-900 text-white flex flex-col items-center pt-5 shadow-xl">
         <div className={`flex items-center w-full mb-6 h-10 transition-all duration-300 ${isSidebarVisible ? 'justify-start px-6 gap-3' : 'justify-center'}`}>
           <button onClick={() => dispatch(toggleSidebar())} className="text-white hover:text-gray-300 transition-colors flex items-center justify-center">
             <span
@@ -63,6 +63,11 @@ function Sidebar() {
               <span className={`text-lg whitespace-nowrap ${isSidebarVisible ? 'block' : 'hidden'}`}>{item.name}</span>
             </div>
           ))}
+        </div>
+
+        {/* Mobile Organization Selector - Pushed to bottom */}
+        <div className="mt-auto w-full md:hidden">
+          <OrganizationSelector openUpwards={true} className="w-full rounded-none border-x-0 border-b-0 h-14" />
         </div>
       </div>
     </div>
