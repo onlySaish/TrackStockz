@@ -11,7 +11,7 @@ function Navbar(): React.JSX.Element {
   const dispatch = useAppDispatch();
   const user = useAppSelector(profileSelector);
   const hasFetched = useRef<boolean>(false);
-  
+
   useEffect(() => {
     if (!hasFetched.current) {
       dispatch(fetchProfile());
@@ -33,21 +33,13 @@ function Navbar(): React.JSX.Element {
       {!user && <Navigate to="/login" replace={true} />}
       <div className="max-w-full bg-gray-900 flex flex-row justify-between items-center py-4 px-10 shadow-md">
         <div className="flex items-center gap-4">
-          <button onClick={handleSidebarToggle} className="text-white text-4xl mb-2">
+          <button onClick={handleSidebarToggle} className="text-white text-4xl mb-2 md:hidden">
             <Menu />
           </button>
           <div className="flex items-center gap-4">
             <div className="hidden md:block size-10 rounded-full bg-contain bg-no-repeat bg-left-bottom" style={{ backgroundImage: "url('reactLogo.webp')" }}></div>
             <div className="text-2xl font-bold text-white">TrackStockz</div>
           </div>
-        </div>
-        <div className="items-center hidden md:flex bg-gray-800 text-white rounded-full px-4 py-2 shadow-inner w-1/3">
-          <Search className="text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Search here..." 
-            ref={searchRef} 
-            className="w-full bg-transparent pl-3 text-white border-none h-full outline-none" />
         </div>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-4">
@@ -65,8 +57,8 @@ function Navbar(): React.JSX.Element {
             </div>
           </div>
           <div className='group'>
-            <button 
-              onClick={handleLogOut} 
+            <button
+              onClick={handleLogOut}
               className="flex cursor-pointer items-center bg-red-600 text-white px-4 py-2 rounded-full font-bold shadow-lg hover:bg-red-700 transition-all duration-300"
             >
               <Logout className="mr-0 transition-all duration-300" />
