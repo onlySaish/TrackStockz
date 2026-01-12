@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Organization, OrganizationState, CreateOrganizationRequest } from './organizationTypes';
-import { createOrganizationApi, fetchUserOrganizationsApi, joinOrganizationApi } from './organizationApi';
+import type { OrganizationState, CreateOrganizationRequest } from './organizationTypes';
+import { createOrganizationApi, fetchUserOrganizationsApi, joinOrganizationApi, fetchOrganizationMembersApi, removeMemberApi } from './organizationApi';
 import type { RootState } from '../../app/store';
 
 const initialState: OrganizationState = {
   organizations: [],
   activeOrganizationId: localStorage.getItem('activeOrganizationId') || null,
+  activeOrganizationMembers: [],
   status: 'idle',
   error: null,
 };
@@ -35,6 +36,29 @@ import { signOutAsync } from '../auth/authSlice';
 
 // ... (existing thunks)
 
+export const fetchOrganizationMembers = createAsyncThunk(
+  'organization/fetchOrganizationMembers',
+  async (organizationId: string, { rejectWithValue }) => {
+    try {
+      return await fetchOrganizationMembersApi(organizationId);
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to fetch members');
+    }
+  }
+);
+
+export const removeMember = createAsyncThunk(
+  'organization/removeMember',
+  async ({ organizationId, memberId }: { organizationId: string, memberId: string }, { rejectWithValue }) => {
+    try {
+      await removeMemberApi(organizationId, memberId);
+      return memberId;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to remove member');
+    }
+  }
+);
+
 export const organizationSlice = createSlice({
   name: 'organization',
   initialState,
@@ -44,6 +68,7 @@ export const organizationSlice = createSlice({
     },
     clearActiveOrganization: (state) => {
       state.activeOrganizationId = null;
+      state.activeOrganizationMembers = [];
     }
   },
   extraReducers: (builder) => {
@@ -51,6 +76,7 @@ export const organizationSlice = createSlice({
       .addCase(signOutAsync.fulfilled, (state) => {
         state.organizations = [];
         state.activeOrganizationId = null;
+        state.activeOrganizationMembers = [];
         state.status = 'idle';
         state.error = null;
       })
@@ -103,6 +129,21 @@ export const organizationSlice = createSlice({
       .addCase(joinOrganization.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to join organization';
+      })
+      // Fetch Members
+      .addCase(fetchOrganizationMembers.pending, (state) => {
+        // state.status = 'loading'; // Don't block whole UI for member fetch
+      })
+      .addCase(fetchOrganizationMembers.fulfilled, (state, action) => {
+        state.activeOrganizationMembers = action.payload;
+      })
+      .addCase(fetchOrganizationMembers.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      // Remove Member
+      .addCase(removeMember.fulfilled, (state, action) => {
+        // Remove member from list
+        state.activeOrganizationMembers = state.activeOrganizationMembers.filter(m => m.user._id !== action.payload);
       });
   },
 });
@@ -111,6 +152,7 @@ export const { setActiveOrganization, clearActiveOrganization } = organizationSl
 
 export const selectOrganizations = (state: RootState) => state.organization.organizations;
 export const selectActiveOrganizationId = (state: RootState) => state.organization.activeOrganizationId;
+export const selectActiveOrganizationMembers = (state: RootState) => state.organization.activeOrganizationMembers;
 export const selectOrganizationStatus = (state: RootState) => state.organization.status;
 export const selectActiveOrganization = (state: RootState) =>
   state.organization.organizations.find(o => o._id === state.organization.activeOrganizationId);

@@ -8,7 +8,6 @@ import { getAllCategories } from "../../Inventory/inventoryApi.js";
 import { useAppDispatch, useAppSelector } from '../../../../../hooks.js';
 import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
 import type { OrderProductDetails, Product, ProductDetails, SelectProduct } from '../../../dashboardTypes.js';
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 
 
 export interface UpdatedProductDetailsInterface extends Omit<ProductDetails, "quantity"> {
@@ -246,30 +245,30 @@ const EditOrderCard = () => {
         </div>
 
         <div className="w-full overflow-x-auto overflow-y-hidden rounded-sm">
-          <Table className="w-full bg-gray-800 text-white rounded-sm">
-            <Thead className="bg-gray-700">
-              <Tr>
-                <Th className="px-4 py-2">Image</Th>
-                <Th className="px-4 py-2">Name</Th>
-                <Th className="px-4 py-2">Price</Th>
-                <Th className="px-4 py-2">Quantity</Th>
-                <Th className="px-4 py-2">Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
+          <table className="w-full bg-gray-800 text-white rounded-sm min-w-[800px] md:min-w-full">
+            <thead className="bg-gray-700">
+              <tr>
+                <th className="px-4 py-2">Image</th>
+                <th className="px-4 py-2">Name</th>
+                <th className="px-4 py-2">Price</th>
+                <th className="px-4 py-2">Quantity</th>
+                <th className="px-4 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
               {OrderedProducts.length > 0 ? (
                 OrderedProducts.map((product) => (
-                  <Tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
-                    <Td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full md:mx-auto" style={{ backgroundImage: `url(${product.coverImg})` }}></div></Td>
-                    <Td className="px-4 py-2 capitalize">{product.name}</Td>
-                    <Td className="px-4 py-2">
+                  <tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                    <td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full md:mx-auto" style={{ backgroundImage: `url(${product.coverImg})` }}></div></td>
+                    <td className="px-4 py-2 capitalize">{product.name}</td>
+                    <td className="px-4 py-2">
                       {Array.isArray(product.price)
                         ? (product.price[0]?.price ?? 0) - ((product.discountPercent / 100) * (product.price[0]?.price ?? 0))
                         : (typeof product.price === 'number'
                           ? product.price - ((product.discountPercent / 100) * product.price)
                           : "NA")}
-                    </Td>
-                    <Td className="px-4 py-2">
+                    </td>
+                    <td className="px-4 py-2">
                       <input
                         className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2"
                         type="number"
@@ -278,8 +277,8 @@ const EditOrderCard = () => {
                         placeholder={product.quantity?.toString()}
                         ref={el => { quantityRefs.current[product._id] = el; }}
                       />
-                    </Td>
-                    <Td className="flex flex-row justify-center py-5 gap-3">
+                    </td>
+                    <td className="flex flex-row justify-center py-5 gap-3">
                       <button
                         onClick={() => handleUpdateProduct(product._id)}
                         className=" group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
@@ -292,18 +291,18 @@ const EditOrderCard = () => {
                       >
                         Delete
                       </button>
-                    </Td>
-                  </Tr>
+                    </td>
+                  </tr>
                 ))
               ) : (
-                <Tr>
-                  <Td colSpan={5} className="text-center py-4">
+                <tr>
+                  <td colSpan={5} className="text-center py-4">
                     No products found.
-                  </Td>
-                </Tr>
+                  </td>
+                </tr>
               )}
-            </Tbody>
-          </Table>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -343,40 +342,40 @@ const EditOrderCard = () => {
 
         {status === "loading" ? <p className="text-gray-600">Loading...</p> : (
           <div className="w-full overflow-x-auto overflow-y-hidden rounded-sm lg:px-10">
-            <Table className="bg-gray-800 text-white rounded-sm">
-              <Thead className="bg-gray-700">
-                <Tr>
-                  <Th className="px-4 py-2">Image</Th>
-                  <Th className="px-4 py-2">Name</Th>
-                  <Th className="px-4 py-2">Active Price</Th>
-                  <Th className="px-4 py-2">Category</Th>
-                  <Th className="px-4 py-2">Available Quantity</Th>
-                  <Th className="px-4 py-2">Discount Percent</Th>
-                  <Th className="px-4 py-2">Discounted Price</Th>
-                  <Th className="px-4 py-2">Quantity</Th>
-                  <Th className="px-4 py-2">Actions</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
+            <table className="w-full bg-gray-800 text-white rounded-sm min-w-[1000px] md:min-w-full">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="px-4 py-2">Image</th>
+                  <th className="px-4 py-2">Name</th>
+                  <th className="px-4 py-2">Active Price</th>
+                  <th className="px-4 py-2">Category</th>
+                  <th className="px-4 py-2">Available Quantity</th>
+                  <th className="px-4 py-2">Discount Percent</th>
+                  <th className="px-4 py-2">Discounted Price</th>
+                  <th className="px-4 py-2">Quantity</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
                 {updatedAllProducts.length > 0 ? (
                   updatedAllProducts.map((product) => (
-                    <Tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
-                      <Td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{ backgroundImage: `url(${product.coverImg})` }}></div></Td>
-                      <Td className="px-4 py-2 capitalize">{product.name}</Td>
-                      <Td className="px-4 py-2">{product.price[0]?.price}</Td>
-                      <Td className="px-4 py-2 capitalize">{product.category}</Td>
-                      <Td className="px-4 py-2">{product.quantity}</Td>
-                      <Td className="px-4 py-2">{product.discountPercent}%</Td>
-                      <Td className="px-4 py-2">{(product.price[0].price) - ((product.discountPercent / 100) * (product.price[0].price))}</Td>
-                      <Td className="px-4 py-2">
+                    <tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                      <td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{ backgroundImage: `url(${product.coverImg})` }}></div></td>
+                      <td className="px-4 py-2 capitalize">{product.name}</td>
+                      <td className="px-4 py-2">{product.price[0]?.price}</td>
+                      <td className="px-4 py-2 capitalize">{product.category}</td>
+                      <td className="px-4 py-2">{product.quantity}</td>
+                      <td className="px-4 py-2">{product.discountPercent}%</td>
+                      <td className="px-4 py-2">{(product.price[0].price) - ((product.discountPercent / 100) * (product.price[0].price))}</td>
+                      <td className="px-4 py-2">
                         <input
                           onChange={(e) => product.selectedQuantity = Number(e.target.value)}
                           className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2"
                           type="number"
                           min={0} max={product.quantity}
                           placeholder="0" />
-                      </Td>
-                      <Td className="flex flex-row justify-center py-5">
+                      </td>
+                      <td className="flex flex-row justify-center py-5">
 
                         <button
                           onClick={() => handleProductSelect(product)}
@@ -385,18 +384,18 @@ const EditOrderCard = () => {
                           <div>Select</div>
                         </button>
 
-                      </Td>
-                    </Tr>
+                      </td>
+                    </tr>
                   ))
                 ) : (
-                  <Tr>
-                    <Td colSpan={11} className="text-center py-4">
+                  <tr>
+                    <td colSpan={11} className="text-center py-4">
                       No products left.
-                    </Td>
-                  </Tr>
+                    </td>
+                  </tr>
                 )}
-              </Tbody>
-            </Table>
+              </tbody>
+            </table>
           </div>
         )}
 

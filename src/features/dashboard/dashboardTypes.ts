@@ -8,9 +8,9 @@ export interface UserProfile {
 }
 
 export interface ProfileDataPayload {
-    username: string;
-    fullName: string;
-    email: string;
+  username: string;
+  fullName: string;
+  email: string;
 }
 
 export interface Popup {
@@ -235,14 +235,14 @@ export interface SelectProduct extends Product {
 
 //Order
 export interface OrderProductDetails {
-  product: string;  
+  product: string;
   quantity: number;
   price: number;
   _id: string;
 }
 
 export interface ProductDetails {
-  _id: string; 
+  _id: string;
   name: string;
   price: ProductPrice[] | number;
   quantity: number;
@@ -308,12 +308,18 @@ export interface SalesTrend {
   revenue: number;
 }
 
+export interface CustomerTrend {
+  month: string;
+  count: number;
+}
+
 export interface DashboardStats {
   cancelledOrders: number;
   completedOrders: number;
   lowStockCount: number;
   pendingOrders: number;
   salesTrends: SalesTrend[];
+  customerTrends: CustomerTrend[];
   totalCustomers: number;
   totalOrders: number;
   totalProducts: number;

@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { selectAllProducts } from "../../Inventory/inventorySlice";
 import { removeSelectedItem, selectOrder, showPopup5, updateOrderItems } from "../sellSlice";
 import { useAppDispatch, useAppSelector } from "../../../../../hooks";
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 // import type { SelectProduct } from "../../../dashboardTypes";`
 
 type FinalProduct = {
@@ -111,67 +110,67 @@ const OrderSummaryCard = () => {
       >
         <div className="w-full flex flex-col bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-900 bg-clip-padding py-4 mb-4">
           <div className="w-full overflow-y-hidden overflow-x-auto rounded-sm shadow-lg md:px-6">
-          <Table className="w-11/12 bg-gray-800 text-white rounded-sm">
-            <Thead className="bg-gray-700">
-              <Tr>
-                <Th className="px-4 py-2">Image</Th>
-                <Th className="px-4 py-2">Name</Th>
-                <Th className="px-4 py-2">Price</Th>
-                <Th className="px-4 py-2">Quantity</Th>
-                <Th className="px-4 py-2">Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {finalProducts.length > 0 ? (
-                finalProducts.map((product) => (
-                  <Tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
-                    <Td className="px-4 py-2">
-                      <div
-                        className="bg-cover bg-center size-14 rounded-full"
-                        style={{ backgroundImage: `url(${product.coverImg})` }}
-                      ></div>
-                    </Td>
-                    <Td className="px-4 py-2 capitalize">{product.name}</Td>
-                    <Td className="px-4 py-2">
-                      {product.price[0].price - ((product.discountPercent / 100) * product.price[0].price)}
-                    </Td>
-                    <Td className="px-4 py-2">
-                      <input
-                        className="border border-gray-600 bg-gray-800 w-2/5 rounded-lg p-2"
-                        type="number"
-                        min={1}
-                        max={product.availableQuantity}
-                        placeholder={product.quantity.toString()}
-                        ref={(el) => { quantityRefs.current[product._id] = el; }}
-                      />
-                    </Td>
-                    <Td>
-                      <div className="flex flex-row justify-start py-5 gap-4">
-                        <button
-                          onClick={() => handleUpdateProduct(product._id)}
-                          className="bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
-                        >
-                          Update
-                        </button>
-                        <button
-                          onClick={() => handleProductDelete(product._id)}
-                          className="bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </Td>
-                  </Tr>
-                ))
-              ) : (
-                <Tr>
-                  <Td colSpan={5} className="text-center py-4">
-                    No products found.
-                  </Td>
-                </Tr>
-              )}
-            </Tbody>
-          </Table>
+            <table className="w-11/12 bg-gray-800 text-white rounded-sm min-w-[700px] md:min-w-full">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="px-4 py-2">Image</th>
+                  <th className="px-4 py-2">Name</th>
+                  <th className="px-4 py-2">Price</th>
+                  <th className="px-4 py-2">Quantity</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {finalProducts.length > 0 ? (
+                  finalProducts.map((product) => (
+                    <tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                      <td className="px-4 py-2">
+                        <div
+                          className="bg-cover bg-center size-14 rounded-full"
+                          style={{ backgroundImage: `url(${product.coverImg})` }}
+                        ></div>
+                      </td>
+                      <td className="px-4 py-2 capitalize">{product.name}</td>
+                      <td className="px-4 py-2">
+                        {product.price[0].price - ((product.discountPercent / 100) * product.price[0].price)}
+                      </td>
+                      <td className="px-4 py-2">
+                        <input
+                          className="border border-gray-600 bg-gray-800 w-2/5 rounded-lg p-2"
+                          type="number"
+                          min={1}
+                          max={product.availableQuantity}
+                          placeholder={product.quantity.toString()}
+                          ref={(el) => { quantityRefs.current[product._id] = el; }}
+                        />
+                      </td>
+                      <td>
+                        <div className="flex flex-row justify-start py-5 gap-4">
+                          <button
+                            onClick={() => handleUpdateProduct(product._id)}
+                            className="bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
+                          >
+                            Update
+                          </button>
+                          <button
+                            onClick={() => handleProductDelete(product._id)}
+                            className="bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="text-center py-4">
+                      No products found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </motion.div>

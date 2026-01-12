@@ -11,7 +11,6 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../../../hooks.js";
 import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
 import type { Order } from "../../../dashboardTypes.js";
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 
 interface finalUpdatedOrder extends Order {
   totalQuantity: number,
@@ -133,79 +132,128 @@ const DisplayOrders = () => {
     <div className="max-w-screen p-6 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-md shadow-lg">
       <h2 className="text-3xl font-bold mb-4">Order List</h2>
 
-      <div className="mb-6 flex flex-col lg:flex-row gap-4">
-        <input
-          type="text"
-          placeholder="Search orders..."
-          className="w-full lg:w-1/3 px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
-          value={search}
-          onChange={handleSearch}
-        />
+      {/* Industrial Style Toolbar - Responsive & Colored */}
+      <div className="mb-6 p-1.5 bg-gray-900/50 rounded-lg border border-gray-700/50 flex flex-col lg:flex-row gap-4 lg:gap-2">
+        {/* Search */}
+        <div className="relative flex-grow group w-full lg:w-auto">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i className="fa-solid fa-search text-gray-500 group-focus-within:text-blue-400 transition-colors"></i>
+          </div>
+          <input
+            type="text"
+            placeholder="Search by customer, order ID..."
+            className="block w-full pl-10 pr-3 py-3 bg-gray-800 border-transparent text-white placeholder-gray-400 rounded-md focus:bg-gray-900 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 sm:text-sm transition-all shadow-inner"
+            value={search}
+            onChange={handleSearch}
+          />
+        </div>
 
-        <div className="flex flex-wrap gap-4 justify-start items-center">
-          <select value={sort} onChange={handleSortChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
-            <option value="createdAt">Time</option>
-            <option value="totalPrice">Amount</option>
-          </select>
+        {/* Filter Group */}
+        <div className="flex flex-wrap gap-2 items-center justify-start lg:justify-end w-full lg:w-auto">
+          {/* Sort Field */}
+          <div className="relative flex-grow sm:flex-grow-0 min-w-[140px]">
+            <select
+              className="block w-full pl-3 pr-10 py-2.5 text-sm bg-gray-800 border-l border-gray-600 text-white rounded-md focus:outline-none focus:bg-gray-700/50 transition-colors cursor-pointer appearance-none"
+              value={sort}
+              onChange={handleSortChange}
+            >
+              <option value="createdAt" className="bg-gray-900 text-white">Date Created</option>
+              <option value="totalPrice" className="bg-gray-900 text-white">Total Amount</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <i className="fa-solid fa-chevron-down text-xs text-gray-500"></i>
+            </div>
+          </div>
 
-          <select value={order} onChange={handleOrderChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
-            <option value="asc">{(timeActive) ? "Oldest" : "Ascending"}</option>
-            <option value="desc">{(timeActive) ? "Newest" : "Descending"}</option>
-          </select>
+          {/* Sort Order */}
+          <div className="relative flex-grow sm:flex-grow-0 min-w-[130px]">
+            <select
+              className="block w-full pl-3 pr-10 py-2.5 text-sm bg-gray-800 border-l border-gray-600 text-white rounded-md focus:outline-none focus:bg-gray-700/50 transition-colors cursor-pointer appearance-none"
+              value={order}
+              onChange={handleOrderChange}
+            >
+              <option value="asc" className="bg-gray-900 text-white">{timeActive ? "Oldest First" : "Ascending"}</option>
+              <option value="desc" className="bg-gray-900 text-white">{timeActive ? "Newest First" : "Descending"}</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <i className="fa-solid fa-arrow-down-short-wide text-xs text-gray-500"></i>
+            </div>
+          </div>
 
-          <select value={status} onChange={handleStatus} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
-            <option value="">All Status</option>
-            <option value="Pending">Pending</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
+          {/* Status */}
+          <div className="relative flex-grow sm:flex-grow-0 min-w-[120px]">
+            <select
+              className="block w-full pl-3 pr-10 py-2.5 text-sm bg-gray-800 border-l border-gray-600 text-white rounded-md focus:outline-none focus:bg-gray-700/50 transition-colors cursor-pointer appearance-none"
+              value={status}
+              onChange={handleStatus}
+            >
+              <option value="" className="bg-gray-900 text-white">All Status</option>
+              <option value="Pending" className="bg-gray-900 text-white">Pending</option>
+              <option value="Completed" className="bg-gray-900 text-white">Completed</option>
+              <option value="Cancelled" className="bg-gray-900 text-white">Cancelled</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <i className="fa-solid fa-circle-half-stroke text-xs text-gray-500"></i>
+            </div>
+          </div>
 
-          <select value={paymentMethod} onChange={handlePaymentMethod} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
-            <option value="">All Payments</option>
-            <option value="Cash">Cash</option>
-            <option value="Card">Card</option>
-            <option value="UPI">UPI</option>
-          </select>
+          {/* Payment Method */}
+          <div className="relative flex-grow sm:flex-grow-0 min-w-[130px]">
+            <select
+              className="block w-full pl-3 pr-10 py-2.5 text-sm bg-gray-800 border-l border-gray-600 text-white rounded-md focus:outline-none focus:bg-gray-700/50 transition-colors cursor-pointer appearance-none"
+              value={paymentMethod}
+              onChange={handlePaymentMethod}
+            >
+              <option value="" className="bg-gray-900 text-white">All Payments</option>
+              <option value="Cash" className="bg-gray-900 text-white">Cash</option>
+              <option value="Card" className="bg-gray-900 text-white">Card</option>
+              <option value="UPI" className="bg-gray-900 text-white">UPI</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <i className="fa-solid fa-credit-card text-xs text-gray-500"></i>
+            </div>
+          </div>
 
           <button
             onClick={handleSearchOrder}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-400 transition"
+            className="px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 rounded-md transition-colors shadow-sm active:bg-gray-800"
+            title="Apply Filters"
           >
-            <div>Search</div>
+            <i className="fa-solid fa-rotate-right text-sm"></i>
           </button>
         </div>
       </div>
 
       {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> : (
         <div className="overflow-x-auto overflow-y-hidden rounded-sm shadow-lg">
-          <Table className="w-full bg-gray-800 text-white rounded-sm">
-            <Thead className="bg-gray-700">
-              <Tr>
-                {/* <Th className="px-4 py-2">Order ID</Th> */}
-                <Th className="px-4 py-2">Customer Name</Th>
-                <Th className="px-4 py-2">Customer Company</Th>
-                <Th className="px-4 py-2">Unique Products</Th>
-                <Th className="px-4 py-2">Total Order Quantity</Th>
-                <Th className="px-4 py-2">Total Amount</Th>
-                <Th className="px-4 py-2">Final Price</Th>
-                <Th className="px-4 py-2">Payment Method</Th>
-                <Th className="px-4 py-2">Status</Th>
-                <Th className="px-4 py-2">Updated</Th>
-                <Th className="px-4 py-2">Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
+          <table className="w-full bg-gray-800 text-white rounded-sm min-w-[1200px] md:min-w-full">
+            <thead className="bg-gray-700">
+              <tr>
+                {/* <th className="px-4 py-2">Order ID</th> */}
+                <th className="px-4 py-2">Customer Name</th>
+                <th className="px-4 py-2">Customer Company</th>
+                <th className="px-4 py-2">Unique Products</th>
+                <th className="px-4 py-2">Total Order Quantity</th>
+                <th className="px-4 py-2">Total Amount</th>
+                <th className="px-4 py-2">Final Price</th>
+                <th className="px-4 py-2">Payment Method</th>
+                <th className="px-4 py-2">Status</th>
+                <th className="px-4 py-2">Updated</th>
+                <th className="px-4 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
               {finalUpdatedOrders.length > 0 ? (
                 finalUpdatedOrders.map((order) => (
-                  <Tr key={order._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
-                    <Td className="px-4 py-2">{order.customerDetails.firstName} {order.customerDetails.lastName}</Td>
-                    <Td className="px-4 py-2">{order.customerDetails.companyName}</Td>
-                    <Td className="px-4 py-2">{order.products.length}</Td>
-                    <Td className="px-4 py-2">{order.totalQuantity}</Td>
-                    <Td className="px-4 py-2">{order.totalPrice}</Td>
-                    <Td className="px-4 py-2">{order.finalDiscountedPrice}</Td>
-                    <Td className="px-4 py-2">{order.paymentMethod}</Td>
-                    <Td className="px-4 py-2">
+                  <tr key={order._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                    <td className="px-4 py-2">{order.customerDetails.firstName} {order.customerDetails.lastName}</td>
+                    <td className="px-4 py-2">{order.customerDetails.companyName}</td>
+                    <td className="px-4 py-2">{order.products.length}</td>
+                    <td className="px-4 py-2">{order.totalQuantity}</td>
+                    <td className="px-4 py-2">{order.totalPrice}</td>
+                    <td className="px-4 py-2">{order.finalDiscountedPrice}</td>
+                    <td className="px-4 py-2">{order.paymentMethod}</td>
+                    <td className="px-4 py-2">
                       <select
                         value={order.status}
                         onChange={(e) => handleStatusChange(order._id, e.target.value)}
@@ -215,8 +263,8 @@ const DisplayOrders = () => {
                         <option value="Completed">Completed</option>
                         <option value="Cancelled">Cancelled</option>
                       </select>
-                    </Td>
-                    <Td className="px-4 py-2">
+                    </td>
+                    <td className="px-4 py-2">
                       {new Date(order.updatedAt).toLocaleDateString("en-US", {
                         day: "2-digit",
                         month: "2-digit",
@@ -225,22 +273,22 @@ const DisplayOrders = () => {
                         minute: "2-digit",
                         hour12: true,
                       })}
-                    </Td>
-                    <Td className="flex flex-row justify-center items-center px-4 py-2 gap-2">
+                    </td>
+                    <td className="flex flex-row justify-center items-center px-4 py-2 gap-2">
                       <div className="flex gap-3 justify-center">
                         <button onClick={() => handleView(order)} className="px-4 py-2 bg-blue-500 text-white rounded-lg fa-solid fa-eye"></button>
                         <button onClick={() => handleEdit(order)} className="px-4 py-2 bg-green-500 text-white rounded-lg fa-solid fa-edit"></button>
                       </div>
-                    </Td>
-                  </Tr>
+                    </td>
+                  </tr>
                 ))
               ) : (
-                <Tr>
-                  <Td colSpan={10} className="text-center py-4">No orders found.</Td>
-                </Tr>
+                <tr>
+                  <td colSpan={10} className="text-center py-4">No orders found.</td>
+                </tr>
               )}
-            </Tbody>
-          </Table>
+            </tbody>
+          </table>
         </div>
       )}
 

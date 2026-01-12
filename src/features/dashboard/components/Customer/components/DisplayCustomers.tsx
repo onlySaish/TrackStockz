@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { fetchAllCustomers, selectAllCustomers, setActiveCustomer, setCustomerActiveContent, showPopup3, toggleBlackListCustomer } from "../customerSlice.js";
 import { useAppDispatch, useAppSelector } from "../../../../../hooks.js";
 import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 import type { Customer } from "../../../dashboardTypes.js";
 
 const DisplayCustomers = () => {
@@ -87,9 +86,9 @@ const DisplayCustomers = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-lg shadow-lg">
-      <div className={`py-6 px-2 md:px-6 flex justify-between items-center ${isBlacklistActive ? "gap-3" : "gap-0"} `}>
-        <h2 className="text-3xl md:text-4xl font-bold">{isBlacklistActive ? "Blacklist" : "Customer List"}</h2>
+    <div className="max-w-screen p-6 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-md shadow-lg">
+      <div className={`mb-6 flex justify-between items-center ${isBlacklistActive ? "gap-3" : "gap-0"} `}>
+        <h2 className="text-3xl font-bold">{isBlacklistActive ? "Blacklist" : "Customer List"}</h2>
         <div className={`flex md:text-lg ${isBlacklistActive ? "gap-3" : "gap-4"} `}>
           <button onClick={handleAdd} className={`${isBlacklistActive ? "px-1 py-1" : "px-4 py-1"} md:px-5 md:py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold shadow-md transition-transform duration-300`}>
             New Customer
@@ -99,47 +98,84 @@ const DisplayCustomers = () => {
           </button>
         </div>
       </div>
-      <div className="py-6 px-2 md:px-6 mb-6 flex flex-col md:flex-row gap-4">
-        <input type="text" placeholder="Search customers..." className="w-full px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600" value={search} onChange={handleSearch} />
+      <div className="mb-6 p-1.5 bg-gray-900/50 rounded-lg border border-gray-700/50 flex flex-col lg:flex-row gap-4 lg:gap-2">
+        {/* Search */}
+        <div className="relative flex-grow group w-full lg:w-auto">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i className="fa-solid fa-search text-gray-500 group-focus-within:text-blue-400 transition-colors"></i>
+          </div>
+          <input
+            type="text"
+            placeholder="Search by name, email, phone..."
+            className="block w-full pl-10 pr-3 py-3 bg-gray-800 border-transparent text-white placeholder-gray-400 rounded-md focus:bg-gray-900 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 sm:text-sm transition-all shadow-inner"
+            value={search}
+            onChange={handleSearch}
+          />
+        </div>
 
-        <div className="flex gap-4 justify-start items-center">
-          <select className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600" value={sort} onChange={handleSortChange}>
-            <option value="createdAt">Time</option>
-            <option value="firstName">First Name</option>
-            <option value="email">Email</option>
-            <option value="phoneNumber">Phone</option>
-          </select>
+        {/* Filter Group */}
+        <div className="flex flex-wrap gap-2 items-center justify-start lg:justify-end w-full lg:w-auto">
+          {/* Sort Field */}
+          <div className="relative flex-grow sm:flex-grow-0 min-w-[140px]">
+            <select
+              className="block w-full pl-3 pr-10 py-2.5 text-sm bg-gray-800 border-l border-gray-600 text-white rounded-md focus:outline-none focus:bg-gray-700/50 transition-colors cursor-pointer appearance-none"
+              value={sort}
+              onChange={handleSortChange}
+            >
+              <option value="createdAt" className="bg-gray-900 text-white">Time</option>
+              <option value="firstName" className="bg-gray-900 text-white">First Name</option>
+              <option value="email" className="bg-gray-900 text-white">Email</option>
+              <option value="phoneNumber" className="bg-gray-900 text-white">Phone</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <i className="fa-solid fa-chevron-down text-xs text-gray-500"></i>
+            </div>
+          </div>
 
-          <select className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600" value={order} onChange={handleOrderChange}>
-            <option value="asc">{(timeActive) ? "Oldest" : "Ascending"}</option>
-            <option value="desc">{(timeActive) ? "Newest" : "Descending"}</option>
-          </select>
+          {/* Sort Order */}
+          <div className="relative flex-grow sm:flex-grow-0 min-w-[130px]">
+            <select
+              className="block w-full pl-3 pr-10 py-2.5 text-sm bg-gray-800 border-l border-gray-600 text-white rounded-md focus:outline-none focus:bg-gray-700/50 transition-colors cursor-pointer appearance-none"
+              value={order}
+              onChange={handleOrderChange}
+            >
+              <option value="asc" className="bg-gray-900 text-white">{timeActive ? "Oldest" : "Ascending"}</option>
+              <option value="desc" className="bg-gray-900 text-white">{timeActive ? "Newest" : "Descending"}</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <i className="fa-solid fa-arrow-down-short-wide text-xs text-gray-500"></i>
+            </div>
+          </div>
 
-          <button onClick={handleSearchCustomer} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-400 transition">
-            Search
+          <button
+            onClick={handleSearchCustomer}
+            className="px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 rounded-md transition-colors shadow-sm active:bg-gray-800"
+            title="Apply Filters"
+          >
+            <i className="fa-solid fa-rotate-right text-sm"></i>
           </button>
         </div>
       </div>
-      <div className="overflow-y-auto rounded-sm shadow-lg lg:px-6">
-        <Table className="w-full bg-gray-800 text-white rounded-sm">
-          <Thead className="bg-gray-700">
-            <Tr>
-              <Th className="px-4 py-2">Full Name</Th>
-              <Th className="px-4 py-2">Email</Th>
-              <Th className="px-4 py-2">Phone</Th>
-              <Th className="px-4 py-2">Company</Th>
-              <Th className="px-4 py-2">Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+      <div className="overflow-x-auto rounded-sm shadow-lg">
+        <table className="w-full bg-gray-800 text-white rounded-sm min-w-[800px] md:min-w-full">
+          <thead className="bg-gray-700">
+            <tr>
+              <th className="px-4 py-2">Full Name</th>
+              <th className="px-4 py-2">Email</th>
+              <th className="px-4 py-2">Phone</th>
+              <th className="px-4 py-2">Company</th>
+              <th className="px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
             {allCustomers.length > 0 ? (
               allCustomers.map((customer) => (
-                <Tr key={customer._id} className="border-b border-gray-700 hover:bg-gray-900">
-                  <Td className="px-4 py-2">{customer.firstName} {customer.lastName}</Td>
-                  <Td className="px-4 py-2 text-center">{customer.email}</Td>
-                  <Td className="px-4 py-2 text-center">{customer.phoneNumber}</Td>
-                  <Td className="px-4 py-2 text-center">{customer.companyName || "N/A"}</Td>
-                  <Td className="px-4 py-2 text-center">
+                <tr key={customer._id} className="border-b border-gray-700 hover:bg-gray-900">
+                  <td className="px-4 py-2">{customer.firstName} {customer.lastName}</td>
+                  <td className="px-4 py-2 text-center">{customer.email}</td>
+                  <td className="px-4 py-2 text-center">{customer.phoneNumber}</td>
+                  <td className="px-4 py-2 text-center">{customer.companyName || "N/A"}</td>
+                  <td className="px-4 py-2 text-center">
                     <div className="flex gap-3 justify-center">
                       <button onClick={() => handleEdit(customer)} className="bg-blue-500 hover:bg-blue-400 text-white px-3 py-2 rounded-md">
                         Edit
@@ -148,18 +184,18 @@ const DisplayCustomers = () => {
                         {isBlacklistActive ? "Unblock" : "Block"}
                       </button>
                     </div>
-                  </Td>
-                </Tr>
+                  </td>
+                </tr>
               ))
             ) : (
-              <Tr>
-                <Td colSpan={5} className="text-center py-4">No customers found.</Td>
-              </Tr>
+              <tr>
+                <td colSpan={5} className="text-center py-4">No customers found.</td>
+              </tr>
             )}
-          </Tbody>
-        </Table>
+          </tbody>
+        </table>
       </div>
-      <div className="flex justify-center mt-6 pb-6">
+      <div className="flex justify-center mt-6">
         {Array.from({ length: totalPages }, (_, index) => (
           <button key={index} onClick={() => handlePageChange(index + 1)} className={`px-4 py-2 mx-1 rounded-md ${currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-700"} `}>
             {index + 1}

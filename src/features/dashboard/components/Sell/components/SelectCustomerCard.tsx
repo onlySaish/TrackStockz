@@ -6,7 +6,6 @@ import { setSelectedCustomer, showPopup5 } from "../sellSlice.js";
 import { useAppDispatch, useAppSelector } from "../../../../../hooks.js";
 import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
 import type { Customer } from "../../../dashboardTypes.js";
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 
 
 const SelectCustomerCard = () => {
@@ -113,8 +112,8 @@ const SelectCustomerCard = () => {
         transition={{ duration: 0.5 }}
         className="overflow-hidden"
       >
-        <div className="flex flex-col max-w-screen text-white bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-900 py-4">
-          <div className="w-full mb-4 flex flex-col md:flex-row gap-3 px-12">
+        <div className="flex flex-col max-w-screen text-white bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-900 py-6 px-6">
+          <div className="w-full mb-6 flex flex-col md:flex-row gap-3">
             {/* Search Bar */}
             <input
               type="text"
@@ -146,51 +145,51 @@ const SelectCustomerCard = () => {
           </div>
 
           {/* Table */}
-          <div className="w-full overflow-y-hidden overflow-x-auto rounded-sm shadow-lg lg:px-6">
-            <Table className="bg-gray-800 text-white rounded-sm">
-              <Thead className="bg-gray-700">
-                <Tr>
-                  <Th className="px-4 py-2">Full Name</Th>
-                  <Th className="px-4 py-2">Email</Th>
-                  <Th className="px-4 py-2">Phone</Th>
-                  <Th className="px-4 py-2">Address</Th>
-                  <Th className="px-4 py-2">Company</Th>
-                  <Th className="px-4 py-2">Actions</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
+          <div className="w-full overflow-y-hidden overflow-x-auto rounded-sm shadow-lg">
+            <table className="bg-gray-800 text-white rounded-sm min-w-[800px] md:min-w-full">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="px-4 py-2">Full Name</th>
+                  <th className="px-4 py-2">Email</th>
+                  <th className="px-4 py-2">Phone</th>
+                  <th className="px-4 py-2">Address</th>
+                  <th className="px-4 py-2">Company</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
                 {allCustomers.length > 0 ? (
                   allCustomers.map((customer) => (
-                    <Tr key={customer._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer">
-                      <Td className="px-4 py-2 capitalize">{customer.firstName} {customer.lastName}</Td>
-                      <Td className="text-center px-4 py-2">{customer.email}</Td>
-                      <Td className="text-center px-4 py-2">{customer.phoneNumber}</Td>
-                      <Td className="px-4 py-2">
+                    <tr key={customer._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer">
+                      <td className="px-4 py-2 capitalize">{customer.firstName} {customer.lastName}</td>
+                      <td className="text-center px-4 py-2">{customer.email}</td>
+                      <td className="text-center px-4 py-2">{customer.phoneNumber}</td>
+                      <td className="px-4 py-2">
                         {customer.address
                           ? `${customer.address.street}, ${customer.address.city}, ${customer.address.state}, ${customer.address.zipCode}, ${customer.address.country}`
                           : "N/A"}
-                      </Td>
-                      <Td className="px-4 py-2 capitalize">{customer.companyName || "N/A"}</Td>
+                      </td>
+                      <td className="px-4 py-2 capitalize">{customer.companyName || "N/A"}</td>
 
-                      <Td className="flex flex-row justify-center py-5">
+                      <td className="flex flex-row justify-center py-5">
                         <button
                           onClick={() => handleSelectedCustomer(customer._id)}
                           className="relative group bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-500 transition flex items-center gap-1"
                         >
                           <div>Select</div>
                         </button>
-                      </Td>
-                    </Tr>
+                      </td>
+                    </tr>
                   ))
                 ) : (
-                  <Tr>
-                    <Td colSpan={7} className="text-center py-4">
+                  <tr>
+                    <td colSpan={7} className="text-center py-4">
                       No customers found.
-                    </Td>
-                  </Tr>
+                    </td>
+                  </tr>
                 )}
-              </Tbody>
-            </Table>
+              </tbody>
+            </table>
           </div>
 
           {/* Pagination */}

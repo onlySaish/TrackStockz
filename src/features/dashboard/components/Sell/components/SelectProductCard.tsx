@@ -9,7 +9,6 @@ import { selectOrder, setSelectedItem, showPopup5 } from "../sellSlice.js";
 import { useAppDispatch, useAppSelector } from "../../../../../hooks.js";
 import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
 import type { SelectProduct } from "../../../dashboardTypes.js";
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 
 const SelectProductCard = () => {
   const dispatch = useAppDispatch();
@@ -124,8 +123,8 @@ const SelectProductCard = () => {
         transition={{ duration: 0.5 }}
         className="overflow-hidden"
       >
-        <div className="max-w-screen flex flex-col text-white bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-900 bg-clip-padding py-4">
-          <div className="w-full mb-4 flex flex-col md:flex-row gap-3 px-12">
+        <div className="max-w-screen flex flex-col text-white bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-900 bg-clip-padding py-6 px-6">
+          <div className="w-full mb-6 flex flex-col md:flex-row gap-3">
             <input
               type="text"
               placeholder="Search products..."
@@ -157,41 +156,41 @@ const SelectProductCard = () => {
             </div>
           </div>
 
-          <div className="w-full overflow-y-hidden overflow-x-auto rounded-sm shadow-lg lg:px-6">
-            <Table className="bg-gray-800 text-white rounded-sm">
-              <Thead className="bg-gray-700">
-                <Tr>
-                  <Th className="px-4 py-2">Image</Th>
-                  <Th className="px-4 py-2">Name</Th>
-                  <Th className="px-4 py-2">Active Price</Th>
-                  <Th className="px-4 py-2">Category</Th>
-                  <Th className="px-4 py-2">Available Quantity</Th>
-                  <Th className="px-4 py-2">Discount Percent</Th>
-                  <Th className="px-4 py-2">Discounted Price</Th>
-                  <Th className="px-4 py-2">Quantity</Th>
-                  <Th className="px-4 py-2">Actions</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
+          <div className="w-full overflow-y-hidden overflow-x-auto rounded-sm shadow-lg">
+            <table className="bg-gray-800 text-white rounded-sm min-w-[1000px] md:min-w-full">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="px-4 py-2">Image</th>
+                  <th className="px-4 py-2">Name</th>
+                  <th className="px-4 py-2">Active Price</th>
+                  <th className="px-4 py-2">Category</th>
+                  <th className="px-4 py-2">Available Quantity</th>
+                  <th className="px-4 py-2">Discount Percent</th>
+                  <th className="px-4 py-2">Discounted Price</th>
+                  <th className="px-4 py-2">Quantity</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
                 {allProducts.length > 0 ? (
                   allProducts.map((product) => (
-                    <Tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
-                      <Td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{ backgroundImage: `url(${product.coverImg})` }}></div></Td>
-                      <Td className="px-4 py-2 capitalize">{product.name}</Td>
-                      <Td className="px-4 py-2">{product.price[0]?.price}</Td>
-                      <Td className="px-4 py-2 capitalize">{product.category}</Td>
-                      <Td className="px-4 py-2">{product.quantity}</Td>
-                      <Td className="px-4 py-2">{product.discountPercent}%</Td>
-                      <Td className="px-4 py-2">{(product.price[0].price) - ((product.discountPercent / 100) * (product.price[0].price))}</Td>
-                      <Td className="px-4 py-2">
+                    <tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                      <td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{ backgroundImage: `url(${product.coverImg})` }}></div></td>
+                      <td className="px-4 py-2 capitalize">{product.name}</td>
+                      <td className="px-4 py-2">{product.price[0]?.price}</td>
+                      <td className="px-4 py-2 capitalize">{product.category}</td>
+                      <td className="px-4 py-2">{product.quantity}</td>
+                      <td className="px-4 py-2">{product.discountPercent}%</td>
+                      <td className="px-4 py-2">{(product.price[0].price) - ((product.discountPercent / 100) * (product.price[0].price))}</td>
+                      <td className="px-4 py-2">
                         <input
                           onChange={(e) => product.selectedQuantity = Number(e.target.value)}
                           className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2"
                           type="number"
                           min={0} max={product.quantity}
                           placeholder="0" />
-                      </Td>
-                      <Td className="flex flex-row justify-center py-5">
+                      </td>
+                      <td className="flex flex-row justify-center py-5">
 
                         <button
                           onClick={() => handleProductSelect(product)}
@@ -200,18 +199,18 @@ const SelectProductCard = () => {
                           <div>Select</div>
                         </button>
 
-                      </Td>
-                    </Tr>
+                      </td>
+                    </tr>
                   ))
                 ) : (
-                  <Tr>
-                    <Td colSpan={11} className="text-center py-4">
+                  <tr>
+                    <td colSpan={11} className="text-center py-4">
                       No products found.
-                    </Td>
-                  </Tr>
+                    </td>
+                  </tr>
                 )}
-              </Tbody>
-            </Table>
+              </tbody>
+            </table>
           </div>
 
           <div className="flex justify-center mt-4">

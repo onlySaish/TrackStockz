@@ -61,3 +61,11 @@ export async function joinOrganizationApi(inviteCode: string): Promise<Organizat
     throw error.response?.data?.message || "Failed to join organization";
   }
 }
+
+export async function removeMemberApi(organizationId: string, memberId: string): Promise<void> {
+  try {
+    await axiosInstance.delete(`/organizations/${organizationId}/members/${memberId}`);
+  } catch (error: any) {
+    throw error.response?.data?.message || "Failed to remove member";
+  }
+}
