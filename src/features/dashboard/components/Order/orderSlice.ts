@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/tool
 import { editOrderApi, fetchAllOrdersApi, updateOrderStatusApi } from './orderApi';
 import type { RootState } from '../../../../app/store';
 import type { EditOrderParams, FetchOrdersParams, Order, Popup } from '../../dashboardTypes';
+import { signOutAsync } from '../../../auth/authSlice';
+import { setActiveOrganization } from '../../../organization/organizationSlice';
 
 interface OrderItem {
   product: string;
@@ -27,31 +29,31 @@ interface OrderState {
 }
 
 const initialState: OrderState = {
-    order: {
-      customerId: "",
-      items: []
-    },
-    orderActiveContent:"DisplayOrders",
-    totalPages: 1,
-    currentPage: 1,
-    totalOrders: 1,
-    activeOrder: null,
-    fetchedOrders: [],
-    status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
-    error: null,
-    popup: {
-        visible: false,
-        message: '',
-        duration: 3000, // Default duration
-        type: 'success', // Can be 'success' or 'error'
-    },
+  order: {
+    customerId: "",
+    items: []
+  },
+  orderActiveContent: "DisplayOrders",
+  totalPages: 1,
+  currentPage: 1,
+  totalOrders: 1,
+  activeOrder: null,
+  fetchedOrders: [],
+  status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: null,
+  popup: {
+    visible: false,
+    message: '',
+    duration: 3000, // Default duration
+    type: 'success', // Can be 'success' or 'error'
+  },
 };
 
 export const editOrder = createAsyncThunk(
   'sell/editOrder',
-  async ({orderId, products, additionalDiscountPercent}: EditOrderParams, { rejectWithValue }) => {
+  async ({ orderId, products, additionalDiscountPercent }: EditOrderParams, { rejectWithValue }) => {
     try {
-      const response = await editOrderApi({orderId, products, additionalDiscountPercent});
+      const response = await editOrderApi({ orderId, products, additionalDiscountPercent });
       return response;
     } catch (err: any) {
       return rejectWithValue(err);
@@ -61,9 +63,9 @@ export const editOrder = createAsyncThunk(
 
 export const updateOrderStatus = createAsyncThunk(
   'sell/updateOrderStatus',
-  async ({orderId, status}: {orderId: string, status: string}, { rejectWithValue }) => {
+  async ({ orderId, status }: { orderId: string, status: string }, { rejectWithValue }) => {
     try {
-      const response = await updateOrderStatusApi({orderId, status});
+      const response = await updateOrderStatusApi({ orderId, status });
       return response;
     } catch (err: any) {
       return rejectWithValue(err);
@@ -75,76 +77,103 @@ export const fetchAllOrders = createAsyncThunk(
   "sell/fetchAllOrders",
   async ({ page = 1, limit = 5, sort, order, search, status, paymentMethod }: FetchOrdersParams, { rejectWithValue }) => {
     try {
-        const response = await fetchAllOrdersApi({ page, limit, sort, order, search, status, paymentMethod });
-        return response;
+      const response = await fetchAllOrdersApi({ page, limit, sort, order, search, status, paymentMethod });
+      return response;
     } catch (error: any) {
-        return rejectWithValue(error);
+      return rejectWithValue(error);
     }
   }
 );
 
 const orderSlice = createSlice({
-    name: 'order',
-    initialState,
-    reducers: {
-        // setSelectedCustomer: (state, action) => {
-        //     state.order.customerId = action.payload;
-        // },
-        // setSelectedItem: (state, action) => {
-        //     state.order.items = [...state.order.items, action.payload];
-        // },
-        // removeSelectedItem: (state, action) => {
-        //   state.order.items = state.order.items.filter((product) => product.product !== action.payload);
-        // },
-        // updateOrderItems: (state,action) => {
-        //   state.order.items = state.order.items.map((product) =>
-        //     (product.product === action.payload.productId)
-        //       ? { ...product, quantity: action.payload.quantity }
-        //       : product
-        //   );
-        // },
-        showPopup6: (state, action: PayloadAction<Popup>) => {
-            state.popup = {
-                visible: true,
-                message: action.payload.message,
-                duration: action.payload.duration || 3000,
-                type: action.payload.type || 'success',
-            };
-        },
-        hidePopup6: (state) => {
-          state.popup = {
-              visible: false,
-              message: '',
-              duration: 3000,
-              type: 'success',
-          };
-      },
+  name: 'order',
+  initialState,
+  reducers: {
+    // setSelectedCustomer: (state, action) => {
+    //     state.order.customerId = action.payload;
+    // },
+    // setSelectedItem: (state, action) => {
+    //     state.order.items = [...state.order.items, action.payload];
+    // },
+    // removeSelectedItem: (state, action) => {
+    //   state.order.items = state.order.items.filter((product) => product.product !== action.payload);
+    // },
+    // updateOrderItems: (state,action) => {
+    //   state.order.items = state.order.items.map((product) =>
+    //     (product.product === action.payload.productId)
+    //       ? { ...product, quantity: action.payload.quantity }
+    //       : product
+    //   );
+    // },
+    showPopup6: (state, action: PayloadAction<Popup>) => {
+      state.popup = {
+        visible: true,
+        message: action.payload.message,
+        duration: action.payload.duration || 3000,
+        type: action.payload.type || 'success',
+      };
+    },
+    hidePopup6: (state) => {
+      state.popup = {
+        visible: false,
+        message: '',
+        duration: 3000,
+        type: 'success',
+      };
+    },
 
-      setActiveOrder: (state, action: PayloadAction<Order>) => {
-        state.activeOrder = action.payload;
-      },
-      removeActiveOrder: (state) => {
-          state.activeOrder = null;
-      },
-      setOrderActiveContent: (state, action: PayloadAction<string>) => {
-        state.orderActiveContent = action.payload;
+    setActiveOrder: (state, action: PayloadAction<Order>) => {
+      state.activeOrder = action.payload;
     },
+    removeActiveOrder: (state) => {
+      state.activeOrder = null;
     },
-    extraReducers: (builder) => {
-      builder
+    setOrderActiveContent: (state, action: PayloadAction<string>) => {
+      state.orderActiveContent = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(signOutAsync.fulfilled, (state) => {
+        state.fetchedOrders = [];
+        state.totalPages = 1;
+        state.currentPage = 1;
+        state.totalOrders = 0;
+        state.activeOrder = null;
+        state.status = 'idle';
+        state.error = null;
+        state.orderActiveContent = "DisplayOrders";
+        state.order = {
+          customerId: "",
+          items: []
+        };
+      })
+      .addCase(setActiveOrganization, (state) => {
+        state.fetchedOrders = [];
+        state.totalPages = 1;
+        state.currentPage = 1;
+        state.totalOrders = 0;
+        state.activeOrder = null;
+        state.status = 'idle';
+        state.error = null;
+        state.order = {
+          customerId: "",
+          items: []
+        };
+      })
       .addCase(fetchAllOrders.pending, (state) => {
-          state.status = 'loading';
+        state.status = 'loading';
       })
       .addCase(fetchAllOrders.fulfilled, (state, action) => {
-          state.status = 'succeeded';
-          state.fetchedOrders = action.payload.orders;
-          state.totalPages = action.payload.totalPages;
-          state.currentPage = action.payload.currentPage;
-          state.totalOrders = action.payload.totalOrders;
+        state.status = 'succeeded';
+        state.fetchedOrders = action.payload.orders;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
+        state.totalOrders = action.payload.totalOrders;
       })
       .addCase(fetchAllOrders.rejected, (state, action) => {
-          state.status = 'failed';
-          state.error = action.payload as string;
+        state.status = 'failed';
+        state.error = action.payload as string;
       })
 
       .addCase(editOrder.pending, (state) => {
@@ -183,7 +212,7 @@ const orderSlice = createSlice({
           type: 'success',
         };
       });
-    }
+  }
 })
 
 

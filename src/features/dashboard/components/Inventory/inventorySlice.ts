@@ -10,6 +10,8 @@ import {
     updatePriceApi
 } from './inventoryApi';
 import type { RootState } from '../../../../app/store';
+import { signOutAsync } from '../../../auth/authSlice';
+import { setActiveOrganization } from '../../../organization/organizationSlice';
 import type { Popup, Product, ProductFormState, ProductQueryParams } from '../../dashboardTypes';
 
 interface inventoryState {
@@ -56,18 +58,18 @@ export const fetchAllProducts = createAsyncThunk(
 export const addProduct = createAsyncThunk(
     "inventory/addProduct",
     async (formData: FormData, { rejectWithValue }) => {
-      try {
-        const response = await addProductApi(formData);
-        return response.data;
-      } catch (error: any) {
-        return rejectWithValue(error);
-      }
+        try {
+            const response = await addProductApi(formData);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error);
+        }
     }
-  );
+);
 
 export const updateProductDetails = createAsyncThunk(
     "inventory/updateProductDetails",
-    async ({ productId, updatedData }: {productId: string, updatedData:Partial<ProductFormState>}, { rejectWithValue }) => {
+    async ({ productId, updatedData }: { productId: string, updatedData: Partial<ProductFormState> }, { rejectWithValue }) => {
         try {
             const response = await updateProductDetailsApi(productId, updatedData);
             return response;
@@ -79,7 +81,7 @@ export const updateProductDetails = createAsyncThunk(
 
 export const updatePrice = createAsyncThunk(
     "inventory/updatePrice",
-    async ({ productId, newPrice }: {productId: string, newPrice: number}, { rejectWithValue }) => {
+    async ({ productId, newPrice }: { productId: string, newPrice: number }, { rejectWithValue }) => {
         try {
             const response = await updatePriceApi(productId, newPrice);
             return response.data;
@@ -91,9 +93,9 @@ export const updatePrice = createAsyncThunk(
 
 export const updateCoverImage = createAsyncThunk(
     "inventory/updateCoverImage",
-    async ({ productId, formData }: {productId: string, formData: FormData}, { rejectWithValue }) => {
+    async ({ productId, formData }: { productId: string, formData: FormData }, { rejectWithValue }) => {
         try {
-            const response = await updateCoverImageApi({productId, formData});
+            const response = await updateCoverImageApi({ productId, formData });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error);
@@ -103,9 +105,9 @@ export const updateCoverImage = createAsyncThunk(
 
 export const updatePhotos = createAsyncThunk(
     "inventory/updatePhotos",
-    async ({ productId, formData }: {productId: string, formData: FormData}, { rejectWithValue }) => {
+    async ({ productId, formData }: { productId: string, formData: FormData }, { rejectWithValue }) => {
         try {
-            const response = await updatePhotosApi({productId, formData});
+            const response = await updatePhotosApi({ productId, formData });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error);
@@ -169,6 +171,25 @@ const inventorySlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(signOutAsync.fulfilled, (state) => {
+                state.products = [];
+                state.totalPages = 1;
+                state.currentPage = 1;
+                state.totalProducts = 0;
+                state.activeProduct = null;
+                state.status = 'idle';
+                state.error = null;
+                state.inventoryActiveContent = "Display";
+            })
+            .addCase(setActiveOrganization, (state) => {
+                state.products = [];
+                state.totalPages = 1;
+                state.currentPage = 1;
+                state.totalProducts = 0;
+                state.activeProduct = null;
+                state.status = 'idle';
+                state.error = null;
+            })
             .addCase(fetchAllProducts.pending, (state) => {
                 state.status = 'loading';
             })

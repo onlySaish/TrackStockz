@@ -1,9 +1,10 @@
 import axios, { AxiosError } from 'axios';
 import type { FetchCustomersParams, FetchCustomersResponse, CustomerFormData, AddCustomerResponse } from '../../dashboardTypes';
+import { store } from '../../../../app/store';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL + '/api/v1',
-  withCredentials: true, 
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -17,6 +18,8 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+const getOrgId = () => store.getState().organization.activeOrganizationId;
+
 export async function fetchAllCustomersApi({
   page = 1,
   limit,
@@ -26,6 +29,7 @@ export async function fetchAllCustomersApi({
   isBlacklistActive,
 }: FetchCustomersParams): Promise<FetchCustomersResponse> {
   try {
+    const orgId = getOrgId();
     const response = await axiosInstance.get<{ data: FetchCustomersResponse }>(
       `/customers/getCustomers`,
       {
@@ -36,6 +40,7 @@ export async function fetchAllCustomersApi({
           order,
           search,
           blacklist: isBlacklistActive,
+          organizationId: orgId
         },
       }
     );
@@ -47,7 +52,9 @@ export async function fetchAllCustomersApi({
 
 export async function addCustomerApi(formData: CustomerFormData): Promise<AddCustomerResponse> {
   try {
-    const response = await axiosInstance.post<AddCustomerResponse>("/customers/add-customer", formData);
+    const orgId = getOrgId();
+    const payload = { ...formData, organizationId: orgId };
+    const response = await axiosInstance.post<AddCustomerResponse>("/customers/add-customer", payload);
     return response.data;
   } catch (error: any) {
     throw error.response?.data?.message || "Failed to add Customer";
@@ -70,5 +77,5 @@ export async function toggleBlacklistCustomerApi(customerId: string): Promise<Ad
     return response.data;
   } catch (error: any) {
     throw error.response?.data?.message || "Failed to toggle Customer from blacklist";
-  } 
+  }
 }

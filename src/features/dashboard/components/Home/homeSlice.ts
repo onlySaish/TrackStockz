@@ -2,12 +2,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchDashboardDataApi } from './homeApi';
 import type { RootState } from '../../../../app/store';
 import type { DashboardStats, RecentOrder } from '../../dashboardTypes';
+import { signOutAsync } from '../../../auth/authSlice';
+import { setActiveOrganization } from '../../../organization/organizationSlice';
 
 interface HomeState {
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  stats: DashboardStats | null;
-  recentOrders: RecentOrder[];
-  error: string | null;
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    stats: DashboardStats | null;
+    recentOrders: RecentOrder[];
+    error: string | null;
 }
 
 const initialState: HomeState = {
@@ -35,6 +37,18 @@ const homeSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(signOutAsync.fulfilled, (state) => {
+                state.stats = null;
+                state.recentOrders = [];
+                state.status = "idle";
+                state.error = null;
+            })
+            .addCase(setActiveOrganization, (state) => {
+                state.stats = null;
+                state.recentOrders = [];
+                state.status = "idle";
+                state.error = null;
+            })
             .addCase(fetchDashboardData.pending, (state) => {
                 state.status = "loading";
             })

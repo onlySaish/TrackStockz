@@ -2,6 +2,9 @@ import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/tool
 import { addCustomerApi, fetchAllCustomersApi, toggleBlacklistCustomerApi, updateCustomerApi } from './customerApi';
 import type { RootState } from '../../../../app/store';
 import type { Customer, CustomerFormData, FetchCustomersParams, Popup } from '../../dashboardTypes';
+import { signOutAsync } from '../../../auth/authSlice';
+import { setActiveOrganization } from '../../../organization/organizationSlice';
+
 
 interface CustomerState {
   customerActiveContent: string;
@@ -16,116 +19,138 @@ interface CustomerState {
 }
 
 const initialState: CustomerState = {
-    customerActiveContent: "Display",
-    customers: [],    //Array of objects of customers
-    totalPages: 1,
-    currentPage: 1,
-    totalCustomers: 1,
-    activeCustomer: null,   
-    status: 'idle',
-    error: null,
-    popup: {
-        visible: false,
-        message: '',
-        duration: 3000, // Default duration
-        type: 'success', // Can be 'success' or 'error'
-    },
+  customerActiveContent: "Display",
+  customers: [],    //Array of objects of customers
+  totalPages: 1,
+  currentPage: 1,
+  totalCustomers: 1,
+  activeCustomer: null,
+  status: 'idle',
+  error: null,
+  popup: {
+    visible: false,
+    message: '',
+    duration: 3000, // Default duration
+    type: 'success', // Can be 'success' or 'error'
+  },
 }
 
 export const fetchAllCustomers = createAsyncThunk(
-  "customer/fetchAllCustomers", 
-  async ({page=1, limit=5, sort, order, search, isBlacklistActive}: FetchCustomersParams, { rejectWithValue }) => {
-  try {
-    const response = await fetchAllCustomersApi({page:page, limit:limit, sort:sort, order:order, search:search, isBlacklistActive:isBlacklistActive});
-    return response;
-  } catch (error: any) {
-    return rejectWithValue(error);
-  }
-});
-
-export const addCustomer = createAsyncThunk(
-    "customer/addCustomer", 
-    async ({formData}: {formData: CustomerFormData}, { rejectWithValue }) => {
+  "customer/fetchAllCustomers",
+  async ({ page = 1, limit = 5, sort, order, search, isBlacklistActive }: FetchCustomersParams, { rejectWithValue }) => {
     try {
-      const response = await addCustomerApi(formData);
-      
+      const response = await fetchAllCustomersApi({ page: page, limit: limit, sort: sort, order: order, search: search, isBlacklistActive: isBlacklistActive });
       return response;
     } catch (error: any) {
       return rejectWithValue(error);
     }
-});
+  });
+
+export const addCustomer = createAsyncThunk(
+  "customer/addCustomer",
+  async ({ formData }: { formData: CustomerFormData }, { rejectWithValue }) => {
+    try {
+      const response = await addCustomerApi(formData);
+
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error);
+    }
+  });
 
 export const updateCustomer = createAsyncThunk(
-    "customer/updateCustomer", 
-    async ({customerId, updatedData}: {customerId: string, updatedData: Partial<CustomerFormData>}, { rejectWithValue }) => {
+  "customer/updateCustomer",
+  async ({ customerId, updatedData }: { customerId: string, updatedData: Partial<CustomerFormData> }, { rejectWithValue }) => {
     try {
       const response = await updateCustomerApi(customerId, updatedData);
       return response;
     } catch (error: any) {
       return rejectWithValue(error);
     }
-});
+  });
 
 export const toggleBlackListCustomer = createAsyncThunk(
-  "customer/blackListCustomer", 
+  "customer/blackListCustomer",
   async (customerId: string, { rejectWithValue }) => {
-  try {
-    const response = await toggleBlacklistCustomerApi(customerId);
-    return response;
-  } catch (error: any) {
-    return rejectWithValue(error);
-  }
-});
+    try {
+      const response = await toggleBlacklistCustomerApi(customerId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error);
+    }
+  });
 
 const customerSlice = createSlice({
-    name: "customer",
-    initialState,
-    reducers: {
-        setCustomerActiveContent: (state, action: PayloadAction<string>) => {
-            state.customerActiveContent = action.payload; // Update active content
-        },
-        showPopup3: (state, action: PayloadAction<Popup>) => {
-          state.popup = {
-            visible: true,
-            message: action.payload.message,
-            duration: action.payload.duration || 3000,
-            type: action.payload.type || 'success',
-          };
-        },
-        hidePopup3: (state) => {
-            state.popup = {
-              visible: false,
-              message: '',
-              duration: 3000,
-              type: 'success',
-            };
-        },
-        setActiveCustomer: (state,action: PayloadAction<Customer>) => {
-            state.activeCustomer = action.payload;
-        },
-        removeActiveCustomer: (state) => {
-            state.activeCustomer = null;
-        }
+  name: "customer",
+  initialState,
+  reducers: {
+    setCustomerActiveContent: (state, action: PayloadAction<string>) => {
+      state.customerActiveContent = action.payload; // Update active content
     },
-    extraReducers: (builder) => {
-        builder
-        .addCase(fetchAllCustomers.pending, (state) => {
-            state.status = 'loading';
-            state.error = null;
-        })
-        .addCase(fetchAllCustomers.fulfilled, (state, action) => {
-            state.status = 'succeeded';
-            state.customers = action.payload.customers;
-            state.totalPages = action.payload.totalPages;
-            state.currentPage = action.payload.currentPage;
-            state.totalCustomers = action.payload.totalCustomers;
-        })
-        .addCase(fetchAllCustomers.rejected, (state, action) => {
-            state.status = 'failed';
-            state.error = action.payload as string;
-        })
+    showPopup3: (state, action: PayloadAction<Popup>) => {
+      state.popup = {
+        visible: true,
+        message: action.payload.message,
+        duration: action.payload.duration || 3000,
+        type: action.payload.type || 'success',
+      };
+    },
+    hidePopup3: (state) => {
+      state.popup = {
+        visible: false,
+        message: '',
+        duration: 3000,
+        type: 'success',
+      };
+    },
+    setActiveCustomer: (state, action: PayloadAction<Customer>) => {
+      state.activeCustomer = action.payload;
+    },
+    removeActiveCustomer: (state) => {
+      state.activeCustomer = null;
+    }
+  },
 
-        // Add Customer
+
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(signOutAsync.fulfilled, (state) => {
+        state.customers = [];
+        state.totalPages = 1;
+        state.currentPage = 1;
+        state.totalCustomers = 0;
+        state.activeCustomer = null;
+        state.status = 'idle';
+        state.error = null;
+        state.customerActiveContent = "Display";
+      })
+      .addCase(setActiveOrganization, (state) => {
+        state.customers = [];
+        state.totalPages = 1;
+        state.currentPage = 1;
+        state.totalCustomers = 0;
+        state.activeCustomer = null;
+        state.status = 'idle';
+        state.error = null;
+      })
+      .addCase(fetchAllCustomers.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchAllCustomers.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.customers = action.payload.customers;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
+        state.totalCustomers = action.payload.totalCustomers;
+      })
+      .addCase(fetchAllCustomers.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
+
+      // Add Customer
       .addCase(addCustomer.pending, (state) => {
         state.status = "loading";
       })
@@ -133,12 +158,12 @@ const customerSlice = createSlice({
         state.status = "succeeded";
         // state.customers.push(action.payload.data);
         state.customerActiveContent = "Display",
-        state.popup = {
-          visible: true,
-          message: 'Customer Added Successfully!',
-          duration: 3000,
-          type: 'success',
-        };
+          state.popup = {
+            visible: true,
+            message: 'Customer Added Successfully!',
+            duration: 3000,
+            type: 'success',
+          };
       })
       .addCase(addCustomer.rejected, (state, action) => {
         state.status = "failed";
@@ -164,12 +189,12 @@ const customerSlice = createSlice({
         //   state.customers[index] = action.payload.data;
         // }
         state.customerActiveContent = "Display",
-        state.popup = {
-          visible: true,
-          message: 'Customer Updated Successfully!',
-          duration: 3000,
-          type: 'success',
-        };
+          state.popup = {
+            visible: true,
+            message: 'Customer Updated Successfully!',
+            duration: 3000,
+            type: 'success',
+          };
       })
       .addCase(updateCustomer.rejected, (state, action) => {
         state.status = "failed";
@@ -199,7 +224,7 @@ const customerSlice = createSlice({
           type: 'error',
         };
       })
-    }
+  }
 })
 
 export const selectAllCustomers = (state: RootState) => state.customer;

@@ -9,11 +9,12 @@ import {
   updateOrderStatus,
 } from "../orderSlice.js";
 import { useAppDispatch, useAppSelector } from "../../../../../hooks.js";
+import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
 import type { Order } from "../../../dashboardTypes.js";
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 
 interface finalUpdatedOrder extends Order {
-    totalQuantity: number,
+  totalQuantity: number,
 }
 
 const DisplayOrders = () => {
@@ -34,7 +35,7 @@ const DisplayOrders = () => {
 
   useEffect(() => {
     setFinalUpdatedOrder(updatedOrders);
-  },[fetchedOrders])
+  }, [fetchedOrders])
 
   const [timeActive, setTimeActive] = useState<boolean>(true);
   const [status, setStatus] = useState<string>("");
@@ -44,13 +45,27 @@ const DisplayOrders = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>("desc");
   const [page, setPage] = useState<number>(1);
 
+  const activeOrganizationId = useAppSelector(selectActiveOrganizationId);
+  const organizationStatus = useAppSelector(selectOrganizationStatus);
+
   useEffect(() => {
+    if (organizationStatus === 'loading' || organizationStatus === 'idle') return;
+
+    if (!activeOrganizationId) {
+      dispatch(showPopup6({
+        message: "Please Join or Create an Organization first.",
+        type: "error",
+        visible: true,
+        duration: 3000
+      }));
+      return;
+    }
     dispatch(fetchAllOrders({ page, sort, order, search, status, paymentMethod }));
-  }, [dispatch, page, sort, order, status, paymentMethod]);
+  }, [dispatch, page, sort, order, status, paymentMethod, activeOrganizationId, organizationStatus]);
 
   const handleSearchOrder = () => {
     dispatch(fetchAllOrders({ page, sort, order, search, status, paymentMethod }));
-  } 
+  }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -68,10 +83,10 @@ const DisplayOrders = () => {
   };
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === "createdAt"){
+    if (e.target.value === "createdAt") {
       setTimeActive(true);
-    }else {
-      setTimeActive(false); 
+    } else {
+      setTimeActive(false);
     }
     setSort(e.target.value);
     setPage(1);
@@ -117,7 +132,7 @@ const DisplayOrders = () => {
   return (
     <div className="max-w-screen p-6 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-md shadow-lg">
       <h2 className="text-3xl font-bold mb-4">Order List</h2>
-        
+
       <div className="mb-6 flex flex-col lg:flex-row gap-4">
         <input
           type="text"
@@ -134,8 +149,8 @@ const DisplayOrders = () => {
           </select>
 
           <select value={order} onChange={handleOrderChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
-          <option value="asc">{ (timeActive) ? "Oldest" : "Ascending"}</option>
-          <option value="desc">{ (timeActive) ? "Newest" : "Descending"}</option>
+            <option value="asc">{(timeActive) ? "Oldest" : "Ascending"}</option>
+            <option value="desc">{(timeActive) ? "Newest" : "Descending"}</option>
           </select>
 
           <select value={status} onChange={handleStatus} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
@@ -155,77 +170,77 @@ const DisplayOrders = () => {
           <button
             onClick={handleSearchOrder}
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-400 transition"
-            >
-              <div>Search</div>
+          >
+            <div>Search</div>
           </button>
         </div>
       </div>
 
-      {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> :(
+      {pageStatus === "loading" ? <p className="text-gray-600">Loading...</p> : (
         <div className="overflow-x-auto overflow-y-hidden rounded-sm shadow-lg">
-        <Table className="w-full bg-gray-800 text-white rounded-sm">
-          <Thead className="bg-gray-700">
-            <Tr>
-              {/* <Th className="px-4 py-2">Order ID</Th> */}
-              <Th className="px-4 py-2">Customer Name</Th>
-              <Th className="px-4 py-2">Customer Company</Th>
-              <Th className="px-4 py-2">Unique Products</Th>
-              <Th className="px-4 py-2">Total Order Quantity</Th>
-              <Th className="px-4 py-2">Total Amount</Th>
-              <Th className="px-4 py-2">Final Price</Th>
-              <Th className="px-4 py-2">Payment Method</Th>
-              <Th className="px-4 py-2">Status</Th>
-              <Th className="px-4 py-2">Updated</Th>
-              <Th className="px-4 py-2">Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {finalUpdatedOrders.length > 0 ? (
-              finalUpdatedOrders.map((order) => (
-                <Tr key={order._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
-                  <Td className="px-4 py-2">{order.customerDetails.firstName} {order.customerDetails.lastName}</Td>
-                  <Td className="px-4 py-2">{order.customerDetails.companyName}</Td>
-                  <Td className="px-4 py-2">{order.products.length}</Td>
-                  <Td className="px-4 py-2">{order.totalQuantity}</Td>
-                  <Td className="px-4 py-2">{order.totalPrice}</Td>
-                  <Td className="px-4 py-2">{order.finalDiscountedPrice}</Td>
-                  <Td className="px-4 py-2">{order.paymentMethod}</Td>
-                  <Td className="px-4 py-2">
-                    <select
-                      value={order.status}
-                      onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                      className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600"
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
-                  </Td>
-                  <Td className="px-4 py-2">
-                    {new Date(order.updatedAt).toLocaleDateString("en-US", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </Td>
-                  <Td className="flex flex-row justify-center items-center px-4 py-2 gap-2">
-                    <div className="flex gap-3 justify-center">
-                      <button onClick={() => handleView(order)} className="px-4 py-2 bg-blue-500 text-white rounded-lg fa-solid fa-eye"></button>
-                      <button onClick={() => handleEdit(order)} className="px-4 py-2 bg-green-500 text-white rounded-lg fa-solid fa-edit"></button>
-                    </div>
-                  </Td>
-                </Tr>
-              ))
-            ) : (
+          <Table className="w-full bg-gray-800 text-white rounded-sm">
+            <Thead className="bg-gray-700">
               <Tr>
-                <Td colSpan={10} className="text-center py-4">No orders found.</Td>
+                {/* <Th className="px-4 py-2">Order ID</Th> */}
+                <Th className="px-4 py-2">Customer Name</Th>
+                <Th className="px-4 py-2">Customer Company</Th>
+                <Th className="px-4 py-2">Unique Products</Th>
+                <Th className="px-4 py-2">Total Order Quantity</Th>
+                <Th className="px-4 py-2">Total Amount</Th>
+                <Th className="px-4 py-2">Final Price</Th>
+                <Th className="px-4 py-2">Payment Method</Th>
+                <Th className="px-4 py-2">Status</Th>
+                <Th className="px-4 py-2">Updated</Th>
+                <Th className="px-4 py-2">Actions</Th>
               </Tr>
-            )}
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {finalUpdatedOrders.length > 0 ? (
+                finalUpdatedOrders.map((order) => (
+                  <Tr key={order._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                    <Td className="px-4 py-2">{order.customerDetails.firstName} {order.customerDetails.lastName}</Td>
+                    <Td className="px-4 py-2">{order.customerDetails.companyName}</Td>
+                    <Td className="px-4 py-2">{order.products.length}</Td>
+                    <Td className="px-4 py-2">{order.totalQuantity}</Td>
+                    <Td className="px-4 py-2">{order.totalPrice}</Td>
+                    <Td className="px-4 py-2">{order.finalDiscountedPrice}</Td>
+                    <Td className="px-4 py-2">{order.paymentMethod}</Td>
+                    <Td className="px-4 py-2">
+                      <select
+                        value={order.status}
+                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                        className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600"
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </Td>
+                    <Td className="px-4 py-2">
+                      {new Date(order.updatedAt).toLocaleDateString("en-US", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </Td>
+                    <Td className="flex flex-row justify-center items-center px-4 py-2 gap-2">
+                      <div className="flex gap-3 justify-center">
+                        <button onClick={() => handleView(order)} className="px-4 py-2 bg-blue-500 text-white rounded-lg fa-solid fa-eye"></button>
+                        <button onClick={() => handleEdit(order)} className="px-4 py-2 bg-green-500 text-white rounded-lg fa-solid fa-edit"></button>
+                      </div>
+                    </Td>
+                  </Tr>
+                ))
+              ) : (
+                <Tr>
+                  <Td colSpan={10} className="text-center py-4">No orders found.</Td>
+                </Tr>
+              )}
+            </Tbody>
+          </Table>
         </div>
       )}
 

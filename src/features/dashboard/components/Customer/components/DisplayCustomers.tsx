@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllCustomers, selectAllCustomers, setActiveCustomer, setCustomerActiveContent, showPopup3, toggleBlackListCustomer } from "../customerSlice.js";
 import { useAppDispatch, useAppSelector } from "../../../../../hooks.js";
+import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 import type { Customer } from "../../../dashboardTypes.js";
 
@@ -10,16 +11,30 @@ const DisplayCustomers = () => {
   const allCustomers = customers || [];
   const [timeActive, setTimeActive] = useState<boolean>(true);
   const [isBlacklistActive, setBlacklistActive] = useState<boolean>(false);
-//   const pageStatus = useAppSelector(selectStatus2);
-  
+  //   const pageStatus = useAppSelector(selectStatus2);
+
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("createdAt");
   const [order, setOrder] = useState<'asc' | 'desc'>("desc");
   const [page, setPage] = useState<number>(1);
 
+  const activeOrganizationId = useAppSelector(selectActiveOrganizationId);
+  const organizationStatus = useAppSelector(selectOrganizationStatus);
+
   useEffect(() => {
-    dispatch(fetchAllCustomers({ page, sort, order, search, isBlacklistActive }));
-  }, [dispatch, page, sort, order, isBlacklistActive]);
+    if (organizationStatus === 'loading' || organizationStatus === 'idle') return;
+
+    if (!activeOrganizationId) {
+      dispatch(showPopup3({
+        message: "Please Join or Create an Organization first.",
+        type: "error",
+        visible: true,
+        duration: 3000
+      }));
+      return;
+    }
+    dispatch(fetchAllCustomers({ page, sort, order, search, limit: 10, isBlacklistActive }));
+  }, [dispatch, page, sort, order, search, isBlacklistActive, activeOrganizationId, organizationStatus]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -73,9 +88,9 @@ const DisplayCustomers = () => {
 
   return (
     <div className="bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-lg shadow-lg">
-      <div className={`py-6 px-2 md:px-6 flex justify-between items-center ${isBlacklistActive ? "gap-3" : "gap-0"}`}>
+      <div className={`py-6 px-2 md:px-6 flex justify-between items-center ${isBlacklistActive ? "gap-3" : "gap-0"} `}>
         <h2 className="text-3xl md:text-4xl font-bold">{isBlacklistActive ? "Blacklist" : "Customer List"}</h2>
-        <div className={`flex md:text-lg ${isBlacklistActive ? "gap-3" : "gap-4"}`}>
+        <div className={`flex md:text-lg ${isBlacklistActive ? "gap-3" : "gap-4"} `}>
           <button onClick={handleAdd} className={`${isBlacklistActive ? "px-1 py-1" : "px-4 py-1"} md:px-5 md:py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold shadow-md transition-transform duration-300`}>
             New Customer
           </button>
@@ -86,7 +101,7 @@ const DisplayCustomers = () => {
       </div>
       <div className="py-6 px-2 md:px-6 mb-6 flex flex-col md:flex-row gap-4">
         <input type="text" placeholder="Search customers..." className="w-full px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600" value={search} onChange={handleSearch} />
-        
+
         <div className="flex gap-4 justify-start items-center">
           <select className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600" value={sort} onChange={handleSortChange}>
             <option value="createdAt">Time</option>
@@ -96,8 +111,8 @@ const DisplayCustomers = () => {
           </select>
 
           <select className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600" value={order} onChange={handleOrderChange}>
-            <option value="asc">{ (timeActive) ? "Oldest" : "Ascending"}</option>
-            <option value="desc">{ (timeActive) ? "Newest" : "Descending"}</option>
+            <option value="asc">{(timeActive) ? "Oldest" : "Ascending"}</option>
+            <option value="desc">{(timeActive) ? "Newest" : "Descending"}</option>
           </select>
 
           <button onClick={handleSearchCustomer} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-400 transition">
@@ -146,7 +161,7 @@ const DisplayCustomers = () => {
       </div>
       <div className="flex justify-center mt-6 pb-6">
         {Array.from({ length: totalPages }, (_, index) => (
-          <button key={index} onClick={() => handlePageChange(index + 1)} className={`px-4 py-2 mx-1 rounded-md ${currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-700"}`}>
+          <button key={index} onClick={() => handlePageChange(index + 1)} className={`px-4 py-2 mx-1 rounded-md ${currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-700"} `}>
             {index + 1}
           </button>
         ))}

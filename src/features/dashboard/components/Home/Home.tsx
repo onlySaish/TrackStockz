@@ -1,17 +1,33 @@
 import { useEffect } from "react";
 import { fetchDashboardData, selectHome } from "./homeSlice.js";
+import { showPopup2 } from "../Profile/profileSlice";
 import DashboardCard from "./components/DashboardCard";
 import RecentOrdersTable from "./components/RecentOrdersTable";
 import SalesChart from "./components/SalesChart";
 import { useAppDispatch, useAppSelector } from "../../../../hooks.js";
+import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../organization/organizationSlice";
 
 const Home = () => {
     const dispatch = useAppDispatch();
     const { status, stats, recentOrders } = useAppSelector(selectHome);
 
+    const activeOrganizationId = useAppSelector(selectActiveOrganizationId);
+    const organizationStatus = useAppSelector(selectOrganizationStatus);
+
     useEffect(() => {
+        if (organizationStatus === 'loading' || organizationStatus === 'idle') return;
+
+        if (!activeOrganizationId) {
+            dispatch(showPopup2({
+                message: "Please Join or Create an Organization first.",
+                type: "error",
+                visible: true,
+                duration: 3000
+            }));
+            return;
+        }
         dispatch(fetchDashboardData());
-    }, [dispatch]);
+    }, [dispatch, activeOrganizationId, organizationStatus]);
 
     return (
         <div className="py-10 lg:py-4 xl:py-10 px-4 h-full w-full">

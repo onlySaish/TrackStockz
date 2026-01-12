@@ -7,6 +7,7 @@ import inventoryReducer from '../features/dashboard/components/Inventory/invento
 import sellReducer from '../features/dashboard/components/Sell/sellSlice';
 import orderReducer from '../features/dashboard/components/Order/orderSlice';
 import homeReducer from '../features/dashboard/components/Home/homeSlice';
+import organizationReducer from '../features/organization/organizationSlice';
 
 // Configure the store
 export const store = configureStore({
@@ -19,6 +20,7 @@ export const store = configureStore({
     sell: sellReducer,
     order: orderReducer,
     home: homeReducer,
+    organization: organizationReducer,
   },
 });
 

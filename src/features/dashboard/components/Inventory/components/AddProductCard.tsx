@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { addProduct, setInventoryActiveContent, selectStatus3 } from '../inventorySlice.js';
+import { addProduct, setInventoryActiveContent, selectStatus3, showPopup4 } from '../inventorySlice.js';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import "swiper/css/pagination"; 
+import "swiper/css/pagination";
 import { getAllCategories, getAllSuppliers } from '../inventoryApi.js';
 import { useAppDispatch, useAppSelector } from '../../../../../hooks.js';
+import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
 import type { ProductFormState } from '../../../dashboardTypes.js';
 
 const AddProductCard = () => {
@@ -17,16 +18,30 @@ const AddProductCard = () => {
   const [images, setImages] = useState<(File | string)[] | null>([defaultImage]);
   const [categories, setCategories] = useState<string[]>([]);
   const [suppliers, setSuppliers] = useState<string[]>([]);
-  
+
   const [isCustomCategory, setIsCustomCategory] = useState<boolean>(false);
   const [isCustomSupplier, setIsCustomSupplier] = useState<boolean>(false);
 
+  const activeOrganizationId = useAppSelector(selectActiveOrganizationId);
+  const organizationStatus = useAppSelector(selectOrganizationStatus);
+
   useEffect(() => {
+    if (organizationStatus === 'loading' || organizationStatus === 'idle') return;
+
+    if (!activeOrganizationId) {
+      dispatch(showPopup4({
+        message: "Please Join or Create an Organization first.",
+        type: "error",
+        visible: true,
+        duration: 3000
+      }));
+      return;
+    }
     const getter = async () => {
       try {
         const result = await getAllCategories();
         const result2 = await getAllSuppliers();
-        
+
         setCategories(Array.isArray(result) ? result : []);
         setSuppliers(Array.isArray(result2) ? result2 : []);
       } catch (error) {
@@ -36,7 +51,7 @@ const AddProductCard = () => {
       }
     };
     getter();
-  }, [dispatch]);
+  }, [dispatch, activeOrganizationId, organizationStatus]);
 
   const [formData, setFormData] = useState<ProductFormState>({
     name: '',
@@ -54,7 +69,7 @@ const AddProductCard = () => {
 
   useEffect(() => {
     setFormData({ ...formData, photos: imagesFiles })
-  },[imagesFiles])
+  }, [imagesFiles])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -92,12 +107,12 @@ const AddProductCard = () => {
 
   const handleSave = () => {
     const formDataData = new FormData();
-  
+
     // Append form data
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'photos' && Array.isArray(value)) {
         value.forEach((file) => {
-          formDataData.append("photos", file); 
+          formDataData.append("photos", file);
         });
       } else if (key === 'coverImg' && value) {
         formDataData.append('coverImg', value);
@@ -105,11 +120,11 @@ const AddProductCard = () => {
         formDataData.append(key, value);
       }
     });
-  
+
     // console.log([...formDataData.entries()]); // For Debugging
     dispatch(addProduct(formDataData));
   };
-  
+
 
   const handleCancel = () => {
     dispatch(setInventoryActiveContent("Display"));
@@ -119,7 +134,7 @@ const AddProductCard = () => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     const file = files[0];
-  
+
     if (file) {
       formData.coverImg = file;
       setCoverImgPreview(URL.createObjectURL(file)); // Generate a preview URL
@@ -175,18 +190,18 @@ const AddProductCard = () => {
     };
     input.click();
   };
-  
+
   return (
     <div className="relative p-6 rounded-2xl m-4 border border-gray-900 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl max-w-4xl mx-auto">
-        <div className="flex flex-col">
-          {/* Images */}
+      <div className="flex flex-col">
+        {/* Images */}
         <div className='flex flex-col md:flex-row justify-around items-center mb-4 gap-4'>
           <div className="flex flex-col items-center">
-            <div 
-            className="size-40 bg-white bg-contain bg-no-repeat bg-center rounded-full border-4 border-white shadow-lg transition-transform duration-300 hover:scale-110" 
-            style={{backgroundImage: `url(${coverImgPreview})`}}>
+            <div
+              className="size-40 bg-white bg-contain bg-no-repeat bg-center rounded-full border-4 border-white shadow-lg transition-transform duration-300 hover:scale-110"
+              style={{ backgroundImage: `url(${coverImgPreview})` }}>
             </div>
-            
+
             <div className='flex flex-col items-center mt-6'>
               <input
                 type="file"
@@ -206,154 +221,154 @@ const AddProductCard = () => {
 
           {/* Photos Display */}
           <div className="flex flex-col items-center gap-4">
-          {/* Swiper Slider */}
-          <Swiper
-          modules={[Navigation, Pagination]}
-          navigation
-          pagination={{ clickable: true }}
-          loop={!!images && images.length > 1 }
-          className="w-80 h-52 border rounded-lg shadow-lg bg-white"
-          >
-          {images?.map((img, index) => (
-          <SwiperSlide key={index} className="relative">
-            <img src={typeof img === "string" ? img : URL.createObjectURL(img)} alt={`Slide ${index}`} className="w-full h-full object-contain rounded-lg" />
-            {img !== defaultImage && (
-              <button
-                className="absolute top-2 right-2 bg-gray-800 text-white text-sm px-2 py-1 rounded"
-                onClick={() => handleReplaceImage(index)}
-              >
-                Change
-              </button>
-            )}
-          </SwiperSlide>
-          ))}
-          </Swiper>
+            {/* Swiper Slider */}
+            <Swiper
+              modules={[Navigation, Pagination]}
+              navigation
+              pagination={{ clickable: true }}
+              loop={!!images && images.length > 1}
+              className="w-80 h-52 border rounded-lg shadow-lg bg-white"
+            >
+              {images?.map((img, index) => (
+                <SwiperSlide key={index} className="relative">
+                  <img src={typeof img === "string" ? img : URL.createObjectURL(img)} alt={`Slide ${index}`} className="w-full h-full object-contain rounded-lg" />
+                  {img !== defaultImage && (
+                    <button
+                      className="absolute top-2 right-2 bg-gray-800 text-white text-sm px-2 py-1 rounded"
+                      onClick={() => handleReplaceImage(index)}
+                    >
+                      Change
+                    </button>
+                  )}
+                </SwiperSlide>
+              ))}
+            </Swiper>
 
-          {/* Upload Button */}
-          <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleFileChange}
-          className="hidden"
-          id="imageInput"
-          />
-          <label
-            htmlFor="imageInput"
-            className="cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg"
-          >
-          Upload Images
-          </label>
+            {/* Upload Button */}
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleFileChange}
+              className="hidden"
+              id="imageInput"
+            />
+            <label
+              htmlFor="imageInput"
+              className="cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg"
+            >
+              Upload Images
+            </label>
           </div>
         </div>
 
-          {/* Name */}
-          <div className="mb-4">
-            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Product Name</label> */}
-            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder='Product Name' className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
+        {/* Name */}
+        <div className="mb-4">
+          {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Product Name</label> */}
+          <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder='Product Name' className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
+        </div>
+
+        {/* Description */}
+        <div className="mb-4">
+          {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2"></label> */}
+          <textarea name="description" value={formData.description} onChange={handleChange} placeholder='Description' className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"></textarea>
+        </div>
+
+        {/* Price & Discount Percent */}
+        <div className="flex gap-4 mb-4">
+          <div className="w-1/2">
+            {/* <label className="text-lg font-semibold text-gray-500 mb-1 ml-2">Price</label> */}
+            <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder='Price' className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
           </div>
-
-          {/* Description */}
-          <div className="mb-4">
-            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2"></label> */}
-            <textarea name="description" value={formData.description} onChange={handleChange} placeholder='Description' className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"></textarea>
+          <div className="w-1/2">
+            {/* <label className="text-lg font-semibold text-gray-500 mb-1 ml-2"></label> */}
+            <input type="number" name="discountPercent" value={formData.discountPercent} placeholder='Discount (%)' onChange={handleChange} className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
           </div>
+        </div>
 
-          {/* Price & Discount Percent */}
-          <div className="flex gap-4 mb-4">
-            <div className="w-1/2">
-              {/* <label className="text-lg font-semibold text-gray-500 mb-1 ml-2">Price</label> */}
-              <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder='Price' className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
-            </div>
-            <div className="w-1/2">
-              {/* <label className="text-lg font-semibold text-gray-500 mb-1 ml-2"></label> */}
-              <input type="number" name="discountPercent" value={formData.discountPercent} placeholder='Discount (%)' onChange={handleChange}  className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
-            </div>
-          </div>
+        {/* Category & Supplier & Status */}
+        <div className="flex gap-4 mb-4">
+          <div className="w-1/2">
+            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Category</label> */}
+            <div className="relative">
+              {/* Input Field */}
+              <input
+                type="text"
+                list="category-options"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
+                placeholder="Type or select a category"
+              />
 
-          {/* Category & Supplier & Status */}
-          <div className="flex gap-4 mb-4">
-            <div className="w-1/2">
-              {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Category</label> */}
-              <div className="relative">
-                {/* Input Field */}
-                <input
-                  type="text"
-                  list="category-options"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
-                  placeholder="Type or select a category"
-                />
-
-                {/* Datalist (Browsers do not allow styling directly) */}
-                <datalist id="category-options" className="bg-white border border-gray-300 shadow-lg rounded-md">
+              {/* Datalist (Browsers do not allow styling directly) */}
+              <datalist id="category-options" className="bg-white border border-gray-300 shadow-lg rounded-md">
                 {categories.map((cat, index) => (
                   <option key={index} value={cat} className="p-2 hover:bg-blue-100 cursor-pointer">
-                  {cat}
+                    {cat}
                   </option>
                 ))}
-                </datalist>
-              </div>
-
-              {/* Informative Message for New Category */}
-              {isCustomCategory && (
-                <p className="text-sm text-gray-500 mt-1">New category will be added</p>
-              )}
+              </datalist>
             </div>
 
-            <div className="w-1/2">
-              {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Supplier</label> */}
-              <div className="relative">
-                {/* Input Field for Supplier */}
-                <input
-                  type="text"
-                  list="supplier-options"
-                  name="supplier"
-                  value={formData.supplier}
-                  onChange={handleSupplierChange}
-                  className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
-                  placeholder="Type or select a supplier"
-                />
-
-                {/* Datalist for Suppliers */}
-                <datalist id="supplier-options" className="bg-white border border-gray-300 shadow-lg rounded-md">
-                  {suppliers.map((sup, index) => (
-                    <option key={index} value={sup} className="p-2 hover:bg-blue-100 cursor-pointer" />
-                  ))}
-                </datalist>
-              </div>
-
-              {/* Informative Message for New Supplier */}
-              {isCustomSupplier && (
-                <p className="text-sm text-gray-500 mt-1">New supplier will be added</p>
-              )}
-            </div>
+            {/* Informative Message for New Category */}
+            {isCustomCategory && (
+              <p className="text-sm text-gray-500 mt-1">New category will be added</p>
+            )}
           </div>
 
-          {/* Quantity and Threshold Limit */}
-          <div className='flex gap-4 mb-4'>
-            <div className="w-1/2">
-              {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Quantity</label> */}
-              <input type="number" min={0} name="quantity" value={formData.quantity} onChange={handleChange} placeholder='Quantity' className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
-            </div>
-            <div className="w-1/2">
-              {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Set Stock Threshold Limit</label> */}
-              <input type="number" name="lowStockThreshold" value={formData.lowStockThreshold} placeholder='Low Stock Limit' onChange={handleChange} className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
-            </div>
-          </div>
+          <div className="w-1/2">
+            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Supplier</label> */}
+            <div className="relative">
+              {/* Input Field for Supplier */}
+              <input
+                type="text"
+                list="supplier-options"
+                name="supplier"
+                value={formData.supplier}
+                onChange={handleSupplierChange}
+                className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full"
+                placeholder="Type or select a supplier"
+              />
 
-          {/* Action Buttons */}
-          <div className="flex gap-6">
-            <button onClick={handleSave} className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl" disabled={status === 'loading'}>
-              {status === 'loading' ? 'Saving...' : 'Save'}
-            </button>
-            <button onClick={handleCancel} className="px-5 py-3 bg-gray-700 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-500">
-              Cancel
-            </button>
+              {/* Datalist for Suppliers */}
+              <datalist id="supplier-options" className="bg-white border border-gray-300 shadow-lg rounded-md">
+                {suppliers.map((sup, index) => (
+                  <option key={index} value={sup} className="p-2 hover:bg-blue-100 cursor-pointer" />
+                ))}
+              </datalist>
+            </div>
+
+            {/* Informative Message for New Supplier */}
+            {isCustomSupplier && (
+              <p className="text-sm text-gray-500 mt-1">New supplier will be added</p>
+            )}
           </div>
         </div>
+
+        {/* Quantity and Threshold Limit */}
+        <div className='flex gap-4 mb-4'>
+          <div className="w-1/2">
+            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Quantity</label> */}
+            <input type="number" min={0} name="quantity" value={formData.quantity} onChange={handleChange} placeholder='Quantity' className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
+          </div>
+          <div className="w-1/2">
+            {/* <label className="text-lg font-semibold text-gray-700 mb-1 ml-2">Set Stock Threshold Limit</label> */}
+            <input type="number" name="lowStockThreshold" value={formData.lowStockThreshold} placeholder='Low Stock Limit' onChange={handleChange} className="bg-gray-800 text-white border border-gray-600 p-3 rounded-md w-full" />
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-6">
+          <button onClick={handleSave} className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl" disabled={status === 'loading'}>
+            {status === 'loading' ? 'Saving...' : 'Save'}
+          </button>
+          <button onClick={handleCancel} className="px-5 py-3 bg-gray-700 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-500">
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

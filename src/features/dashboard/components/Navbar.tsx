@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { signOutAsync } from '../../auth/authSlice';
 import { setActiveContent, toggleSidebar } from '../dashboardSlice';
 import { Navigate } from 'react-router';
-import { Menu, Search, Logout } from '@mui/icons-material';
+import { Menu, Logout } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { fetchProfile, profileSelector } from './Profile/profileSlice';
+import OrganizationSelector from '../../organization/components/OrganizationSelector';
+import { fetchUserOrganizations } from '../../organization/organizationSlice';
 
 function Navbar(): React.JSX.Element {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -15,6 +17,7 @@ function Navbar(): React.JSX.Element {
   useEffect(() => {
     if (!hasFetched.current) {
       dispatch(fetchProfile());
+      dispatch(fetchUserOrganizations());
       hasFetched.current = true;
     }
   }, [dispatch]);
@@ -39,6 +42,9 @@ function Navbar(): React.JSX.Element {
           <div className="flex items-center gap-4">
             <div className="hidden md:block size-10 rounded-full bg-contain bg-no-repeat bg-left-bottom" style={{ backgroundImage: "url('reactLogo.webp')" }}></div>
             <div className="text-2xl font-bold text-white">TrackStockz</div>
+          </div>
+          <div className="ml-8 hidden md:block">
+            <OrganizationSelector />
           </div>
         </div>
         <div className="flex items-center gap-6">

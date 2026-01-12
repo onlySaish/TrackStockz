@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { editOrder, selectActiveOrder, selectStatus5, setOrderActiveContent, showPopup6 } from '../orderSlice';
-import { 
+import {
   fetchAllProducts,
-  selectAllProducts, 
+  selectAllProducts,
 } from "../../Inventory/inventorySlice.js";
 import { getAllCategories } from "../../Inventory/inventoryApi.js";
 import { useAppDispatch, useAppSelector } from '../../../../../hooks.js';
+import { selectActiveOrganizationId, selectOrganizationStatus } from "../../../../organization/organizationSlice";
 import type { OrderProductDetails, Product, ProductDetails, SelectProduct } from '../../../dashboardTypes.js';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 
@@ -15,15 +16,15 @@ export interface UpdatedProductDetailsInterface extends Omit<ProductDetails, "qu
 }
 
 interface finalOrderInterface extends ProductDetails {
-    availableQuantity: number;
+  availableQuantity: number;
 }
 
 const EditOrderCard = () => {
   const dispatch = useAppDispatch();
   const order = useAppSelector(selectActiveOrder);
   const status = useAppSelector(selectStatus5);
-  if(!order) return;
-  
+  if (!order) return;
+
   const productDetails = order.productDetails;
   const updatedProductDetails: UpdatedProductDetailsInterface[] = productDetails.map(product => {
     const { quantity, ...rest } = product;
@@ -73,14 +74,14 @@ const EditOrderCard = () => {
   const [OrderedProducts, setOrderedProducts] = useState<finalOrderInterface[]>(finalOrder);
 
   const quantityRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
-  const handleUpdateProduct = async(productId: string) => {
+  const handleUpdateProduct = async (productId: string) => {
     const quantity = quantityRefs.current[productId]?.value;
-    
+
     if (quantity !== undefined) {
       setOrderedProducts(
-        OrderedProducts.map((order: finalOrderInterface) => 
-          order._id === productId 
-            ? { ...order, quantity: Number(quantity) } 
+        OrderedProducts.map((order: finalOrderInterface) =>
+          order._id === productId
+            ? { ...order, quantity: Number(quantity) }
             : order
         )
       );
@@ -105,97 +106,113 @@ const EditOrderCard = () => {
       visible: true
     }));
   };
-  
+
   const { products, totalPages, currentPage } = useAppSelector(selectAllProducts);
-    let allProducts: Product[] = products || [];
-    const allProductsWithSelectedQuantity: SelectProduct[] = allProducts.map(product => ({
-      ...product,
-      selectedQuantity: 0,
-    }));
-    
-    const updatedAllProducts: SelectProduct[] = allProductsWithSelectedQuantity.filter(item1 => 
-      !OrderedProducts.some((item2: finalOrderInterface) => item1._id === item2._id)
-    );
-  
-    const [timeActive, setTimeActive] = useState<boolean>(true);
-    const [categories, setCategories] = useState<string[]>([]);
-  
-    const [category, setCategory] = useState<string>("");
-    const [search, setSearch] = useState<string>("");
-    const [sort, setSort] = useState<string>("createdAt");
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>("desc");
-    const [page, setPage] = useState(1);
+  let allProducts: Product[] = products || [];
+  const allProductsWithSelectedQuantity: SelectProduct[] = allProducts.map(product => ({
+    ...product,
+    selectedQuantity: 0,
+  }));
 
-    useEffect(() => {
-      dispatch(fetchAllProducts({ page, sort, order: sortOrder, search, isDeleted: false, category, status:"Active" }));
-    }, [dispatch, page, sort, sortOrder, search, category]);
-  
-    useEffect(() => {
-      const getter = async() => {
-        const result = await getAllCategories();
-        setCategories(result);
-      }
-      getter();
-    }, [dispatch]);
-  
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearch(e.target.value);
-      setPage(1);
-    };
-  
-    const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setCategory(e.target.value);
-      setPage(1);
-    }
-  
-    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      if (e.target.value === "createdAt"){
-        setTimeActive(true);
-      }else {
-        setTimeActive(false); 
-      }
-      setSort(e.target.value);
-      setPage(1);
-    };
-  
-    const handleOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setSortOrder(e.target.value as 'asc' | 'desc');
-      setPage(1);
-    };
-  
-    const handlePageChange = (newPage: number) => {
-      setPage(newPage);
-    };
-  
-    const handleProductSelect = async (product: SelectProduct) => {
-      if (product.selectedQuantity === 0){
-        return;
-      }
-      const newProduct = {
-        _id: product._id,
-        name: product.name,
-        coverImg: product.coverImg,
-        availableQuantity: product.quantity,
-        discountPercent: product.discountPercent,
-        price: product.price,
-        quantity: Number(product.selectedQuantity)
-      }
+  const updatedAllProducts: SelectProduct[] = allProductsWithSelectedQuantity.filter(item1 =>
+    !OrderedProducts.some((item2: finalOrderInterface) => item1._id === item2._id)
+  );
 
-      // finalOrder = [...finalOrder, newProduct];
-      setOrderedProducts([...OrderedProducts, newProduct]);
+  const [timeActive, setTimeActive] = useState<boolean>(true);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  const [category, setCategory] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
+  const [sort, setSort] = useState<string>("createdAt");
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>("desc");
+  const [page, setPage] = useState(1);
+
+  const activeOrganizationId = useAppSelector(selectActiveOrganizationId);
+  const organizationStatus = useAppSelector(selectOrganizationStatus);
+
+  useEffect(() => {
+    if (organizationStatus === 'loading' || organizationStatus === 'idle') return;
+
+    if (!activeOrganizationId) {
       dispatch(showPopup6({
-        message: "Product Added To Cart",
-        duration: 3000,
-        type: "success",
-        visible: true
+        message: "Please Join or Create an Organization first.",
+        type: "error",
+        visible: true,
+        duration: 3000
       }));
-    };
+      return;
+    }
+    dispatch(fetchAllProducts({ page, sort, order: sortOrder, search, isDeleted: false, category, status: "Active" }));
+  }, [dispatch, page, sort, sortOrder, search, category, activeOrganizationId, organizationStatus]);
 
-    const [additionalDiscountPercent, setAdditionalDiscountPercent] = useState(order.additionalDiscountPercent);
-    let totalPrice = 0;
-    let initialDiscountedPrice = 0;
-    
-    for (const item of OrderedProducts) {
+  useEffect(() => {
+    if (organizationStatus === 'loading' || organizationStatus === 'idle') return;
+    if (!activeOrganizationId) return;
+    const getter = async () => {
+      const result = await getAllCategories();
+      setCategories(result);
+    }
+    getter();
+  }, [dispatch, activeOrganizationId, organizationStatus]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setPage(1);
+  };
+
+  const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCategory(e.target.value);
+    setPage(1);
+  }
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === "createdAt") {
+      setTimeActive(true);
+    } else {
+      setTimeActive(false);
+    }
+    setSort(e.target.value);
+    setPage(1);
+  };
+
+  const handleOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOrder(e.target.value as 'asc' | 'desc');
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleProductSelect = async (product: SelectProduct) => {
+    if (product.selectedQuantity === 0) {
+      return;
+    }
+    const newProduct = {
+      _id: product._id,
+      name: product.name,
+      coverImg: product.coverImg,
+      availableQuantity: product.quantity,
+      discountPercent: product.discountPercent,
+      price: product.price,
+      quantity: Number(product.selectedQuantity)
+    }
+
+    // finalOrder = [...finalOrder, newProduct];
+    setOrderedProducts([...OrderedProducts, newProduct]);
+    dispatch(showPopup6({
+      message: "Product Added To Cart",
+      duration: 3000,
+      type: "success",
+      visible: true
+    }));
+  };
+
+  const [additionalDiscountPercent, setAdditionalDiscountPercent] = useState(order.additionalDiscountPercent);
+  let totalPrice = 0;
+  let initialDiscountedPrice = 0;
+
+  for (const item of OrderedProducts) {
     let itemUnitPrice = 0;
     if (Array.isArray(item.price) && item.price.length > 0) {
       itemUnitPrice = item.price[0].price;
@@ -208,18 +225,18 @@ const EditOrderCard = () => {
 
     totalPrice += itemTotalPrice;
     initialDiscountedPrice += itemDiscountedPrice;
-    }
+  }
 
-    const finalDiscountedPrice = initialDiscountedPrice  - ( (additionalDiscountPercent / 100) * initialDiscountedPrice);
+  const finalDiscountedPrice = initialDiscountedPrice - ((additionalDiscountPercent / 100) * initialDiscountedPrice);
 
-    const handleConfirmOrder = () => {
-      const sendingOrder = OrderedProducts.map(({ _id, quantity }) => ({ _id, quantity }));
-      dispatch(editOrder({orderId: order._id, products: sendingOrder, additionalDiscountPercent})); 
-    }
+  const handleConfirmOrder = () => {
+    const sendingOrder = OrderedProducts.map(({ _id, quantity }) => ({ _id, quantity }));
+    dispatch(editOrder({ orderId: order._id, products: sendingOrder, additionalDiscountPercent }));
+  }
 
-    const handleCancel = () => {
-      dispatch(setOrderActiveContent("DisplayOrders"));
-    };
+  const handleCancel = () => {
+    dispatch(setOrderActiveContent("DisplayOrders"));
+  };
   return (
     <div className='flex flex-col gap-4 max-w-screen px-5'>   {/* Show Orders */}
       <div className="w-full flex flex-col bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-800 bg-clip-padding p-4 lg:px-10">
@@ -227,69 +244,69 @@ const EditOrderCard = () => {
           <div className='text-2xl lg:text-3xl font-bold ml-8 text-white'>Current Order</div>
           <div className="capitalize px-5 py-3 mr-8 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold shadow-md cursor-default">Selected Products: {OrderedProducts.length}</div>
         </div>
-        
+
         <div className="w-full overflow-x-auto overflow-y-hidden rounded-sm">
-        <Table className="w-full bg-gray-800 text-white rounded-sm">
-          <Thead className="bg-gray-700">
-          <Tr>
-            <Th className="px-4 py-2">Image</Th>
-            <Th className="px-4 py-2">Name</Th>
-            <Th className="px-4 py-2">Price</Th>
-            <Th className="px-4 py-2">Quantity</Th>
-            <Th className="px-4 py-2">Actions</Th>
-          </Tr>
-          </Thead>
-          <Tbody>
-          {OrderedProducts.length > 0 ? (
-            OrderedProducts.map((product) => (
-              <Tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
-                <Td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full md:mx-auto" style={{backgroundImage: `url(${product.coverImg})`}}></div></Td>
-                <Td className="px-4 py-2 capitalize">{product.name}</Td>
-                <Td className="px-4 py-2">
-                  {Array.isArray(product.price)
-                    ? (product.price[0]?.price ?? 0) - ((product.discountPercent / 100) * (product.price[0]?.price ?? 0))
-                    : (typeof product.price === 'number'
-                      ? product.price - ((product.discountPercent / 100) * product.price)
-                      : "NA")}
-                </Td>
-                <Td className="px-4 py-2">
-                <input
-                  className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2"
-                  type="number"
-                  min={1}
-                  max={product.availableQuantity}
-                  placeholder={product.quantity?.toString()}
-                  ref={el => { quantityRefs.current[product._id] = el; }} 
-                />
-                </Td>
-                <Td className="flex flex-row justify-center py-5 gap-3">
-                <button
-                onClick={() => handleUpdateProduct(product._id)}
-                className=" group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
-                >
-                  Update
-                </button>
-                <button
-                onClick={() => handleProductDelete(product._id)}
-                className=" group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
-                >
-                  Delete
-                </button>
-                </Td>
+          <Table className="w-full bg-gray-800 text-white rounded-sm">
+            <Thead className="bg-gray-700">
+              <Tr>
+                <Th className="px-4 py-2">Image</Th>
+                <Th className="px-4 py-2">Name</Th>
+                <Th className="px-4 py-2">Price</Th>
+                <Th className="px-4 py-2">Quantity</Th>
+                <Th className="px-4 py-2">Actions</Th>
               </Tr>
-            ))
-          ) : (
-            <Tr>
-              <Td colSpan={5} className="text-center py-4">
-                No products found.
-              </Td>
-            </Tr>
-          )}
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {OrderedProducts.length > 0 ? (
+                OrderedProducts.map((product) => (
+                  <Tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                    <Td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full md:mx-auto" style={{ backgroundImage: `url(${product.coverImg})` }}></div></Td>
+                    <Td className="px-4 py-2 capitalize">{product.name}</Td>
+                    <Td className="px-4 py-2">
+                      {Array.isArray(product.price)
+                        ? (product.price[0]?.price ?? 0) - ((product.discountPercent / 100) * (product.price[0]?.price ?? 0))
+                        : (typeof product.price === 'number'
+                          ? product.price - ((product.discountPercent / 100) * product.price)
+                          : "NA")}
+                    </Td>
+                    <Td className="px-4 py-2">
+                      <input
+                        className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2"
+                        type="number"
+                        min={1}
+                        max={product.availableQuantity}
+                        placeholder={product.quantity?.toString()}
+                        ref={el => { quantityRefs.current[product._id] = el; }}
+                      />
+                    </Td>
+                    <Td className="flex flex-row justify-center py-5 gap-3">
+                      <button
+                        onClick={() => handleUpdateProduct(product._id)}
+                        className=" group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() => handleProductDelete(product._id)}
+                        className=" group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition"
+                      >
+                        Delete
+                      </button>
+                    </Td>
+                  </Tr>
+                ))
+              ) : (
+                <Tr>
+                  <Td colSpan={5} className="text-center py-4">
+                    No products found.
+                  </Td>
+                </Tr>
+              )}
+            </Tbody>
+          </Table>
         </div>
       </div>
-    
+
       {/* Show other Products */}
       <div className="w-full flex flex-col bg-gradient-to-br from-gray-800 to-gray-900 items-center shadow-2xl rounded-md border border-gray-800 bg-clip-padding px-3 py-4">
         <div className='text-2xl lg:text-3xl font-semibold self-start ml-12 mb-2 text-white'>
@@ -302,7 +319,7 @@ const EditOrderCard = () => {
             className="w-full px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
             value={search}
             onChange={handleSearch}
-            />
+          />
           <div className="flex flex-wrap lg:flex-nowrap gap-4 justify-center items-center">
             <select value={sort} onChange={handleSortChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
               <option value="createdAt">Time</option>
@@ -310,8 +327,8 @@ const EditOrderCard = () => {
               <option value="price">Price</option>
             </select>
             <select value={sortOrder} onChange={handleOrderChange} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
-              <option value="asc">{ (timeActive) ? "Oldest" : "Ascending"}</option>
-              <option value="desc">{ (timeActive) ? "Newest" : "Descending"}</option>
+              <option value="asc">{(timeActive) ? "Oldest" : "Ascending"}</option>
+              <option value="desc">{(timeActive) ? "Newest" : "Descending"}</option>
             </select>
             <select value={category} onChange={handleCategory} className="border px-3 py-2 rounded-md bg-gray-800 border-gray-600">
               <option value="">All Categories</option>
@@ -320,68 +337,68 @@ const EditOrderCard = () => {
                   {cat}
                 </option>
               ))}
-            </select> 
+            </select>
           </div>
         </div>
 
-      {status === "loading" ? <p className="text-gray-600">Loading...</p> :(
-        <div className="w-full overflow-x-auto overflow-y-hidden rounded-sm lg:px-10">
-        <Table className="bg-gray-800 text-white rounded-sm">
-          <Thead className="bg-gray-700">
-            <Tr>
-              <Th className="px-4 py-2">Image</Th>
-              <Th className="px-4 py-2">Name</Th>
-              <Th className="px-4 py-2">Active Price</Th>
-              <Th className="px-4 py-2">Category</Th>
-              <Th className="px-4 py-2">Available Quantity</Th>
-              <Th className="px-4 py-2">Discount Percent</Th>
-              <Th className="px-4 py-2">Discounted Price</Th>
-              <Th className="px-4 py-2">Quantity</Th>
-              <Th className="px-4 py-2">Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {updatedAllProducts.length > 0 ? (
-              updatedAllProducts.map((product) => (
-                <Tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
-                  <Td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{backgroundImage: `url(${product.coverImg})`}}></div></Td>
-                  <Td className="px-4 py-2 capitalize">{product.name}</Td>
-                  <Td className="px-4 py-2">{product.price[0]?.price}</Td>
-                  <Td className="px-4 py-2 capitalize">{product.category}</Td>
-                  <Td className="px-4 py-2">{product.quantity}</Td>
-                  <Td className="px-4 py-2">{product.discountPercent}%</Td>
-                  <Td className="px-4 py-2">{(product.price[0].price)-((product.discountPercent/100)*(product.price[0].price))}</Td>
-                  <Td className="px-4 py-2">
-                    <input 
-                    onChange={(e) => product.selectedQuantity = Number(e.target.value)} 
-                    className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2" 
-                    type="number"
-                    min={0} max={product.quantity}
-                    placeholder="0"/>
-                  </Td>
-                  <Td className="flex flex-row justify-center py-5">
-
-                  <button
-                  onClick={() => handleProductSelect(product)}
-                  className="relative group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition flex items-center gap-1"
-                  >
-                    <div>Select</div>
-                  </button>
-
-                  </Td>
+        {status === "loading" ? <p className="text-gray-600">Loading...</p> : (
+          <div className="w-full overflow-x-auto overflow-y-hidden rounded-sm lg:px-10">
+            <Table className="bg-gray-800 text-white rounded-sm">
+              <Thead className="bg-gray-700">
+                <Tr>
+                  <Th className="px-4 py-2">Image</Th>
+                  <Th className="px-4 py-2">Name</Th>
+                  <Th className="px-4 py-2">Active Price</Th>
+                  <Th className="px-4 py-2">Category</Th>
+                  <Th className="px-4 py-2">Available Quantity</Th>
+                  <Th className="px-4 py-2">Discount Percent</Th>
+                  <Th className="px-4 py-2">Discounted Price</Th>
+                  <Th className="px-4 py-2">Quantity</Th>
+                  <Th className="px-4 py-2">Actions</Th>
                 </Tr>
-              ))
-            ) : (
-              <Tr>
-                <Td colSpan={11} className="text-center py-4">
-                  No products left.
-                </Td>
-              </Tr>
-            )}
-          </Tbody>
-        </Table>
-        </div>
-      )}
+              </Thead>
+              <Tbody>
+                {updatedAllProducts.length > 0 ? (
+                  updatedAllProducts.map((product) => (
+                    <Tr key={product._id} className="border-b border-gray-700 hover:bg-gray-900 transition cursor-pointer text-center">
+                      <Td className="px-4 py-2"><div className="bg-cover bg-center size-14 rounded-full" style={{ backgroundImage: `url(${product.coverImg})` }}></div></Td>
+                      <Td className="px-4 py-2 capitalize">{product.name}</Td>
+                      <Td className="px-4 py-2">{product.price[0]?.price}</Td>
+                      <Td className="px-4 py-2 capitalize">{product.category}</Td>
+                      <Td className="px-4 py-2">{product.quantity}</Td>
+                      <Td className="px-4 py-2">{product.discountPercent}%</Td>
+                      <Td className="px-4 py-2">{(product.price[0].price) - ((product.discountPercent / 100) * (product.price[0].price))}</Td>
+                      <Td className="px-4 py-2">
+                        <input
+                          onChange={(e) => product.selectedQuantity = Number(e.target.value)}
+                          className="border border-gray-600 bg-gray-800 w-4/5 rounded-md p-2"
+                          type="number"
+                          min={0} max={product.quantity}
+                          placeholder="0" />
+                      </Td>
+                      <Td className="flex flex-row justify-center py-5">
+
+                        <button
+                          onClick={() => handleProductSelect(product)}
+                          className="relative group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition flex items-center gap-1"
+                        >
+                          <div>Select</div>
+                        </button>
+
+                      </Td>
+                    </Tr>
+                  ))
+                ) : (
+                  <Tr>
+                    <Td colSpan={11} className="text-center py-4">
+                      No products left.
+                    </Td>
+                  </Tr>
+                )}
+              </Tbody>
+            </Table>
+          </div>
+        )}
 
         <div className="flex justify-center mt-4">
           {Array.from({ length: totalPages }, (_, index) => (
@@ -395,8 +412,8 @@ const EditOrderCard = () => {
           ))}
         </div>
       </div>
-      
-     {/* Payment Details */}
+
+      {/* Payment Details */}
       <div className="w-full flex flex-col bg-gray-800 items-center shadow-2xl rounded-md border border-gray-900 bg-clip-padding py-4">
         <table className="min-w-full bg-white border-gray-300">
           <tbody className='bg-gray-800 text-white'>
@@ -411,12 +428,12 @@ const EditOrderCard = () => {
             <tr className="hover:bg-gray-900">
               <td className="px-4 py-2">Enter Additional Discount %</td>
               <td className="px-4 py-2 text-right">
-              <input 
-                onChange={(e) => setAdditionalDiscountPercent(Number(e.target.value))} 
-                className="border border-gray-600 bg-gray-800 w-1/5 rounded-md p-2" 
-                type="number"
-                min={0} max={100}
-                placeholder={additionalDiscountPercent.toString()}/>
+                <input
+                  onChange={(e) => setAdditionalDiscountPercent(Number(e.target.value))}
+                  className="border border-gray-600 bg-gray-800 w-1/5 rounded-md p-2"
+                  type="number"
+                  min={0} max={100}
+                  placeholder={additionalDiscountPercent.toString()} />
               </td>
             </tr>
             <tr className="hover:bg-gray-900">
@@ -426,15 +443,15 @@ const EditOrderCard = () => {
             <tr>
               <td></td>
               <td className="flex flex-row justify-end">
-              <button
-                onClick={handleConfirmOrder}
-                className="text-lg relative group mr-8 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 md:px-5 md:py-3 font-semibold rounded-md transition flex items-center gap-1"
+                <button
+                  onClick={handleConfirmOrder}
+                  className="text-lg relative group mr-8 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 md:px-5 md:py-3 font-semibold rounded-md transition flex items-center gap-1"
                 >
-                <div>{(status === "loading") ? "Updating" : "Update Order"}</div>
-              </button>
-              <button onClick={handleCancel} className="px-3 py-2 md:px-5 md:py-3 mr-8 bg-gray-700 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-500">
-                Cancel
-              </button>
+                  <div>{(status === "loading") ? "Updating" : "Update Order"}</div>
+                </button>
+                <button onClick={handleCancel} className="px-3 py-2 md:px-5 md:py-3 mr-8 bg-gray-700 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-gray-500">
+                  Cancel
+                </button>
               </td>
             </tr>
           </tbody>
