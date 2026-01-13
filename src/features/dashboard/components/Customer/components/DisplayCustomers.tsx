@@ -177,11 +177,24 @@ const DisplayCustomers = () => {
                   <td className="px-4 py-2 text-center">{customer.companyName || "N/A"}</td>
                   <td className="px-4 py-2 text-center">
                     <div className="flex gap-3 justify-center">
-                      <button onClick={() => handleEdit(customer)} className="bg-blue-500 hover:bg-blue-400 text-white px-3 py-2 rounded-md">
-                        Edit
+                      <button
+                        onClick={() => handleEdit(customer)}
+                        className="relative group bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600 transition flex items-center gap-1"
+                      >
+                        <div className="fa-solid fa-edit"></div>
+                        <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition z-10 pointer-events-none">
+                          Edit
+                        </span>
                       </button>
-                      <button onClick={() => handleBlock(customer._id)} className="bg-red-500 hover:bg-red-400 text-white px-3 py-2 rounded-md">
-                        {isBlacklistActive ? "Unblock" : "Block"}
+
+                      <button
+                        onClick={() => handleBlock(customer._id)}
+                        className="relative group text-white transition flex items-center"
+                      >
+                        <div className={`px-2 py-1 rounded-md fa-solid text-white ${(!isBlacklistActive) ? "fa-ban bg-red-600" : "fa-check bg-green-600"}`}></div>
+                        <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition z-10 pointer-events-none">
+                          {(!isBlacklistActive) ? "Block" : "Unblock"}
+                        </span>
                       </button>
                     </div>
                   </td>

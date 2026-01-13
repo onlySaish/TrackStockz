@@ -55,11 +55,11 @@ function ChangePassword(): React.JSX.Element {
     };
 
     return (
-        <div className="relative p-4 md:p-6 lg:p-8 rounded-lg bg-gray-800 shadow-lg border border-gray-700 w-full transition-all duration-300">
-            <div className="mb-6 md:mb-8">
+        <div className="relative p-4 md:p-6 lg:p-10 rounded-2xl bg-gray-800 shadow-xl border border-gray-700 w-full transition-all duration-300 min-h-[600px] flex flex-col">
+            <div className="mb-8 md:mb-10 border-b border-gray-700 pb-4">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white tracking-wide text-left mb-0">Change Password</h2>
             </div>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-8 flex-1 justify-center">
                 {[{
                     label: 'Current Password',
                     value: currentPass,
@@ -96,7 +96,7 @@ function ChangePassword(): React.JSX.Element {
                         </div>
                     </div>
                 ))}
-                <div className="flex justify-between mt-5">
+                <div className="flex justify-between mt-8">
                     <button
                         onClick={handleSave}
                         className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold shadow-md transition-transform duration-300 hover:scale-105 hover:bg-indigo-500"

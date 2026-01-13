@@ -9,8 +9,8 @@ import { useAppSelector } from '../../../../hooks';
 function Profile(): React.JSX.Element {
   const activeContent = useAppSelector(selectProfileActiveContent);
   return (
-    <div className='py-6 px-6 h-full w-full overflow-y-auto custom-scrollbar'>
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 w-full h-full">
+    <div className='py-6 px-4 md:px-6 h-full w-full overflow-y-auto custom-scrollbar'>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[350px_1fr] gap-6 md:gap-8 w-full max-w-[1920px] mx-auto">
         {/* Left Column: Profile Actions */}
         <div className="flex flex-col gap-6">
           {activeContent === 'Profile' && <ProfileCard />}

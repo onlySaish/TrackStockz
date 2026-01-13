@@ -17,70 +17,92 @@ const ProfileCard = () => {
   };
 
   return (
-    <div className="relative flex flex-col md:flex-row items-center bg-gradient-to-br from-gray-800 to-gray-900 
-      backdrop-blur-lg shadow-xl rounded-lg w-full border border-gray-700 p-6 transition-all 
-      duration-300 hover:scale-[1.01] hover:shadow-2xl">
-
-      {status === "loading" ? (
-        <p className="text-gray-400 text-lg">Loading...</p>
+    <div className="relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700 w-full group">
+      {status === 'loading' ? (
+        <div className="p-8 text-center text-gray-400">Loading profile...</div>
       ) : (
-        <div className="flex flex-col w-full">
-          <div className="mb-6 md:mb-8">
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white tracking-wide">My Profile</h2>
+        <>
+          {/* Banner */}
+          <div className="h-32 bg-gradient-to-r from-blue-600 to-purple-600 w-full relative">
+            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
           </div>
 
-          <div className="flex flex-col md:flex-row items-center w-full">
-            {/* Left Section - Avatar & Buttons */}
-            <div className="flex flex-col items-center w-full md:w-1/3 p-4 border-b md:border-b-0 md:border-r border-gray-700 shrink-0">
+          {/* Profile Content */}
+          <div className="px-6 pb-8">
+            {/* Avatar - Negative Margin to pull it up */}
+            <div className="relative -mt-16 mb-4 flex justify-center">
               <div className="relative">
                 <img
                   src={user.avatar || 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png'}
-                  alt="Profile Avatar"
+                  alt="Profile"
                   onError={(e) => e.currentTarget.src = 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png'}
-                  className="w-48 h-48 rounded-2xl border-4 border-gray-700 shadow-md 
-                transition-transform duration-300 hover:scale-105"
+                  className="w-32 h-32 rounded-full border-4 border-gray-800 shadow-2xl object-cover bg-gray-700"
                 />
-              </div>
-
-              <div className="mt-6 flex flex-col gap-3 w-full">
                 <button
                   onClick={handleEditClick}
-                  className="px-4 py-2 w-full text-base rounded-lg bg-[#1E3A8A] text-white font-medium shadow-md 
-                transition-all duration-300 hover:bg-[#1e3a8a]/90 hover:shadow-blue-500/40"
+                  className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-full shadow-lg transition-transform hover:scale-110 border-2 border-gray-800"
+                  title="Edit Avatar"
                 >
-                  Edit Profile
-                </button>
-                <button
-                  onClick={handleChangePassClick}
-                  className="px-4 py-2 w-full text-base rounded-lg bg-[#374151] text-white font-medium shadow-md 
-                transition-all duration-300 hover:bg-[#374151]/90 hover:shadow-gray-400/40"
-                >
-                  Change Password
+                  <i className="fa-solid fa-camera text-sm"></i>
                 </button>
               </div>
             </div>
 
-            {/* Right Section - User Info */}
-            <div className="flex flex-col justify-center w-full md:w-2/3 p-6 overflow-hidden">
-              <h2 className="text-3xl capitalize font-semibold text-gray-100 tracking-wide truncate" title={user.username}>
-                {user.username || 'Username'}
-              </h2>
-              <p className="text-xl text-gray-400 capitalize font-medium mt-1 truncate" title={user.fullName}>
-                {user.fullName || 'Full Name'}
-              </p>
-              <p className="text-lg text-gray-500 mt-1 truncate" title={user.email}>{user.email || 'Email'}</p>
+            {/* User Details */}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-white tracking-wide">{user.fullName || 'User Name'}</h2>
+              <p className="text-gray-400 text-sm mt-1 font-medium">@{user.username || 'username'}</p>
 
-              <div className="mt-6">
-                <div className="flex items-center bg-gray-800 p-2 rounded-lg border border-gray-700 shadow-md w-fit">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5 mr-2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25V6a2.25 2.25 0 00-2.25-2.25H9A2.25 2.25 0 006.75 6v2.25m10.5 0h-10.5m10.5 0l1.5 12.75a2.25 2.25 0 01-2.25 2.25h-7.5a2.25 2.25 0 01-2.25-2.25l1.5-12.75" />
-                  </svg>
-                  <p className="text-gray-300 text-sm">Professional Member</p>
+              <div className="mt-4 flex justify-center gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-medium">
+                  <i className="fa-solid fa-shield-halved text-[10px]"></i>
+                  Professional Member
+                </span>
+              </div>
+            </div>
+
+            {/* Info List */}
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-4 p-3 rounded-lg bg-gray-700/30 border border-gray-700/50 hover:bg-gray-700/50 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center text-gray-400 border border-gray-700 shrink-0">
+                  <i className="fa-regular fa-envelope"></i>
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Email Address</p>
+                  <p className="text-sm text-gray-200 truncate" title={user.email}>{user.email || 'No email provided'}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-3 rounded-lg bg-gray-700/30 border border-gray-700/50 hover:bg-gray-700/50 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center text-gray-400 border border-gray-700 shrink-0">
+                  <i className="fa-regular fa-id-badge"></i>
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">User ID</p>
+                  <p className="text-sm text-gray-200 truncate font-mono">{user._id || 'N/A'}</p>
                 </div>
               </div>
             </div>
+
+            {/* Actions */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={handleEditClick}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium transition-all shadow-lg hover:shadow-xl border border-gray-600"
+              >
+                <i className="fa-regular fa-pen-to-square"></i>
+                Edit
+              </button>
+              <button
+                onClick={handleChangePassClick}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium transition-all shadow-lg hover:shadow-xl border border-gray-600"
+              >
+                <i className="fa-solid fa-lock"></i>
+                Security
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
