@@ -94,7 +94,7 @@ const SignupStep2: React.FC<SignupStep2Props> = ({ nextStep, userData }) => {
                 value={digit}
                 onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-14 h-14 text-center text-2xl border border-gray-300 rounded-md outline-none focus:border-blue-600 shadow-md"
+                className="w-14 h-14 text-center text-gray-300 text-2xl border border-gray-300 rounded-md outline-none focus:border-blue-600 shadow-md"
               />
             ))}
           </div>
