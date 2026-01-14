@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { googleAuthAsync, loginUserAsync, selectLoggedInUser } from "../authSlice";
 import { useGoogleLogin } from '@react-oauth/google';
@@ -8,25 +8,11 @@ import { useAppDispatch, useAppSelector } from "../../../hooks.js";
 function Login() {
   const [identity, setIdentity] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  
+  const [showPassword, setShowPassword] = useState(false);
+
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectLoggedInUser);
-  const passRef = useRef<HTMLInputElement>(null);
 
-
-  const togglePassVisibility = (icon: HTMLElement) => {
-    if (passRef.current) {
-      const input = passRef.current;
-      const iconElement = icon.querySelector("i");
-      if (input.type === "password") {
-        input.type = "text";
-        iconElement?.classList.replace("fa-eye-slash", "fa-eye");
-      } else {
-        input.type = "password";
-        iconElement?.classList.replace("fa-eye", "fa-eye-slash");
-      }
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,18 +37,16 @@ function Login() {
     onError: () => {
       alert('Google login failed');
     },
-    flow: 'auth-code', 
+    flow: 'auth-code',
   });
 
   if (user) return <Navigate to="/" replace />;
 
   return (
     <>
-      {/* {user && <Navigate to="/" replace={true} />} */}
-
       <div className="relative min-h-screen flex flex-col gap-3 items-center justify-center bg-gray-900 px-4">
         <div className="w-full max-w-md bg-gray-800/60 backdrop-blur-md shadow-lg rounded-lg p-8">
-          
+
           <h2 className="text-white text-center text-3xl font-extrabold mb-6">
             Login
           </h2>
@@ -88,24 +72,23 @@ function Login() {
             {/* Password Input */}
             <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 className="peer w-full bg-gray-900 text-white px-4 pt-5 pb-2 rounded-md outline-none border border-gray-600 focus:border-blue-500"
                 placeholder=" "
-                ref={passRef}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <label
                 htmlFor="password"
                 className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-400"
               >
-                Password 
+                Password
               </label>
               <span
                 className="absolute right-4 top-4 cursor-pointer text-gray-400 hover:text-gray-200"
-                onClick={(e) => togglePassVisibility(e.currentTarget)}
+                onClick={() => setShowPassword(!showPassword)}
               >
-                <i className="fa-solid fa-eye-slash"></i>
+                <i className={`fa-solid ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
               </span>
             </div>
 

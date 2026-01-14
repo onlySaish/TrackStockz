@@ -9,27 +9,17 @@ function ChangePassword(): React.JSX.Element {
     const [newPass, setNewPass] = useState<string>('');
     const [confirmPass, setConfirmPass] = useState<string>('');
     const [isPassSame, setIsPassSame] = useState<boolean>(false);
+    const [visibility, setVisibility] = useState<boolean[]>([false, false, false]);
     const currentRef = useRef<HTMLInputElement>(null);
     const newRef = useRef<HTMLInputElement>(null);
     const confirmRef = useRef<HTMLInputElement>(null);
 
-    const togglePasswordVisibility = (
-        eyeIcon: HTMLElement,
-        inputRef: React.RefObject<HTMLInputElement | null>
-    ) => {
-        if (!inputRef || !inputRef.current) return;
-        const input = inputRef.current;
-        if (!input) return;
-
-        if (input.type === 'password') {
-            input.type = 'text';
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
-        } else {
-            input.type = 'password';
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
-        }
+    const togglePasswordVisibility = (index: number) => {
+        setVisibility((prev) => {
+            const newVisibility = [...prev];
+            newVisibility[index] = !newVisibility[index];
+            return newVisibility;
+        });
     };
 
     useEffect(() => {
@@ -80,7 +70,7 @@ function ChangePassword(): React.JSX.Element {
                         <label className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
                         <div className="relative">
                             <input
-                                type="password"
+                                type={visibility[index] ? 'text' : 'password'}
                                 value={value}
                                 onChange={(e) => setValue(e.target.value)}
                                 ref={ref}
@@ -89,8 +79,8 @@ function ChangePassword(): React.JSX.Element {
                             />
                             <button
                                 type="button"
-                                className="absolute fa-solid fa-eye-slash inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-200"
-                                onClick={(e) => togglePasswordVisibility(e.currentTarget, ref)}
+                                className={`absolute fa-solid ${visibility[index] ? 'fa-eye' : 'fa-eye-slash'} inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-200`}
+                                onClick={() => togglePasswordVisibility(index)}
                             >
                             </button>
                         </div>

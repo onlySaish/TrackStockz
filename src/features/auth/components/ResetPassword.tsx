@@ -1,34 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { resetPasswordAsync, showPopup, verifyTokenAsync } from "../authSlice";
 import { useNavigate, useParams } from "react-router";
 import { useAppDispatch } from "../../../hooks";
 
 function ResetPassword() {
   const dispatch = useAppDispatch();
-  const { token } = useParams<{token : string}>();
+  const { token } = useParams<{ token: string }>();
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isPassSame, setIsPassSame] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  
-  const passRef = useRef<HTMLInputElement>(null);
-  const confirmPassRef = useRef<HTMLInputElement>(null);
-
-  const toggleVisibility = (
-    inputRef: React.RefObject<HTMLInputElement | null>,
-    eyeIcon: HTMLElement
-  ) => {
-    const input = inputRef.current;
-    if (!input) return;
-
-    if (input.type === "password") {
-      eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
-      input.type = "text";
-    } else {
-      eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
-      input.type = "password";
-    }
-  };
 
 
   useEffect(() => {
@@ -59,19 +42,18 @@ function ResetPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
       <div className="w-full max-w-md bg-gray-800/60 backdrop-blur-md shadow-xl rounded-md p-8">
-        
+
         <h2 className="text-white text-center text-3xl font-extrabold mb-6">
           Reset Password
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          
+
           {/* Password Input */}
           <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="pass"
-              ref={passRef}
               className="peer w-full bg-gray-900 text-white px-4 pt-5 pb-2 rounded-md outline-none border border-gray-600 focus:border-blue-500"
               placeholder=" "
               onChange={(e) => setPassword(e.target.value)}
@@ -83,17 +65,16 @@ function ResetPassword() {
               Enter Password
             </label>
             <div
-              onClick={(e) => toggleVisibility(passRef, e.currentTarget)}
-              className="absolute right-4 top-4 text-gray-500 hover:cursor-pointer fa-solid fa-eye-slash text-lg"
+              onClick={() => setShowPassword(!showPassword)}
+              className={`absolute right-4 top-4 text-gray-500 hover:cursor-pointer fa-solid ${showPassword ? 'fa-eye' : 'fa-eye-slash'} text-lg`}
             ></div>
           </div>
 
           {/* Confirm Password Input */}
           <div className="relative">
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               id="confirm-pass"
-              ref={confirmPassRef}
               className={`peer w-full bg-gray-900 text-white px-4 pt-5 pb-2 rounded-md outline-none border ${confirmPassword && password ? (isPassSame ? "border-green-400" : "border-red-500") : "border-gray-600"} focus:border-blue-500`}
               placeholder=" "
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -105,8 +86,8 @@ function ResetPassword() {
               Confirm Password
             </label>
             <div
-              onClick={(e) => toggleVisibility(confirmPassRef, e.currentTarget)}
-              className="absolute right-4 top-4 text-gray-500 hover:cursor-pointer fa-solid fa-eye-slash text-lg"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className={`absolute right-4 top-4 text-gray-500 hover:cursor-pointer fa-solid ${showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'} text-lg`}
             ></div>
           </div>
 
